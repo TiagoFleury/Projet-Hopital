@@ -22,4 +22,10 @@ public class Bloc {
     	this.id = identifiant;
     	chirurgiesDuJour = new ArrayList<Chirurgie>();
     }
+    
+    //Accesseur
+    
+    public String getName(){
+    	return nom;
+    }
 }
