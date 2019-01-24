@@ -26,6 +26,6 @@ public class Bloc {
     //Accesseur
     
     public String getName(){
-    	return nom;
+    	return nom+" mot";
     }
 }
