@@ -5,6 +5,13 @@ public class Bloc {
     private int id;
     private ArrayList<Chirurgie> chirurgiesDuJour;
     
+    
+    
+    
+    
+    
+    
+    
     public Bloc(String nom, int identifiant) {
     	this.nom = nom;
     	this.id = identifiant;
