@@ -6,11 +6,13 @@ import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.Duration;
 import java.time.Period;
+import java.util.ArrayList;
 
-public class Conflit {
+public class Journée {
     private LocalDate date;
-    private LocalDateTime debut;
-    private LocalDateTime fin;
-    private CoupleChirurgie chirurgiesPb;
-    private boolean résolu;
+    private ArrayList<Conflit> conflitsDuJour;
+    private ArrayList<Chirurgie> chirurgieduJour;
+    private ArrayList<Chirurgien> chirurgiensMobilisés;
+    private ArrayList<Bloc> sallesOccupées;
+    
 }

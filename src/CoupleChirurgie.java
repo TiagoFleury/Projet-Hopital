@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author HugoDaCosta
- */
 public class CoupleChirurgie {
-    
+    private boolean etat;
+    private Chirurgie chirurgie1;
+    private Chirurgie chirurgie2;
+    private Conflit conflit;
 }
