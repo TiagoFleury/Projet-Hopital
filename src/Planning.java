@@ -6,13 +6,14 @@ import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.Duration;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Planning {
+    private ArrayList<Journee> listeJours;
     
-    // A faire = Hugo d'ici Dimanche / importation base de données
+    public Planning(ArrayList<Journee> listDesJours){
+        this.listeJours=listDesJours;
+    }
     
-    // y ajouter  une méthode d'affichage afin de voir ce qu'il se passe
-    
-    
-    // Je viens de penser, pourquoi pas rajouter une classe JOURNEE
 }

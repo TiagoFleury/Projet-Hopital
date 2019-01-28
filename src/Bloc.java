@@ -11,17 +11,11 @@ import java.time.Period;
 public class Bloc {
     private String nom;
     private int id;
-    private ArrayList<Chirurgie> chirurgiesDuJour;
-    private ArrayList<LocalDateTime> creneauxDispos;
-    private ArrayList<LocalDateTime> creneauxOccupes;
     
     
     public Bloc(String nom, int identifiant) {
     	this.nom = nom;
     	this.id = identifiant;
-    	chirurgiesDuJour = new ArrayList<Chirurgie>();
-        this.creneauxDispos = new ArrayList<LocalDateTime>();
-        this.creneauxOccupes = new ArrayList<LocalDateTime>();
     }
     
     
@@ -29,6 +23,6 @@ public class Bloc {
     // Accesseurs //
     
     public String getName(){
-    	return this.nom+"mot";
+    	return this.nom;
     }
 }
