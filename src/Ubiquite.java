@@ -5,6 +5,6 @@ public class Ubiquite extends Conflit {
     private ArrayList<Bloc> salles;
     // On aurait pu mettre 2 salles en attribut uniquement, mais je pense qu'il est probable qu'on ait des Mecs sur 3-4 salles
     // en meme temps
-    // Et aussi il arrivera parfois qu'en enlevant des ubiquités, cela en rajoute
+    // Et aussi il arrivera parfois qu'en enlevant des ubiquites, cela en rajoute
     
 }

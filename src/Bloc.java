@@ -1,34 +1,27 @@
-import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.MonthDay;
-import java.time.temporal.ChronoUnit;
-import java.time.Duration;
-import java.time.Period;
+import java.util.Map;
 
-public class Bloc {
+public class Bloc{
     private String nom;
     private int id;
-    private ArrayList<Chirurgie> chirurgiesDuJour;
-    private ArrayList<LocalDateTime> creneauxDispos;
-    private ArrayList<LocalDateTime> creneauxOccupes;
     
-    
-    public Bloc(String nom, int identifiant) {
-    	this.nom = nom;
-    	this.id = identifiant;
-    	chirurgiesDuJour = new ArrayList<Chirurgie>();
-        this.creneauxDispos = new ArrayList<LocalDateTime>();
-        this.creneauxOccupes = new ArrayList<LocalDateTime>();
+    public Bloc(String leNom) {
+    	id = Integer.parseInt(leNom.substring(6));
+    	nom = leNom;
     }
     
     
     
+    
+    @Override
+    public String toString() {
+    	return nom+"  id:"+id;
+    }
     // Accesseurs //
     
     public String getName(){
-    	return this.nom+"mot";
+    	return this.nom;
+    }
+    public int getID() {
+    	return id;
     }
 }
