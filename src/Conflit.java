@@ -12,5 +12,5 @@ public class Conflit {
     private LocalDateTime debut;
     private LocalDateTime fin;
     private CoupleChirurgie chirurgiesPb;
-    private boolean résolu;
+    private boolean resolu;
 }

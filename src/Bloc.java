@@ -12,16 +12,16 @@ public class Bloc {
     private String nom;
     private int id;
     private ArrayList<Chirurgie> chirurgiesDuJour;
-    private ArrayList<LocalDateTime> créneauxDispos;
-    private ArrayList<LocalDateTime> créneauxOccupés;
+    private ArrayList<LocalDateTime> creneauxDispos;
+    private ArrayList<LocalDateTime> creneauxOccupes;
     
     
     public Bloc(String nom, int identifiant) {
     	this.nom = nom;
     	this.id = identifiant;
     	chirurgiesDuJour = new ArrayList<Chirurgie>();
-        this.créneauxDispos = new ArrayList<LocalDateTime>();
-        this.créneauxOccupés = new ArrayList<LocalDateTime>();
+        this.creneauxDispos = new ArrayList<LocalDateTime>();
+        this.creneauxOccupes = new ArrayList<LocalDateTime>();
     }
     
     

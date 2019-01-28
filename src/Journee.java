@@ -8,11 +8,11 @@ import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
 
-public class Journée {
+public class Journee {
     private LocalDate date;
     private ArrayList<Conflit> conflitsDuJour;
     private ArrayList<Chirurgie> chirurgieduJour;
-    private ArrayList<Chirurgien> chirurgiensMobilisés;
-    private ArrayList<Bloc> sallesOccupées;
+    private ArrayList<Chirurgien> chirurgiensMobilises;
+    private ArrayList<Bloc> sallesOccupees;
     
 }
