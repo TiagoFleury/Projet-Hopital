@@ -36,13 +36,13 @@ public class Journee {
         // A FAIRE
     // Methode qui recupere ce que Tiago envoie dans la classe Planning ie =
     // Il retourne une arrayList<Chirurgie>
-    // la recevoir via 2 tris = 1er tri qui va selectionner les chirurgies des memes jours, et créer des objets Journées
+    // la recevoir via 2 tris = 1er tri qui va selectionner les chirurgies des memes jours, et creer des objets Journees
     // via des constructeurs
     
-    // parmis chacunes de ces journées, créer une méthode qui return ArrayList<chirurgie> mais triée par blocs
+    // parmis chacunes de ces journees, creer une methode qui return ArrayList<chirurgie> mais triee par blocs
     // public ArrayList<Chirurgie> triParBlocs()
     
-    // on aura alors une liste de journées, et chacune de ses journées peut avoir une liste de chirurgies triées par blocs
+    // on aura alors une liste de journees, et chacune de ses journées peut avoir une liste de chirurgies triees par blocs
     
     
     
