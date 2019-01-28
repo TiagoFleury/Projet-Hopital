@@ -95,6 +95,90 @@ public class Journee {
     
     
     
+    
+    
+    public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
+        boolean b=false;
+        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
+            if (x.getFin().isAfter(y.getDebut())){
+                if (x.getChirurgien()==y.getChirurgien()){
+                    b=true;
+                }
+            }
+        }
+        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()))){
+            if (y.getFin().isAfter(x.getDebut())){
+                if (x.getChirurgien()==y.getChirurgien()){
+                    b=true;
+                }
+        }
+        }
+        return b;
+    }
+    
+    
+    
+    
+    public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
+        boolean b=false;
+        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
+            if (x.getFin().isAfter(y.getDebut())){
+                if (x.getSalle()==y.getSalle()){
+                    b=true;
+                }
+            }
+        }
+        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()))){
+            if (y.getFin().isAfter(x.getDebut())){
+                if (x.getSalle()==y.getSalle()){
+                    b=true;
+                }
+        }
+        return b;
+    }
+    }
+        
+    
+    
+    
+    public Conflit conflitOuPas(Chirurgie x, Chirurgie y){
+        Conflit c = null;
+        boolean uBool,iBool = false;
+        LocalDateTime debConflit,finConflit = null;
+        uBool=ubiquiteOuPas(x,y);
+        iBool=interferenceOuPas(x,y);
+        if ((uBool==true) && (iBool==false)){
+            if (x.getDebut().isBefore(y.getDebut())){
+                debConflit=y.getDebut();
+            }
+            else { debConflit=x.getDebut();}
+            if (x.getFin().isBefore(y.getFin())){
+                finConflit=x.getFin();
+            }
+            else { finConflit=y.getFin();}
+            c = new Ubiquite(x.getDate(),debConflit,finConflit,x,y,false,x.getChirurgien());
+            
+        }
+        else if ((uBool==false) && (iBool==true)){
+            // FAIRE DE MEME SI JAMAIS CEST LA MEME SALLE
+        }
+        else if ((uBool==true) && (iBool==true)){
+            // ET DE MEME SI JAMAIS CE SONT LES DEUX EN MEME TEMPS
+        }
+        return c;
+    }
+    
+    
+    
+    
+    // prendre la journee dans l'ordre croissant des horaires
+    // checker si chacune d'entre elles est en conflit avec d'autres
+    // les recenser pour toute la journée
+    
+    public ArrayList<Conflit> detectionConflit(){
+        ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
+        
+    }
 
     
     
@@ -111,12 +195,7 @@ public class Journee {
         return this.chirurgieduJour;
     }
     
-    // MUTATEURS //
-    public void setBlocsDuJour(ArrayList<Chirurgie> listChirurgiesJour){
-        ArrayList<Bloc> blocsJour = new ArrayList<Bloc>();
-        for (Chirurgie c : listChirurgiesJour){
-            
-        }
+           
         
-    }
+    
 }
