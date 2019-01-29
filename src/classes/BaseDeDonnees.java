@@ -8,6 +8,7 @@ import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,15 +23,23 @@ public class BaseDeDonnees {
 	public ArrayList<Chirurgie> listeChirurgies;
 	public ArrayList<Chirurgien> chirurgiensExistants;
 	public ArrayList<Bloc> blocsExistants;
+	public TreeMap<LocalDate,Journee> listeJournees;
 	
 	//Constructeur
 	public BaseDeDonnees() {
 		listeChirurgies = new ArrayList<Chirurgie>();
 		chirurgiensExistants = new ArrayList<Chirurgien>();
 		blocsExistants = new ArrayList<Bloc>();
+		listeJournees = new TreeMap<LocalDate,Journee>();
+	}
+	public void organiserJournees() {
+		for(Chirurgie c : listeChirurgies) {
+			
+		}
 	}
 	
 	
+	//utilitaires pour importBase
 	private Bloc blocExisteDeja(String nom) {
 			for(Bloc b : blocsExistants) {
 				if(b.getName().equals(nom)) {
@@ -39,7 +48,6 @@ public class BaseDeDonnees {
 			}
 		return null;
 	}
-	
 	private Chirurgien chirurgienExisteDeja(String nom) {
 		for(Chirurgien C : chirurgiensExistants) {
 			if(C.getName().equals(nom)) {

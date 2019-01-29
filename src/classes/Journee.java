@@ -35,7 +35,7 @@ public class Journee {
     public int cbdecaracteresAvant(Chirurgie c){
         LocalTime debutJournee = LocalTime.of(8, 0);
         double i = ChronoUnit.MINUTES.between(debutJournee, c.getDebut());
-        int j= (int) i/10;
+        int j= (int) i/5;
         int nbCarac = new Integer(c.getID()).toString().length();
         return j+15-nbCarac;
     }
