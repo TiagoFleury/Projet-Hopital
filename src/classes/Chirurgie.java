@@ -15,8 +15,8 @@ public class Chirurgie {
 	
 	private int id;
     private LocalDate date;
-    private LocalDateTime heureDebut;
-    private LocalDateTime heureFin;
+    private LocalTime heureDebut;
+    private LocalTime heureFin;
     private Bloc salle;
     private Chirurgien chirurgien;
     
@@ -27,8 +27,8 @@ public class Chirurgie {
 		
 		date = LocalDate.of(Integer.parseInt(champsDate[2]),Integer.parseInt(champsDate[1]), Integer.parseInt(champsDate[0]));
 		
-		heureDebut = LocalDateTime.of(date, LocalTime.parse(champs[2]));
-		heureFin = LocalDateTime.of(date, LocalTime.parse(champs[3]));
+		heureDebut = LocalTime.parse(champs[2]);
+		heureFin = LocalTime.parse(champs[3]);
 		salle = null;
 		chirurgien = null;
 	}
@@ -37,7 +37,7 @@ public class Chirurgie {
     
     @Override
     public String toString() {
-    	String str = "chir"+id+"   Bloc : E"+salle.getID()+"     - "+chirurgien;
+    	String str = "chir"+id+" E"+salle.getID()+" - "+chirurgien+"  ["+heureDebut+" -- "+heureFin+"]"+" -- "+date;
     	return str;
     }
     // ACCESSEURS //
@@ -47,10 +47,10 @@ public class Chirurgie {
     public Bloc getSalle(){
         return this.salle;
     }
-    public LocalDateTime getDebut(){
+    public LocalTime getDebut(){
         return this.heureDebut;
     }
-    public LocalDateTime getFin(){
+    public LocalTime getFin(){
         return this.heureFin;
     }
     public LocalDate getDate(){
