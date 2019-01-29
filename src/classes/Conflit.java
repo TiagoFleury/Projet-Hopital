@@ -27,4 +27,9 @@ public class Conflit {
         this.resolu=etat;
         
     }
+    
+    
+    public String toString() {
+    	return "(c"+chirurgie1.getID()+",c"+chirurgie2.getID()+")";
+    }
 }

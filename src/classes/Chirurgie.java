@@ -68,6 +68,9 @@ public class Chirurgie {
     public LocalDate getDate(){
         return this.date;
     }
+    public int getID() {
+    	return id;
+    }
     
     
     

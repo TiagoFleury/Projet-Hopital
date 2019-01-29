@@ -233,6 +233,15 @@ public class Journee {
     	for(Chirurgie c : j.chirurgiesDuJour)
     		System.out.println(c);
     	j.planningJourneeParBloc();
+    	
+    	ArrayList<Conflit> conflits = j.detectionConflit();
+    	System.out.println(conflits);
+    	for(Conflit c : conflits) {
+    		System.out.println(c instanceof Ubiquite);
+    		System.out.println(c instanceof Chevauchement);
+    		System.out.println(c instanceof Interference);
+    	}
+    	
     }
     
     
