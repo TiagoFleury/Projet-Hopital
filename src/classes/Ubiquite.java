@@ -17,9 +17,9 @@ public class Ubiquite extends Conflit {
     // en meme temps
     // Et aussi il arrivera parfois qu'en enlevant des ubiquites, cela en rajoute
     
-    public Ubiquite(LocalDate jour, LocalDateTime hDeb, LocalDateTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat,Chirurgien chPb){
+    public Ubiquite(LocalDate jour, LocalTime hDeb, LocalTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat){
         super(jour, hDeb, hFin, ch1, ch2, etat);
-        this.chirurgienPb=chPb;
+        this.chirurgienPb=ch1.getChirurgien();
         ArrayList<Bloc> blocs = new ArrayList<Bloc>();
         blocs.add(ch1.getSalle());
         blocs.add(ch2.getSalle());

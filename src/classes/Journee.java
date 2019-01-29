@@ -14,7 +14,7 @@ import java.util.Comparator;
 public class Journee {
     private Date date;
     private ArrayList<Conflit> conflitsDuJour;
-    private ArrayList<Chirurgie> chirurgieduJour;
+    private ArrayList<Chirurgie> chirurgiesDuJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
     private ArrayList<Bloc> sallesOccupees;
     
@@ -45,8 +45,10 @@ public class Journee {
     // public ArrayList<Chirurgie> triParBlocs()
     
     // on aura alors une liste de journees, et chacune de ses journees peut avoir une liste de chirurgies triees par blocs
+    
+    
     public ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
-    	Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
+    	Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle());
     	
     	Collections.sort(liste, PAR_BLOC);
     	return liste;
@@ -59,7 +61,7 @@ public class Journee {
         System.out.println("\n");
         
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = triParBlocs(chirurgieduJour);
+        chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
@@ -82,7 +84,7 @@ public class Journee {
         System.out.println("Chirurgien     8h   8h30   9h   9h30   10h   10h30   11h   11h30   12h   12h30   13h   13h30   14h   14h30   15h   15h30   16h   16h30   17h   17h30   18h   18h30   19h   19h30   20h   20h30   21h   21h30   22h   22h30   23h   23h30   00h");
         System.out.println("\n");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = this.chirurgieduJour.triParChirurgiens();
+        chirurgiesJourTriees = triParChirurgiens(chirurgiesDuJour);
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
@@ -125,8 +127,6 @@ public class Journee {
     }
     
     
-    
-    
     public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
         boolean b=false;
         if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
@@ -152,7 +152,7 @@ public class Journee {
     public Conflit conflitOuPas(Chirurgie x, Chirurgie y){
         Conflit c = null;
         boolean uBool,iBool = false;
-        LocalDateTime debConflit,finConflit = null;
+        LocalTime debConflit,finConflit = null;
         uBool=ubiquiteOuPas(x,y);
         iBool=interferenceOuPas(x,y);
         if ((uBool==true) && (iBool==false)){
@@ -164,14 +164,30 @@ public class Journee {
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
-            c = new Ubiquite(x.getDate(),debConflit,finConflit,x,y,false,x.getChirurgien());
+            c = new Ubiquite(x.getDate(),debConflit,finConflit,x,y,false);
             
         }
         else if ((uBool==false) && (iBool==true)){
-            // FAIRE DE MEME SI JAMAIS CEST LA MEME SALLE
+            if (x.getDebut().isBefore(y.getDebut())){
+                debConflit=y.getDebut();
+            }
+            else { debConflit=x.getDebut();}
+            if (x.getFin().isBefore(y.getFin())){
+                finConflit=x.getFin();
+            }
+            else { finConflit=y.getFin();}
+            c = new Interference(x.getDate(),debConflit,finConflit,x,y,false);
         }
         else if ((uBool==true) && (iBool==true)){
-            // ET DE MEME SI JAMAIS CE SONT LES DEUX EN MEME TEMPS
+            if (x.getDebut().isBefore(y.getDebut())){
+                debConflit=y.getDebut();
+            }
+            else { debConflit=x.getDebut();}
+            if (x.getFin().isBefore(y.getFin())){
+                finConflit=x.getFin();
+            }
+            else { finConflit=y.getFin();}
+            c = new Chevauchement(x.getDate(),debConflit,finConflit,x,y,false);
         }
         return c;
     }
@@ -183,24 +199,30 @@ public class Journee {
     // checker si chacune d'entre elles est en conflit avec d'autres
     // les recenser pour toute la journée
     
+    
     public ArrayList<Conflit> detectionConflit(){
+        Conflit conf = null;
         ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
-        
+        for (Chirurgie c1 : this.chirurgiesDuJour){
+            for (Chirurgie c2 : this.chirurgiesDuJour){
+                if (c1!=c2){
+                    conf=conflitOuPas(c1,c2);
+                }
+                if (conf!=null){
+                    conflitsDuJour.add(conf);
+                }
+            }
+        }
+        return conflitsDuJour;
     }
 
     
     
     
     
-    
-    
-    
-    
-    
-    
     // ACCESSEURS //
     public ArrayList<Chirurgie> getChirurgieJour(){
-        return this.chirurgieduJour;
+        return this.chirurgiesDuJour;
     }
     
            
