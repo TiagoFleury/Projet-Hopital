@@ -18,6 +18,12 @@ public class Journee {
     private ArrayList<Chirurgien> chirurgiensMobilises;
     private ArrayList<Bloc> sallesOccupees;
     
+    public Journee() {
+    	conflitsDuJour = new ArrayList<Conflit>();
+    	chirurgieduJour = new ArrayList<Chirurgie>();
+    	chirurgiensMobilises = new ArrayList<Chirurgien>();
+    	sallesOccupees = new ArrayList<Bloc>();
+    }
     
     
     public int cbdecaracteresNecessaires(Chirurgie c){
@@ -45,10 +51,15 @@ public class Journee {
     // public ArrayList<Chirurgie> triParBlocs()
     
     // on aura alors une liste de journees, et chacune de ses journees peut avoir une liste de chirurgies triees par blocs
-    public ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
+    
+    public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
     	Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
-    	
     	Collections.sort(liste, PAR_BLOC);
+    	return liste;
+    }
+    public static ArrayList<Chirurgie> triParChirurgien(ArrayList<Chirurgie> liste){
+    	Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
+    	Collections.sort(liste, PAR_CHIRURGIEN);
     	return liste;
     }
     
@@ -82,7 +93,7 @@ public class Journee {
         System.out.println("Chirurgien     8h   8h30   9h   9h30   10h   10h30   11h   11h30   12h   12h30   13h   13h30   14h   14h30   15h   15h30   16h   16h30   17h   17h30   18h   18h30   19h   19h30   20h   20h30   21h   21h30   22h   22h30   23h   23h30   00h");
         System.out.println("\n");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = this.chirurgieduJour.triParChirurgiens();
+        chirurgiesJourTriees = triParChirurgien(chirurgieduJour);
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
@@ -124,70 +135,76 @@ public class Journee {
         return b;
     }
     
-    
-    
-    
-    public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
-        boolean b=false;
-        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
-            if (x.getFin().isAfter(y.getDebut())){
-                if (x.getSalle()==y.getSalle()){
-                    b=true;
-                }
-            }
-        }
-        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()))){
-            if (y.getFin().isAfter(x.getDebut())){
-                if (x.getSalle()==y.getSalle()){
-                    b=true;
-                }
-        }
-        return b;
-    }
-    }
-        
-    
-    
-    
-    public Conflit conflitOuPas(Chirurgie x, Chirurgie y){
-        Conflit c = null;
-        boolean uBool,iBool = false;
-        LocalDateTime debConflit,finConflit = null;
-        uBool=ubiquiteOuPas(x,y);
-        iBool=interferenceOuPas(x,y);
-        if ((uBool==true) && (iBool==false)){
-            if (x.getDebut().isBefore(y.getDebut())){
-                debConflit=y.getDebut();
-            }
-            else { debConflit=x.getDebut();}
-            if (x.getFin().isBefore(y.getFin())){
-                finConflit=x.getFin();
-            }
-            else { finConflit=y.getFin();}
-            c = new Ubiquite(x.getDate(),debConflit,finConflit,x,y,false,x.getChirurgien());
-            
-        }
-        else if ((uBool==false) && (iBool==true)){
-            // FAIRE DE MEME SI JAMAIS CEST LA MEME SALLE
-        }
-        else if ((uBool==true) && (iBool==true)){
-            // ET DE MEME SI JAMAIS CE SONT LES DEUX EN MEME TEMPS
-        }
-        return c;
-    }
-    
-    
-    
+//    
+//    
+//    
+//    public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
+//        boolean b=false;
+//        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
+//            if (x.getFin().isAfter(y.getDebut())){
+//                if (x.getSalle()==y.getSalle()){
+//                    b=true;
+//                }
+//            }
+//        }
+//        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()))){
+//            if (y.getFin().isAfter(x.getDebut())){
+//                if (x.getSalle()==y.getSalle()){
+//                    b=true;
+//                }
+//        }
+//        return b;
+//    }
+//    }
+//        
+//    
+//    
+//    
+//    public Conflit conflitOuPas(Chirurgie x, Chirurgie y){
+//        Conflit c = null;
+//        boolean uBool,iBool = false;
+//        LocalDateTime debConflit,finConflit = null;
+//        uBool=ubiquiteOuPas(x,y);
+//        iBool=interferenceOuPas(x,y);
+//        if ((uBool==true) && (iBool==false)){
+//            if (x.getDebut().isBefore(y.getDebut())){
+//                debConflit=y.getDebut();
+//            }
+//            else { debConflit=x.getDebut();}
+//            if (x.getFin().isBefore(y.getFin())){
+//                finConflit=x.getFin();
+//            }
+//            else { finConflit=y.getFin();}
+//            c = new Ubiquite(x.getDate(),debConflit,finConflit,x,y,false,x.getChirurgien());
+//            
+//        }
+//        else if ((uBool==false) && (iBool==true)){
+//            // FAIRE DE MEME SI JAMAIS CEST LA MEME SALLE
+//        }
+//        else if ((uBool==true) && (iBool==true)){
+//            // ET DE MEME SI JAMAIS CE SONT LES DEUX EN MEME TEMPS
+//        }
+//        return c;
+//    }
+//    
+//    
+//    
     
     // prendre la journee dans l'ordre croissant des horaires
     // checker si chacune d'entre elles est en conflit avec d'autres
     // les recenser pour toute la journée
     
-    public ArrayList<Conflit> detectionConflit(){
-        ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
-        
+//    public ArrayList<Conflit> detectionConflit(){
+//        ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
+//        
+//    }
+    
+    
+    public static void main(String[] Args) {
+    	BaseDeDonnees data = new BaseDeDonnees();
+    	data.importBase("MiniBase.csv");
+    	data.listeChirurgies.
     }
-
     
     
     

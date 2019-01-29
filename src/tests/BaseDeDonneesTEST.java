@@ -2,7 +2,6 @@ package tests;
 
 import classes.BaseDeDonnees;
 import classes.Bloc;
-import classes.Chirurgie;
 import classes.Chirurgien;
 
 import static org.junit.jupiter.api.Assertions.*;

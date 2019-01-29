@@ -8,6 +8,7 @@ import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.Duration;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -34,12 +35,23 @@ public class Chirurgie {
 	}
     
     
-    
+    //Afichages
     @Override
     public String toString() {
     	String str = "chir"+id+" E"+salle.getID()+" - "+chirurgien+"  ["+heureDebut+" -- "+heureFin+"]"+" -- "+date;
     	return str;
     }
+    
+    public static String afficherListe(ArrayList<Chirurgie> liste) {
+    	
+    	String str = "";
+    	for(Chirurgie c : liste) {
+    		str+="chir"+c.id+"\n";
+    	}
+    	
+    	return str;
+    }
+    
     // ACCESSEURS //
     public Chirurgien getChirurgien(){
         return this.chirurgien;

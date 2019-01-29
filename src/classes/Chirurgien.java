@@ -2,7 +2,7 @@ package classes;
 
 import java.util.ArrayList;
 
-public class Chirurgien {
+public class Chirurgien implements Comparable{
     private String nom;
     
     
@@ -22,4 +22,11 @@ public class Chirurgien {
     public String getName() {
     	return nom;
     }
+
+
+	@Override
+	public int compareTo(Object o) {
+		
+		return this.nom.compareTo(((Chirurgien)o).getName());
+	}
 }
