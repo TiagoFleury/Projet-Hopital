@@ -29,14 +29,15 @@ public class Journee {
     public int cbdecaracteresNecessaires(Chirurgie c){
         // va prendre la valeur de dizaines de minutes entre le debut et la fin d'une chirurgie
         double i = ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
-        int j = (int) i/10 ;
+        int j = (int) i/5 ;
         return j;
     }
     public int cbdecaracteresAvant(Chirurgie c){
         LocalTime debutJournee = LocalTime.of(8, 0);
         double i = ChronoUnit.MINUTES.between(debutJournee, c.getDebut());
         int j= (int) i/10;
-        return j+15;
+        int nbCarac = new Integer(c.getID()).toString().length();
+        return j+15-nbCarac;
     }
     
     
