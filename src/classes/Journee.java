@@ -27,13 +27,13 @@ public class Journee {
     
     
     public int cbdecaracteresNecessaires(Chirurgie c){
-        // va prendre la valeur de dizaines de minutes entre le début et la fin d'une chirurgie
+        // va prendre la valeur de dizaines de minutes entre le debut et la fin d'une chirurgie
         double i = ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
         int j = (int) i/10 ;
         return j;
     }
     public int cbdecaracteresAvant(Chirurgie c){
-        LocalDateTime debutJournee = LocalDateTime.of(c.getDate().getYear(), c.getDate().getMonth(), c.getDate().getDayOfMonth(),8,0);
+        LocalTime debutJournee = LocalTime.of(8, 0);
         double i = ChronoUnit.MINUTES.between(debutJournee, c.getDebut());
         int j= (int) i/10;
         return j+15;
@@ -77,7 +77,7 @@ public class Journee {
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
-            System.out.println(c.getSalle().getName());
+            System.out.print(c.getSalle().getName());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
             }
@@ -100,7 +100,7 @@ public class Journee {
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
-            System.out.println(c.getChirurgien().getName());
+            System.out.print(c.getChirurgien().getName());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
             }
@@ -223,6 +223,17 @@ public class Journee {
         return conflitsDuJour;
     }
     
+    
+    
+    public static void main(String[] Args) {
+    	BaseDeDonnees data = new BaseDeDonnees();
+    	data.importBase("MiniBase.csv");
+    	Journee j = new Journee();
+    	j.chirurgiesDuJour=new ArrayList<Chirurgie>(data.listeChirurgies.subList(0, 5));
+    	for(Chirurgie c : j.chirurgiesDuJour)
+    		System.out.println(c);
+    	j.planningJourneeParBloc();
+    }
     
     
     
