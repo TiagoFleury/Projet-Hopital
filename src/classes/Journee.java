@@ -108,7 +108,7 @@ public class Journee {
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
             System.out.println(c.getChirurgien().getName());
-            System.out.println(c.getID());
+            System.out.print(c.getID());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
             }
@@ -240,7 +240,7 @@ public class Journee {
     	j.chirurgiesDuJour=new ArrayList<Chirurgie>(data.listeChirurgies.subList(0, 5));
     	for(Chirurgie c : j.chirurgiesDuJour)
     		System.out.println(c);
-    	j.planningJourneeParBloc();
+    	j.planningJourneeParChirurgien();
     	
     	ArrayList<Conflit> conflits = j.detectionConflit();
     	System.out.println(conflits);
