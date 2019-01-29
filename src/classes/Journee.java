@@ -1,4 +1,5 @@
-import java.time.LocalDate;
+package classes;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
@@ -7,10 +8,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-
+import java.util.Comparator;
 public class Journee {
-    private LocalDate date;
+    private Date date;
     private ArrayList<Conflit> conflitsDuJour;
     private ArrayList<Chirurgie> chirurgieduJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
@@ -42,16 +44,22 @@ public class Journee {
     // parmis chacunes de ces journees, creer une methode qui return ArrayList<chirurgie> mais triee par blocs
     // public ArrayList<Chirurgie> triParBlocs()
     
-    // on aura alors une liste de journees, et chacune de ses journées peut avoir une liste de chirurgies triees par blocs
-    
+    // on aura alors une liste de journees, et chacune de ses journees peut avoir une liste de chirurgies triees par blocs
+    public ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
+    	Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
+    	
+    	Collections.sort(liste, PAR_BLOC);
+    	return liste;
+    }
     
     
     public void planningJourneeParBloc(){
         System.out.println("\n");
         System.out.println("Salle          8h  8h30   9h   9h30   10h   10h30   11h   11h30   12h   12h30   13h   13h30   14h   14h30   15h   15h30   16h   16h30   17h   17h30   18h   18h30   19h   19h30   20h   20h30   21h   21h30   22h   22h30   23h   23h30   00h");
         System.out.println("\n");
+        
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = this.chirurgieduJour.triParBlocs();
+        chirurgiesJourTriees = triParBlocs(chirurgieduJour);
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);

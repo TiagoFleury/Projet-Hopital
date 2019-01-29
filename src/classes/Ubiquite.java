@@ -1,3 +1,5 @@
+package classes;
+
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ public class Ubiquite extends Conflit {
     private ArrayList<Bloc> salles;
     // On aurait pu mettre 2 salles en attribut uniquement, mais je pense qu'il est probable qu'on ait des Mecs sur 3-4 salles
     // en meme temps
-    // Et aussi il arrivera parfois qu'en enlevant des ubiquités, cela en rajoute
+    // Et aussi il arrivera parfois qu'en enlevant des ubiquites, cela en rajoute
     
     public Ubiquite(LocalDate jour, LocalDateTime hDeb, LocalDateTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat,Chirurgien chPb){
         super(jour, hDeb, hFin, ch1, ch2, etat);
