@@ -55,13 +55,15 @@ public class Journee {
 
     
     public ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
-    	Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
+    	@SuppressWarnings("unchecked") //Warning relou
+		Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
     	
     	Collections.sort(liste, PAR_BLOC);
     	return liste;
     }
     public static ArrayList<Chirurgie> triParChirurgien(ArrayList<Chirurgie> liste){
-    	Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
+    	@SuppressWarnings("unchecked") //Warning relou
+		Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
     	Collections.sort(liste, PAR_CHIRURGIEN);
     	return liste;
     }
