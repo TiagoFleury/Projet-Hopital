@@ -71,15 +71,17 @@ public class Journee {
     
     public void planningJourneeParBloc(){
         System.out.println("\n");
-        System.out.println("Salle          8h  8h30   9h   9h30   10h   10h30   11h   11h30   12h   12h30   13h   13h30   14h   14h30   15h   15h30   16h   16h30   17h   17h30   18h   18h30   19h   19h30   20h   20h30   21h   21h30   22h   22h30   23h   23h30   00h");
+        System.out.println("Salle          8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
+        //  à gauche du . c'est 8h, à droite du . cest 8h05
+        System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
         System.out.println("\n");
-        
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
-            System.out.print(c.getSalle().getName());
+            System.out.println(c.getSalle().getName());
+            System.out.print(c.getID());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
             }
@@ -95,14 +97,17 @@ public class Journee {
     
     public void planningJourneeParChirurgien(){
         System.out.println("\n");
-        System.out.println("Chirurgien     8h   8h30   9h   9h30   10h   10h30   11h   11h30   12h   12h30   13h   13h30   14h   14h30   15h   15h30   16h   16h30   17h   17h30   18h   18h30   19h   19h30   20h   20h30   21h   21h30   22h   22h30   23h   23h30   00h");
+        System.out.println("Chirurgien     8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
+        //  à gauche du . c'est 8h, à droite du . cest 8h05
+        System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
         System.out.println("\n");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParChirurgien(chirurgiesDuJour);
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
-            System.out.print(c.getChirurgien().getName());
+            System.out.println(c.getChirurgien().getName());
+            System.out.println(c.getID());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
             }

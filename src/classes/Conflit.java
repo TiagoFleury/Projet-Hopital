@@ -28,6 +28,13 @@ public class Conflit {
         
     }
     
+    // REDEFINIR UN EQUALS tq un conflit c(x,y) soit le meme conflit (y,x)
+    // Cela enleverra les doublons générés dans la détection de conflits
+    @Override
+    public boolean equals(Object o){
+        
+    }
+    
     
     public String toString() {
     	return "(c"+chirurgie1.getID()+",c"+chirurgie2.getID()+")";
