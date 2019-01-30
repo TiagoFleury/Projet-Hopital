@@ -238,15 +238,23 @@ public class Journee {
                     conf=conflitOuPas(c1,c2);
                 }
                 compteur=0;
-                for (Conflit unConflit : conflitsDuJour) {
-                	b=conflitsEgaux(conf,unConflit);
-                	if (b==true) {
-                		compteur+=1;
+                if ((conflitsDuJour.size()!=0)&&(conf!=null)) {
+                	for (Conflit unConflit : conflitsDuJour) {
+                    	b=conflitsEgaux(conf,unConflit);
+                    	if (b==true) {
+                    		compteur+=1;
+                    	}
+                    }
+                    if ((conf!=null)&&(compteur==0)){
+                    	conflitsDuJour.add(conf);
+                    }
+                }
+                else if (conflitsDuJour.size()==0) {
+                	if (conf!=null) {
+                		conflitsDuJour.add(conf);
                 	}
                 }
-                if ((conf!=null)&&(compteur==0)){
-                	conflitsDuJour.add(conf);
-                }
+                
             }
         }
         return conflitsDuJour;
@@ -261,7 +269,7 @@ public class Journee {
     	j.chirurgiesDuJour=new ArrayList<Chirurgie>(data.listeChirurgies.subList(0, 5));
     	for(Chirurgie c : j.chirurgiesDuJour)
     		System.out.println(c);
-    	j.planningJourneeParChirurgien();
+    	j.planningJourneeParBloc();
     	
     	ArrayList<Conflit> conflits = j.detectionConflit();
     	System.out.println(conflits);
