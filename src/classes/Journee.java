@@ -36,7 +36,8 @@ public class Journee {
         LocalTime debutJournee = LocalTime.of(8, 0);
         double i = ChronoUnit.MINUTES.between(debutJournee, c.getDebut());
         int j= (int) i/5;
-        int nbCarac = new Integer(c.getID()).toString().length();
+        @SuppressWarnings("deprecation")
+		int nbCarac = new Integer(c.getID()).toString().length();
         return j+15-nbCarac;
     }
     
@@ -125,6 +126,7 @@ public class Journee {
     
     
     
+    // Detection de conflts
     
     
     public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
@@ -213,18 +215,37 @@ public class Journee {
     }
     
     
+    
+    // Est ce que 2 conflits sont identiques
+    
+    public boolean conflitsEgaux(Conflit a, Conflit b) {
+    	boolean  bool = false;
+    	if ((a.getCh1()==b.getCh1()) || (a.getCh1()==b.getCh2()) || (a.getCh2()==b.getCh1()) || (a.getCh2()==b.getCh2())){
+    		bool=true;
+    	}
+    	return bool;
+    }
 
     
     public ArrayList<Conflit> detectionConflit(){
         Conflit conf = null;
+        boolean b = false;
+        int compteur = 0;
         ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
         for (Chirurgie c1 : this.chirurgiesDuJour){
             for (Chirurgie c2 : this.chirurgiesDuJour){
                 if (c1!=c2){
                     conf=conflitOuPas(c1,c2);
                 }
-                if (conf!=null){
-                    conflitsDuJour.add(conf);
+                compteur=0;
+                for (Conflit unConflit : conflitsDuJour) {
+                	b=conflitsEgaux(conf,unConflit);
+                	if (b==true) {
+                		compteur+=1;
+                	}
+                }
+                if ((conf!=null)&&(compteur==0)){
+                	conflitsDuJour.add(conf);
                 }
             }
         }

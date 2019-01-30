@@ -49,9 +49,9 @@ public class BaseDeDonnees {
 		return null;
 	}
 	private Chirurgien chirurgienExisteDeja(String nom) {
-		for(Chirurgien C : chirurgiensExistants) {
-			if(C.getName().equals(nom)) {
-				return C;
+		for(Chirurgien c : chirurgiensExistants) {
+			if(c.getName().equals(nom)) {
+				return c;
 			}
 		}
 		return null;
