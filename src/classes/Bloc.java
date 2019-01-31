@@ -18,6 +18,13 @@ public class Bloc implements Comparable{
     public String toString() {
     	return nom+"  id:"+id;
     }
+    
+    
+    
+    
+    
+    
+    
     // Accesseurs //
     
     public String getName(){
@@ -28,7 +35,18 @@ public class Bloc implements Comparable{
     }
 
 
-
+    @Override
+    public boolean equals(Object o) {
+    	if(this == o) {
+    		return true;
+    	}
+    	if(o instanceof Bloc) {
+    		Bloc b = (Bloc) o;
+    		if(b.id == id)
+    			return true;
+    	}
+    	return false;
+    }
 
 	@Override
 	public int compareTo(Object o) {
