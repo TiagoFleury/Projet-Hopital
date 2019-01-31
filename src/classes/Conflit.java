@@ -17,19 +17,45 @@ public class Conflit {
     private Chirurgie chirurgie2;
     private boolean resolu;
     
+   
     
-    public Conflit(LocalDate jour, LocalTime hDeb, LocalTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat){
-        this.date=jour;
-        this.debut=hDeb;
-        this.fin=hFin;
-        this.chirurgie1=ch1;
-        this.chirurgie2=ch2;
-        this.resolu=etat;
-        
+    public Conflit(Chirurgie ch1, Chirurgie ch2) {
+    	this.chirurgie1=ch1;
+    	this.chirurgie2=ch2;
+    	this.resolu=false;
+    	
+    	this.date=ch1.getDate();
+    	if (ch1.getDebut().isBefore(ch2.getDebut())){
+    		this.debut=ch2.getDebut();
+    	}
+    	else { this.debut=ch1.getDebut();}
+    	if (ch1.getFin().isBefore(ch2.getFin())){
+    		this.fin=ch1.getFin();
+    	}
+    	else {this.fin=ch2.getFin();}
+    	
     }
     
-    // REDEFINIR UN EQUALS tq un conflit c(x,y) soit le meme conflit (y,x)
-    // Cela enleverra les doublons générés dans la détection de conflits
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj==null) {
+    		return false;
+    	}
+    	if (this==obj) {
+    		return true;
+    	}
+    	if (this.getClass()!=obj.getClass()) {
+    		return false;
+    	}
+    	Conflit objConf = (Conflit) obj;
+    	if (this.getCh1().equals(objConf.getCh1()) || this.getCh1().equals(objConf.getCh2()) || this.getCh2().equals(objConf.getCh1()) || this.getCh2().equals(objConf.getCh2()))  {
+    		return false;
+    	}
+    	return true;
+    }
+    
+    
+
     
     
     public String toString() {
@@ -41,5 +67,8 @@ public class Conflit {
     }
     public Chirurgie getCh2() {
     	return this.chirurgie2;
+    }
+    public LocalDate getDate() {
+    	return this.date;
     }
 }

@@ -209,7 +209,7 @@ public class Journee {
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
-            c = new Ubiquite(x.getDate(),debConflit,finConflit,x,y,false);
+            c = new Ubiquite(x,y);
             
         }
         else if ((uBool==false) && (iBool==true)){
@@ -221,7 +221,7 @@ public class Journee {
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
-            c = new Interference(x.getDate(),debConflit,finConflit,x,y,false);
+            c = new Interference(x,y);
         }
         else if ((uBool==true) && (iBool==true)){
             if (x.getDebut().isBefore(y.getDebut())){
@@ -232,22 +232,12 @@ public class Journee {
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
-            c = new Chevauchement(x.getDate(),debConflit,finConflit,x,y,false);
+            c = new Chevauchement(x,y);
         }
         return c;
     }
     
     
-    
-    // Est ce que 2 conflits sont identiques
-    
-    public boolean conflitsEgaux(Conflit a, Conflit b) {
-    	boolean  bool = false;
-    	if ((a.getCh1()==b.getCh1()) || (a.getCh1()==b.getCh2()) || (a.getCh2()==b.getCh1()) || (a.getCh2()==b.getCh2())){
-    		bool=true;
-    	}
-    	return bool;
-    }
 
     
     public ArrayList<Conflit> detectionConflit(){
@@ -263,7 +253,7 @@ public class Journee {
                 compteur=0;
                 if ((conflitsDuJour.size()!=0)&&(conf!=null)) {
                 	for (Conflit unConflit : conflitsDuJour) {
-                    	b=conflitsEgaux(conf,unConflit);
+                    	b=conf.equals(unConflit);
                     	if (b==true) {
                     		compteur+=1;
                     	}

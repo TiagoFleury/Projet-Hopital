@@ -13,12 +13,10 @@ import java.time.Period;
 public class Ubiquite extends Conflit {
     private Chirurgien chirurgienPb;
     private ArrayList<Bloc> salles;
-    // On aurait pu mettre 2 salles en attribut uniquement, mais je pense qu'il est probable qu'on ait des Mecs sur 3-4 salles
-    // en meme temps
-    // Et aussi il arrivera parfois qu'en enlevant des ubiquites, cela en rajoute
     
-    public Ubiquite(LocalDate jour, LocalTime hDeb, LocalTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat){
-        super(jour, hDeb, hFin, ch1, ch2, etat);
+    
+    public Ubiquite(Chirurgie ch1, Chirurgie ch2){
+        super(ch1, ch2);
         this.chirurgienPb=ch1.getChirurgien();
         ArrayList<Bloc> blocs = new ArrayList<Bloc>();
         blocs.add(ch1.getSalle());

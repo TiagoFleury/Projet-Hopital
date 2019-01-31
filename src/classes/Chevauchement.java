@@ -14,8 +14,8 @@ public class Chevauchement extends Conflit {
     private ArrayList<Bloc> sallesPb;
     private ArrayList<Chirurgien> chirurgiensPb;
     
-    public Chevauchement(LocalDate jour, LocalTime hDeb, LocalTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat){
-        super(jour,hDeb,hFin,ch1,ch2,etat);
+    public Chevauchement(Chirurgie ch1, Chirurgie ch2){
+        super(ch1,ch2);
         ArrayList<Bloc> lesSallesPb = new ArrayList<Bloc>();
         ArrayList<Chirurgien> lesChirurgiensPb = new ArrayList<Chirurgien>();
         lesSallesPb.add(ch1.getSalle());

@@ -15,8 +15,8 @@ public class Interference extends Conflit {
     private ArrayList<Chirurgien> chirurgiens;
     
     
-    public Interference(LocalDate jour, LocalTime hDeb, LocalTime hFin, Chirurgie ch1, Chirurgie ch2, boolean etat){
-        super(jour, hDeb, hFin, ch1, ch2, etat);
+    public Interference(Chirurgie ch1, Chirurgie ch2){
+        super(ch1, ch2);
         this.sallePb=ch1.getSalle();
         ArrayList<Chirurgien> chirurgiensPb = new ArrayList<Chirurgien>();
         chirurgiensPb.add(ch1.getChirurgien());
