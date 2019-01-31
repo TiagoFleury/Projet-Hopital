@@ -34,10 +34,17 @@ public class BaseDeDonnees {
 	}
 	public void organiserJournees() {
 		for(Chirurgie c : listeChirurgies) {
-			if(!listeJournees.containsKey(c.getDate())) {
-				Journee j = new Journee(c);
+			//Cas ou il y a deja une Journee cree sur cette date
+			if(listeJournees.containsKey(c.getDate())) {
+				Journee j = listeJournees.get(c.getDate()); //Recuperation 
+			}
+			//Cas ou la journee n'a pas encore ete traitee
+			else {
+				//Ajout nouvelle journee avec comme cle la nouvelle date
+				listeJournees.put(c.getDate(), new Journee(c));
 			}
 		}
+		
 	}
 	
 	

@@ -25,7 +25,7 @@ public class Chirurgien implements Comparable{
     	}
     	Chirurgien other = (Chirurgien) o;
     	
-    	if (other.nom!=this.nom) {
+    	if (!other.getName().equals(this.nom)) {
     		return false;
     	}
     	return true;
