@@ -11,6 +11,26 @@ public class Chirurgien implements Comparable{
 		this.nom = nom;
 		
 	}
+    
+    
+    public boolean equals(Object o) {
+    	if (this==o) {
+    		return true;
+    	}
+    	if (o==null) {
+    		return false;
+    	}
+    	if (this.getClass()!=o.getClass()) {
+    		return false;
+    	}
+    	Chirurgien other = (Chirurgien) o;
+    	
+    	if (other.nom!=this.nom) {
+    		return false;
+    	}
+    	return true;
+    }
+    
 
 
     @Override

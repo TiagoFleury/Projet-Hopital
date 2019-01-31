@@ -26,6 +26,17 @@ public class Journee {
     }
     
     
+    // 1. Affichage des chirurgies de la journée - 2 plannings envisagés afin de bien voir les conflits : 1 par Bloc, 1 par Chirurgien
+    
+    public String reductionNomChirurgienPourAffichage(Chirurgien albert) {
+    	String[] separation = albert.getName().split(" ");
+    	char[] caracteres = new char[1];
+    	separation[0].getChars(0, 1, caracteres, 0);
+    	
+    	String nomDeFamReduit = separation[1].substring(0, 3);
+    	return caracteres[0]+"."+nomDeFamReduit; 
+    }   
+    
     public int cbdecaracteresNecessaires(Chirurgie c){
         // va prendre la valeur de dizaines de minutes entre le debut et la fin d'une chirurgie
         double i = ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
@@ -39,24 +50,10 @@ public class Journee {
         @SuppressWarnings("deprecation")
 		int nbCarac = new Integer(c.getID()).toString().length();
         return j+15-nbCarac;
-    }
-    
-    
-    
-        // A FAIRE
-    // Methode qui recupere ce que Tiago envoie dans la classe Planning ie =
-    // Il retourne une arrayList<Chirurgie>
-    // la recevoir via 2 tris = 1er tri qui va selectionner les chirurgies des memes jours, et creer des objets Journees
-    // via des constructeurs
-    
-    // parmis chacunes de ces journees, creer une methode qui return ArrayList<chirurgie> mais triee par blocs
-    // public ArrayList<Chirurgie> triParBlocs()
-    
-    // on aura alors une liste de journees, et chacune de ses journees peut avoir une liste de chirurgies triees par blocs
-    
+    }    
 
     
-    public ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
+    public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
     	@SuppressWarnings("unchecked") //Warning relou
 		Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
     	
@@ -69,6 +66,7 @@ public class Journee {
     	Collections.sort(liste, PAR_CHIRURGIEN);
     	return liste;
     }
+    
     
     
     public void planningJourneeParBloc(){
@@ -87,8 +85,9 @@ public class Journee {
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
             }
-            System.out.print(c.getChirurgien().getName());
-            int compteur = c.getChirurgien().getName().length();
+            String nouvNom = reductionNomChirurgienPourAffichage(c.getChirurgien());
+            System.out.print(nouvNom);
+            int compteur = nouvNom.length();
             while (compteur<combien){
                 System.out.print("#");
                 compteur++;
@@ -126,7 +125,10 @@ public class Journee {
     
     
     
-    // Detection de conflts
+    
+    
+    
+    // 2. Détection des conflits d'une journée = on etudie si 2 chirurgies sont en conflit (selon les 3 définitions) puis on dresse la liste des conflits du jour
     
     
     public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
