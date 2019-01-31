@@ -24,6 +24,27 @@ public class Journee {
     	chirurgiensMobilises = new ArrayList<Chirurgien>();
     	sallesOccupees = new ArrayList<Bloc>();
     }
+    public Journee(Chirurgie c) { //Instancie une journee a partir des parametres de c
+    	conflitsDuJour = new ArrayList<Conflit>();
+    	
+    	chirurgiesDuJour = new ArrayList<Chirurgie>();
+    	chirurgiesDuJour.add(c);
+    	
+    	chirurgiensMobilises = new ArrayList<Chirurgien>();
+    	chirurgiensMobilises.add(c.getChirurgien());
+    	
+    	sallesOccupees = new ArrayList<Bloc>();
+    	sallesOccupees.add(c.getSalle());
+    }
+    
+    
+    public void importInfoChirurgie(Chirurgie c) { //recupere les infos d'une chirurgie et les ajoute dans la journee 
+    											  //SANS creer de doublons
+    	if(!chirurgiesDuJour.contains(c)) {
+    		
+    	}
+    	
+    }
     
     
     // 1. Affichage des chirurgies de la journée - 2 plannings envisagés afin de bien voir les conflits : 1 par Bloc, 1 par Chirurgien
@@ -280,6 +301,8 @@ public class Journee {
     		System.out.println(c instanceof Chevauchement);
     		System.out.println(c instanceof Interference);
     	}
+    	
+    	System.out.println(j.chirurgiesDuJour.get(0).getDate().toString());
     	
     }
     
