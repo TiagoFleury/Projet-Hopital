@@ -282,7 +282,7 @@ public class Journee {
     	j.chirurgiesDuJour=new ArrayList<Chirurgie>(data.listeChirurgies.subList(0, 5));
     	for(Chirurgie c : j.chirurgiesDuJour)
     		System.out.println(c);
-    	j.planningJourneeParBloc();
+    	j.planningJourneeParChirurgien();
     	
     	ArrayList<Conflit> conflits = j.detectionConflit();
     	System.out.println(conflits);
