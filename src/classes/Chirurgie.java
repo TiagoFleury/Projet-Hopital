@@ -34,8 +34,25 @@ public class Chirurgie {
 		chirurgien = null;
 	}
     
+    @Override
+    //Deux chirurgies sont egales si elles ont les mêmes valeurs dans tous leurs attributs sauf ID
+    public boolean equals(Object o) {
+    	if(this == o) { //C'est la meme adresse memoire
+    		return true;
+    	}
+    	if(o instanceof Chirurgie) {
+    		Chirurgie c = (Chirurgie) o;
+    		if(c.getDate().toString()==date.toString() && c.getChirurgien().equals(chirurgien) && c.getDebut().toString()==heureDebut.toString() && c.getFin().toString()==heureFin.toString() && c.getChirurgien().equals(chirurgien) )
+    			return true;
+    	}
+    	
+    	
+    	return false;
+    }
     
-    //Afichages
+    
+    
+    //AFFICHAGES
     @Override
     public String toString() {
     	String str = "chir"+id+" E"+salle.getID()+" - "+chirurgien+"  ["+heureDebut+" -- "+heureFin+"]"+" -- "+date;
@@ -51,6 +68,9 @@ public class Chirurgie {
     	
     	return str;
     }
+    
+    
+    
     
     // ACCESSEURS //
     public Chirurgien getChirurgien(){
