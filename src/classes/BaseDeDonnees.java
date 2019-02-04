@@ -36,7 +36,7 @@ public class BaseDeDonnees {
 		for(Chirurgie c : listeChirurgies) {
 			//Cas ou il y a deja une Journee cree sur cette date
 			if(listeJournees.containsKey(c.getDate())) {
-				Journee j = listeJournees.get(c.getDate()); //Recuperation 
+				Journee j = listeJournees.get(c.getDate()); //Recuperation du jour
 			}
 			//Cas ou la journee n'a pas encore ete traitee
 			else {
