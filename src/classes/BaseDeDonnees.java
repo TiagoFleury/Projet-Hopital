@@ -1,21 +1,13 @@
 package classes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.MonthDay;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.TreeMap;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Period;
 
 public class BaseDeDonnees {
     
@@ -32,12 +24,23 @@ public class BaseDeDonnees {
 		blocsExistants = new ArrayList<Bloc>();
 		listeJournees = new TreeMap<LocalDate,Journee>();
 	}
+	
+	//Methode pour remplir la liste des journees.
 	public void organiserJournees() {
 		for(Chirurgie c : listeChirurgies) {
-			if(!listeJournees.containsKey(c.getDate())) {
-				Journee j = new Journee(c);
+			//Cas ou il y a deja une Journee cree sur cette date
+			if(listeJournees.containsKey(c.getDate())) {
+				Journee j = listeJournees.get(c.getDate()); //Recuperation du jour
+				j.importerInfoChirurgie(c); //Ajout de la chirurgies et des infos dans ce jour
+			}
+			//Cas ou la journee n'a pas encore ete traitee
+			else {
+				//Ajout nouvelle journee avec comme cle la nouvelle date
+				listeJournees.put(c.getDate(), new Journee(c));
+				
 			}
 		}
+		
 	}
 	
 	

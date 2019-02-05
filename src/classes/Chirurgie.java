@@ -42,8 +42,9 @@ public class Chirurgie {
     	}
     	if(o instanceof Chirurgie) {
     		Chirurgie c = (Chirurgie) o;
-    		if(c.getDate().toString()==date.toString() && c.getChirurgien().equals(chirurgien) && c.getDebut().toString()==heureDebut.toString() && c.getFin().toString()==heureFin.toString() && c.getChirurgien().equals(chirurgien) )
+    		if(c.getDate().toString().equals(date.toString()) && c.getChirurgien().equals(chirurgien) && c.getDebut().toString().equals(heureDebut.toString()) && c.getFin().toString().equals(heureFin.toString()) && c.getChirurgien().equals(chirurgien) ) {
     			return true;
+    		}
     	}
     	
     	
