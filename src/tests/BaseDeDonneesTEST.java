@@ -3,13 +3,31 @@ package tests;
 import classes.BaseDeDonnees;
 import classes.Bloc;
 import classes.Chirurgien;
+import classes.Journee;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.LocalDate;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 class BaseDeDonneesTEST {
 
+	@Test
+	void testOrganiserJournees() {
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("MiniBase.csv");
+		
+		data.organiserJournees();
+		Set<LocalDate> cles = data.listeJournees.keySet();
+		
+		for(LocalDate d : cles) {
+			data.listeJournees.get(d).planningJourneeParChirurgien();
+		}
+		
+	}
+	
 	@Test
 	void testImportBase() {
 		BaseDeDonnees data = new BaseDeDonnees();

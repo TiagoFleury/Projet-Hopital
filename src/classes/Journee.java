@@ -1,18 +1,18 @@
 package classes;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Comparator;
 public class Journee {
-    private Date date;
+    private LocalDate date;
     private ArrayList<Conflit> conflitsDuJour;
     private ArrayList<Chirurgie> chirurgiesDuJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
@@ -25,6 +25,8 @@ public class Journee {
     	sallesOccupees = new ArrayList<Bloc>();
     }
     public Journee(Chirurgie c) { //Instancie une journee a partir des parametres de c
+    	date = c.getDate();
+    	
     	conflitsDuJour = new ArrayList<Conflit>();
     	
     	chirurgiesDuJour = new ArrayList<Chirurgie>();
@@ -38,16 +40,20 @@ public class Journee {
     }
     
     
-    public void importInfoChirurgie(Chirurgie c) { //recupere les infos d'une chirurgie et les ajoute dans la journee 
+    public void importerInfoChirurgie(Chirurgie c) { //recupere les infos d'une chirurgie et les ajoute dans la journee 
     											  //SANS creer de doublons
     	if(!chirurgiesDuJour.contains(c)) {
-    		
+    		chirurgiesDuJour.add(c);
+    		if(chirurgiensMobilises.contains(c.getChirurgien()))
+    			chirurgiensMobilises.add(c.getChirurgien());
+    		if(sallesOccupees.contains(c.getSalle()))
+    			sallesOccupees.add(c.getSalle());
     	}
     	
     }
     
     
-    // 1. Affichage des chirurgies de la journée - 2 plannings envisagés afin de bien voir les conflits : 1 par Bloc, 1 par Chirurgien
+    // 1. Affichage des chirurgies de la journee - 2 plannings envisages afin de bien voir les conflits : 1 par Bloc, 1 par Chirurgien
     
     public String reductionNomChirurgienPourAffichage(Chirurgien albert) {
     	String[] separation = albert.getName().split(" ");
@@ -91,17 +97,22 @@ public class Journee {
     
     
     public void planningJourneeParBloc(){
-        System.out.println("\n");
+        System.out.println("\n\n\n");
+        System.out.println("                                                     PLANNING DU "+date+"\n\n");
         System.out.println("Salle          8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  à gauche du . c'est 8h, à droite du . cest 8h05
+        //  A� gauche du . c'est 8h, A� droite du . c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
-        System.out.println("\n");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
+        Bloc blocActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
-            System.out.println(c.getSalle().getName());
+            if(!c.getSalle().equals(blocActuel)) {
+            	System.out.println("\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
+            	System.out.println(c.getSalle().getName()+" :"); //On affiche que s'il y a un changement de bloc
+            }
+            
             System.out.print(c.getID());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
@@ -114,21 +125,28 @@ public class Journee {
                 compteur++;
             }
             System.out.println("");
+            blocActuel = c.getSalle();
         }
     }
     
     public void planningJourneeParChirurgien(){
-        System.out.println("\n");
+        System.out.println("\n\n\n");
+        System.out.println("                                                      PLANNING DU "+date+"\n\n");
         System.out.println("Chirurgien     8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  à gauche du . c'est 8h, à droite du . cest 8h05
+        //  A� gauche du . c'est 8h, A� droite du . c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
-        System.out.println("\n");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParChirurgien(chirurgiesDuJour);
+        
+        Chirurgien chirurgienActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
-            System.out.println(c.getChirurgien().getName());
+            if(!c.getChirurgien().equals(chirurgienActuel)) {
+            	System.out.println("\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
+            	
+            	System.out.println(c.getChirurgien().getName()+" :"); //On affiche que s'il y a un changement de chirurgien
+            }
             System.out.print(c.getID());
             for (int compteur=0;compteur<cbAvant;compteur++){
                 System.out.print(" ");
@@ -140,6 +158,7 @@ public class Journee {
                 compteur++;
             }
             System.out.println("");
+            chirurgienActuel = c.getChirurgien();
         }
         
     }
@@ -149,7 +168,7 @@ public class Journee {
     
     
     
-    // 2. Détection des conflits d'une journée = on etudie si 2 chirurgies sont en conflit (selon les 3 définitions) puis on dresse la liste des conflits du jour
+    // 2. Detection des conflits d'une journée = on etudie si 2 chirurgies sont en conflit (selon les 3 definitions) puis on dresse la liste des conflits du jour
     
     
     public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
@@ -312,6 +331,7 @@ public class Journee {
     public ArrayList<Chirurgie> getChirurgieJour(){
         return this.chirurgiesDuJour;
     }
+    
     
            
         
