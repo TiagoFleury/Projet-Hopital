@@ -22,9 +22,9 @@ class BaseDeDonneesTEST {
 		data.organiserJournees();
 		Set<LocalDate> cles = data.listeJournees.keySet();
 		
-		for(LocalDate d : cles) {
-			data.listeJournees.get(d).planningJourneeParChirurgien();
-		}
+//		for(LocalDate d : cles) {
+//			data.listeJournees.get(d).planningJourneeParChirurgien();
+//		}
 		
 	}
 	
