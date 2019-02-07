@@ -16,19 +16,32 @@ class BaseDeDonneesTEST {
 
 	@Test
 	void testOrganiserJournees() {
+		//Grosse base
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
-		Set<LocalDate> cles = data.listeJournees.keySet();
-		Journee jour = data.listeJournees.get(cles.toArray()[8]);
-		jour.planningJourneeParBloc();
-		jour.detectionConflit();
-		System.out.println(jour.getConflits());
+		Journee jour = data.getJournee(8);
+
+		//assertEquals(365*3,data.listeJournees.size());
 		
-//		for(LocalDate d : cles) {
-//			data.listeJournees.get(d).planningJourneeParChirurgien();
-//		}
+		jour.planningJourneeParBloc();
+		
+		
+		//Petite base
+		BaseDeDonnees data2 = new BaseDeDonnees();
+		data2.importBase("MiniBase.csv");
+		
+		data2.organiserJournees();
+		Journee jour2 = data2.getJournee(1);
+		
+		assertEquals(6,data2.listeJournees.size());
+		
+		jour2.planningJourneeParBloc();
+		System.out.println("Grosse base : "+jour.detectionConflit());
+		System.out.println("Petite base :"+jour2.detectionConflit());
+		
+		//jour.planningJourneeParChirurgien();
 		
 	}
 	
@@ -57,5 +70,18 @@ class BaseDeDonneesTEST {
 		}
 		assertEquals(resultat, "BLOC-E1  id:1,BLOC-E2  id:2,BLOC-E3  id:3,");
 	}
-
+	
+	
+	
+	@Test
+	void testGetJournee() {
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("MiniBase.csv");
+		
+		Journee j = data.getJournee(8);
+		assertTrue(j == null);
+		
+		j = data.getJournee(5);
+		assertEquals(j.getDate().toString(),"3");
+	}
 }

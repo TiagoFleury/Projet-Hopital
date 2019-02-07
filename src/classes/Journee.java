@@ -10,6 +10,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 import java.util.Comparator;
 public class Journee {
     private LocalDate date;
@@ -168,7 +169,7 @@ public class Journee {
     
     
     
-    // 2. Detection des conflits d'une journée = on etudie si 2 chirurgies sont en conflit (selon les 3 definitions) puis on dresse la liste des conflits du jour
+    // 2. Detection des conflits d'une journee = on etudie si 2 chirurgies sont en conflit (selon les 3 definitions) puis on dresse la liste des conflits du jour
     
     
     public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
@@ -209,7 +210,6 @@ public class Journee {
         }
         return b;
     }
-        
     
     
     
@@ -294,35 +294,15 @@ public class Journee {
     
     
     
-    public static void main(String[] Args) {
-    	BaseDeDonnees data = new BaseDeDonnees();
-    	data.importBase("MiniBase.csv");
-    	Journee j = new Journee();
-    	j.chirurgiesDuJour=new ArrayList<Chirurgie>(data.listeChirurgies.subList(0, 5));
-    	for(Chirurgie c : j.chirurgiesDuJour)
-    		System.out.println(c);
-    	j.planningJourneeParChirurgien();
-    	
-    	ArrayList<Conflit> conflits = j.detectionConflit();
-    	System.out.println(conflits);
-    	for(Conflit c : conflits) {
-    		System.out.println(c instanceof Ubiquite);
-    		System.out.println(c instanceof Chevauchement);
-    		System.out.println(c instanceof Interference);
-    	}
-    	
-    	System.out.println(j.chirurgiesDuJour.get(0).getDate().toString());
-    	
-    }
-    
-    
-    
     // ACCESSEURS //
     public ArrayList<Chirurgie> getChirurgieJour(){
         return this.chirurgiesDuJour;
     }
     public ArrayList<Conflit> getConflits(){
     	return this.conflitsDuJour;
+    }
+    public LocalDate getDate() {
+    	return date;
     }
     
     

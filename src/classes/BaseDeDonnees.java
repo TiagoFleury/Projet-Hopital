@@ -2,6 +2,7 @@ package classes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeMap;
 import java.io.BufferedReader;
 import java.io.File;
@@ -135,6 +136,37 @@ public class BaseDeDonnees {
 		System.out.println("\n\nListe des blocs :");
 		for(Bloc b : data.blocsExistants) {
 			System.out.println(b);
+		}
+		
+	}
+	
+	//ACCESSEURS
+	public Journee getJournee(int indice) { //Retourne la n eme journee de listeJournee
+		
+    	Set<LocalDate> cles = listeJournees.keySet();
+    	if(indice>=cles.size()) {
+    		System.out.println("La journee demandée n'existe pas");
+    		return null;
+    	}
+		return listeJournees.get(cles.toArray()[indice]);
+
+    }
+	
+	public Journee getJournee(String date) { //Format jj/mm/aa
+		if(date.length() >8) {
+			System.out.println("Mauvais format de date");
+			return null;
+		}
+		
+		String[] champs = date.split("/");
+		LocalDate dateVoulue = LocalDate.of(Integer.parseInt(champs[2]), Integer.parseInt(champs[1]), Integer.parseInt(champs[0]));
+		if(!listeJournees.containsKey(dateVoulue)) {
+			//Si la date voulue n'existe pas
+			System.out.println("La journee "+date+" n'existe pas dans cette base de donnees");
+			return null;
+		}
+		else {
+			return listeJournees.get(dateVoulue);
 		}
 		
 	}
