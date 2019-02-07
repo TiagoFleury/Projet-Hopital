@@ -318,7 +318,7 @@ public class Journee {
     	while (compteur < lg) {
     		uneSalle = database.getTousBlocs().get(compteur);
     		if (!this.sallesOccupeesduJour.contains(uneSalle)) {
-				i.getCh1().setSalle(uneSalle);
+				i.getCh1().setSalle(uneSalle); // On donne de manière arbitraire la salle solution a la 1 ere chirurgie
 				i.setEtat(true);
 				compteur = lg;
 			}
@@ -346,7 +346,7 @@ public class Journee {
 				u.setEtat(true);
 				compteur = lg;
 			}
-    		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des salles NON UTILISEES toute la journée car la choisir = cout 0
+    		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des Chirurgiens NON UTILISES toute la journée car le choisir = cout 0
     	}
     	
     	if (u.getEtat()==false) {
