@@ -17,10 +17,14 @@ class BaseDeDonneesTEST {
 	@Test
 	void testOrganiserJournees() {
 		BaseDeDonnees data = new BaseDeDonnees();
-		data.importBase("MiniBase.csv");
+		data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
 		Set<LocalDate> cles = data.listeJournees.keySet();
+		Journee jour = data.listeJournees.get(cles.toArray()[8]);
+		jour.planningJourneeParBloc();
+		jour.detectionConflit();
+		System.out.println(jour.getConflits());
 		
 //		for(LocalDate d : cles) {
 //			data.listeJournees.get(d).planningJourneeParChirurgien();
