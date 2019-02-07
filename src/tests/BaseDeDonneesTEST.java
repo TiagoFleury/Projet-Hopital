@@ -79,9 +79,10 @@ class BaseDeDonneesTEST {
 		data.importBase("MiniBase.csv");
 		
 		Journee j = data.getJournee(8);
-		assertTrue(j == null);
+		//assertTrue(j == null);
 		
 		j = data.getJournee(5);
-		assertEquals(j.getDate().toString(),"3");
+		assertEquals(j.getDate().toString(),"2019-01-06");
+		
 	}
 }
