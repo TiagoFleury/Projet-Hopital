@@ -49,9 +49,9 @@ public class Conflit {
     	}
     	Conflit objConf = (Conflit) obj;
     	if (this.getCh1().equals(objConf.getCh1()) || this.getCh1().equals(objConf.getCh2()) || this.getCh2().equals(objConf.getCh1()) || this.getCh2().equals(objConf.getCh2()))  {
-    		return false;
+    		return true;
     	}
-    	return true;
+    	return false;
     }
     
     

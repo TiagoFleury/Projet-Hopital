@@ -23,8 +23,7 @@ class BaseDeDonneesTEST {
 		Set<LocalDate> cles = data.listeJournees.keySet();
 		Journee jour = data.listeJournees.get(cles.toArray()[8]);
 		jour.planningJourneeParBloc();
-		jour.detectionConflit();
-		System.out.println(jour.getConflits());
+		System.out.println(jour.detectionConflit());
 		
 //		for(LocalDate d : cles) {
 //			data.listeJournees.get(d).planningJourneeParChirurgien();
