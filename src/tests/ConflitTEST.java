@@ -4,10 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
+import classes.BaseDeDonnees;
 import classes.Bloc;
 import classes.Chirurgie;
 import classes.Chirurgien;
+import classes.Journee;
 import classes.Bloc;
 
 
@@ -20,6 +23,18 @@ class ConflitTEST {
 	// Pour chaque sorte de conflit faire 3 conflits différents, dont 2 sont égaux
 	@Test
 	void testEqualsObject() {
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("Chirurgies_v2.csv");
+		
+		data.organiserJournees();
+		Set<LocalDate> cles = data.listeJournees.keySet();
+		Journee jour = data.listeJournees.get(cles.toArray()[0]);
+		
+		
+		
+		
+		
+		
 		LocalDate date1 = LocalDate.of(2019, 1, 1);
 		
 		LocalTime time1Deb = LocalTime.of(8, 0);

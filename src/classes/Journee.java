@@ -101,7 +101,7 @@ public class Journee {
         System.out.println("\n\n\n");
         System.out.println("                                                     PLANNING DU "+date+"\n\n");
         System.out.println("Salle          8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  A  gauche du . c'est 8h, A  droite du . c'est 8h05
+        //  Aï¿½ gauche du . c'est 8h, Aï¿½ droite du . c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
@@ -134,7 +134,7 @@ public class Journee {
         System.out.println("\n\n\n");
         System.out.println("                                                      PLANNING DU "+date+"\n\n");
         System.out.println("Chirurgien     8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  A  gauche du . c'est 8h, A  droite du . c'est 8h05
+        //  Aï¿½ gauche du . c'est 8h, Aï¿½ droite du . c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParChirurgien(chirurgiesDuJour);
@@ -174,15 +174,15 @@ public class Journee {
     
     public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
         boolean b=false;
-        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
-            if (x.getFin().isAfter(y.getDebut())){
+        if ((x.getDate().isEqual(y.getDate())) && ((x.getDebut().isBefore(y.getDebut())) || x.getDebut().equals(y.getDebut()))){
+            if (x.getFin().isAfter(y.getDebut()) || x.getFin().equals(y.getDebut())){
                 if (x.getChirurgien()==y.getChirurgien()){
                     b=true;
                 }
             }
         }
-        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()))){
-            if (y.getFin().isAfter(x.getDebut())){
+        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
+            if (y.getFin().isAfter(x.getDebut()) || y.getFin().equals(x.getDebut())){
                 if (x.getChirurgien()==y.getChirurgien()){
                     b=true;
                 }
@@ -194,15 +194,15 @@ public class Journee {
 
     public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
         boolean b=false;
-        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()))){
-            if (x.getFin().isAfter(y.getDebut())){
+        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
+            if (x.getFin().isAfter(y.getDebut()) || x.getFin().equals(y.getDebut())){
                 if (x.getSalle()==y.getSalle()){
                     b=true;
                 }
             }
         }
-        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()))){
-            if (y.getFin().isAfter(x.getDebut())){
+        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
+            if (y.getFin().isAfter(x.getDebut()) || y.getFin().equals(x.getDebut())){
                 if (x.getSalle()==y.getSalle()){
                     b=true;
                 }
@@ -224,30 +224,36 @@ public class Journee {
                 debConflit=y.getDebut();
             }
             else { debConflit=x.getDebut();}
+            
             if (x.getFin().isBefore(y.getFin())){
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
+            
             c = new Ubiquite(x,y);
             
         }
+        
         else if ((uBool==false) && (iBool==true)){
-            if (x.getDebut().isBefore(y.getDebut())){
+            if (x.getDebut().isBefore(y.getDebut()) || x.getDebut().equals(y.getDebut())){
                 debConflit=y.getDebut();
             }
             else { debConflit=x.getDebut();}
-            if (x.getFin().isBefore(y.getFin())){
+            
+            if (x.getFin().isBefore(y.getFin()) || x.getFin().equals(y.getFin())){
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
+            
             c = new Interference(x,y);
         }
-        else if ((uBool==true) && (iBool==true)){
-            if (x.getDebut().isBefore(y.getDebut())){
+        
+        else if ((uBool==true) && (iBool==true)) {
+            if (x.getDebut().isBefore(y.getDebut()) || x.getDebut().equals(y.getDebut())){
                 debConflit=y.getDebut();
             }
             else { debConflit=x.getDebut();}
-            if (x.getFin().isBefore(y.getFin())){
+            if (x.getFin().isBefore(y.getFin()) || x.getFin().equals(y.getFin())){
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
@@ -266,7 +272,7 @@ public class Journee {
         ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
         for (Chirurgie c1 : this.chirurgiesDuJour){
             for (Chirurgie c2 : this.chirurgiesDuJour){
-                if (c1!=c2){
+                if (!c1.equals(c2)){
                     conf=conflitOuPas(c1,c2);
                 }
                 compteur=0;

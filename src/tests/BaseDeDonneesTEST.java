@@ -26,7 +26,7 @@ class BaseDeDonneesTEST {
 		//assertEquals(365*3,data.listeJournees.size());
 		
 		jour.planningJourneeParBloc();
-		
+		System.out.println(jour.detectionConflit());
 		
 		//Petite base
 		BaseDeDonnees data2 = new BaseDeDonnees();
