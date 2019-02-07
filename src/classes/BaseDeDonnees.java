@@ -139,13 +139,21 @@ public class BaseDeDonnees {
 		}
 		
 	}
+
+	
+	
+	
+	
+	
+	
+	
 	
 	//ACCESSEURS
 	public Journee getJournee(int indice) { //Retourne la n eme journee de listeJournee
 		
     	Set<LocalDate> cles = listeJournees.keySet();
     	if(indice>=cles.size()) {
-    		System.out.println("La journee demandée n'existe pas");
+    		System.out.println("La journee demandï¿½e n'existe pas");
     		return null;
     	}
 		return listeJournees.get(cles.toArray()[indice]);
@@ -170,4 +178,13 @@ public class BaseDeDonnees {
 		}
 		
 	}
+	
+	public ArrayList<Chirurgien> getTousChirurgiens(){
+		return this.chirurgiensExistants;
+	}
+	
+	public ArrayList<Bloc> getTousBlocs(){
+		return this.blocsExistants;
+	}
+	
 }

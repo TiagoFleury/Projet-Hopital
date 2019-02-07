@@ -18,14 +18,15 @@ public class Journee {
     private ArrayList<Conflit> conflitsDuJour;
     private ArrayList<Chirurgie> chirurgiesDuJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
-    private ArrayList<Bloc> sallesOccupees;
+    private ArrayList<Bloc> sallesOccupeesduJour;
     
     public Journee() {
     	conflitsDuJour = new ArrayList<Conflit>();
     	chirurgiesDuJour = new ArrayList<Chirurgie>();
     	chirurgiensMobilises = new ArrayList<Chirurgien>();
-    	sallesOccupees = new ArrayList<Bloc>();
+    	sallesOccupeesduJour = new ArrayList<Bloc>();
     }
+    
     public Journee(Chirurgie c) { //Instancie une journee a partir des parametres de c
     	date = c.getDate();
     	
@@ -37,8 +38,8 @@ public class Journee {
     	chirurgiensMobilises = new ArrayList<Chirurgien>();
     	chirurgiensMobilises.add(c.getChirurgien());
     	
-    	sallesOccupees = new ArrayList<Bloc>();
-    	sallesOccupees.add(c.getSalle());
+    	sallesOccupeesduJour = new ArrayList<Bloc>();
+    	sallesOccupeesduJour.add(c.getSalle());
     }
     
     
@@ -48,8 +49,8 @@ public class Journee {
     		chirurgiesDuJour.add(c);
     		if(chirurgiensMobilises.contains(c.getChirurgien()))
     			chirurgiensMobilises.add(c.getChirurgien());
-    		if(sallesOccupees.contains(c.getSalle()))
-    			sallesOccupees.add(c.getSalle());
+    		if(sallesOccupeesduJour.contains(c.getSalle()))
+    			sallesOccupeesduJour.add(c.getSalle());
     	}
     	
     }
@@ -298,6 +299,69 @@ public class Journee {
         }
         return conflitsDuJour;
     }
+    
+    
+    
+    
+    // 3. Méthodes de base de résolution de conflits
+    
+    // Ici resolution facile, trouver une salle disponible totalement disponible sur le créneau : ie ne génère aucun conflit / cout = 0
+    // Dans ce cas (de manière inocente) on va choisir la première dispo qui ne genère aucun conflit
+    // Voir la 1ère qui n'est pas occupée de la Journée entière
+    
+
+    
+    public void resoudreInferenceCout0(BaseDeDonnees database , Interference i) {
+    	Bloc sallePb = i.getSallePb();
+    	Bloc uneSalle = null ;
+    	int compteur = 0, lg = database.getTousBlocs().size();
+    	while (compteur < lg) {
+    		uneSalle = database.getTousBlocs().get(compteur);
+    		if (!this.sallesOccupeesduJour.contains(uneSalle)) {
+				i.getCh1().setSalle(uneSalle);
+				i.setEtat(true);
+				compteur = lg;
+			}
+    		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des salles NON UTILISEES toute la journée car la choisir = cout 0
+    	}
+    	
+    	if (i.getEtat()==false) {
+			System.out.println("Interference non résolue");
+				}
+    	else { System.out.println("Interference résolue");}
+    		
+    	}
+    	
+    
+    // Raisonnemment totalement analogue concernant les chirurgiens
+    
+    public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
+    	Chirurgien chirugienPb = u.getChirurgienPb();
+    	Chirurgien unChirurgien = null ;
+    	int compteur = 0, lg = database.getTousChirurgiens().size();
+    	while (compteur < lg) {
+    		unChirurgien = database.getTousChirurgiens().get(compteur);
+    		if (!this.sallesOccupeesduJour.contains(unChirurgien)) {
+				u.getCh1().setChirurgien(unChirurgien);
+				u.setEtat(true);
+				compteur = lg;
+			}
+    		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des salles NON UTILISEES toute la journée car la choisir = cout 0
+    	}
+    	
+    	if (u.getEtat()==false) {
+			System.out.println("Ubiquité non résolue");
+				}
+    	else { System.out.println("Ubiquité résolue");}
+    		
+    	 
+    }
+    
+    
+    
+    
+    
+    
     
     
     

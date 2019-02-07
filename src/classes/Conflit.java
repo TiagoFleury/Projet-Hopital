@@ -10,12 +10,12 @@ import java.time.Duration;
 import java.time.Period;
 
 public class Conflit {
-    private LocalDate date;
-    private LocalTime debut;
-    private LocalTime fin;
-    private Chirurgie chirurgie1;
-    private Chirurgie chirurgie2;
-    private boolean resolu;
+    protected LocalDate date;
+    protected LocalTime debut;
+    protected LocalTime fin;
+    protected Chirurgie chirurgie1;
+    protected Chirurgie chirurgie2;
+    protected boolean resolu;
     
    
     
@@ -57,7 +57,7 @@ public class Conflit {
     
 
     
-    
+    // ACCESSEURS //
     public String toString() {
     	return "(c"+chirurgie1.getID()+",c"+chirurgie2.getID()+")";
     }
@@ -71,4 +71,13 @@ public class Conflit {
     public LocalDate getDate() {
     	return this.date;
     }
+    public boolean getEtat() {
+    	return this.resolu;
+    }
+    
+    // MUTATEURS //
+    public void setEtat(boolean b) {
+    	this.resolu=b;
+    }
+    
 }

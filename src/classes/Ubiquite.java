@@ -23,4 +23,11 @@ public class Ubiquite extends Conflit {
         blocs.add(ch2.getSalle());
         this.salles=blocs;
     }
+    
+    
+    // Accesseurs //
+    
+    public Chirurgien getChirurgienPb() {
+    	return this.chirurgienPb;
+    }
 }
