@@ -2,6 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/Chevauchement.java</file>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/BaseDeDonnees.java</file>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/Chirurgie.java</file>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/Ubiquite.java</file>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/Interference.java</file>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/Conflit.java</file>
+            <file>file:/Users/HugoDaCosta/Documents/GitHub/Projet-Hopital/src/classes/Journee.java</file>
+        </group>
     </open-files>
 </project-private>
