@@ -21,10 +21,7 @@ class BaseDeDonneesTEST {
 		data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
-		Journee jour = data.getJournee(8);
 
-		//assertEquals(365*3,data.listeJournees.size());
-		
 		jour.planningJourneeParBloc();
 		System.out.println(jour.detectionConflit());
 		
