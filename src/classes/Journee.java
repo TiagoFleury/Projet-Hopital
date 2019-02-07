@@ -72,7 +72,7 @@ public class Journee {
         return j;
     }
     public int cbdecaracteresAvant(Chirurgie c){
-        LocalTime debutJournee = LocalTime.of(8, 0);
+        LocalTime debutJournee = LocalTime.of(0, 0);
         double i = ChronoUnit.MINUTES.between(debutJournee, c.getDebut());
         int j= (int) i/5;
         @SuppressWarnings("deprecation")
@@ -100,9 +100,9 @@ public class Journee {
     public void planningJourneeParBloc(){
         System.out.println("\n\n\n");
         System.out.println("                                                     PLANNING DU "+date+"\n\n");
-        System.out.println("Salle          8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
+        System.out.println("Salle          0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h   8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
         //  A� gauche du . c'est 8h, A� droite du . c'est 8h05
-        System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
+        System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
         chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
         Bloc blocActuel = null;
@@ -110,7 +110,7 @@ public class Journee {
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
             if(!c.getSalle().equals(blocActuel)) {
-            	System.out.println("\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .");
+            	System.out.println("\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
             	System.out.println(c.getSalle().getName()+" :"); //On affiche que s'il y a un changement de bloc
             }
             
@@ -121,7 +121,7 @@ public class Journee {
             String nouvNom = reductionNomChirurgienPourAffichage(c.getChirurgien());
             System.out.print(nouvNom);
             int compteur = nouvNom.length();
-            while (compteur<combien){
+            while (compteur<=combien){
                 System.out.print("#");
                 compteur++;
             }

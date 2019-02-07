@@ -21,9 +21,7 @@ class BaseDeDonneesTEST {
 		data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
-
-		jour.planningJourneeParBloc();
-		System.out.println(jour.detectionConflit());
+		Journee jour = data.getJournee(0);
 		
 		//Petite base
 		BaseDeDonnees data2 = new BaseDeDonnees();
