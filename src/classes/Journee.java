@@ -46,9 +46,9 @@ public class Journee {
     											  //SANS creer de doublons
     	if(!chirurgiesDuJour.contains(c)) {
     		chirurgiesDuJour.add(c);
-    		if(chirurgiensMobilises.contains(c.getChirurgien()))
+    		if(!chirurgiensMobilises.contains(c.getChirurgien()))
     			chirurgiensMobilises.add(c.getChirurgien());
-    		if(sallesOccupeesduJour.contains(c.getSalle()))
+    		if(!sallesOccupeesduJour.contains(c.getSalle()))
     			sallesOccupeesduJour.add(c.getSalle());
     	}
     	
@@ -428,7 +428,9 @@ public class Journee {
     public LocalDate getDate() {
     	return date;
     }
-    
+    public ArrayList<Chirurgien> getChirurgienMobilises(){
+    	return chirurgiensMobilises;
+    }
     
            
         

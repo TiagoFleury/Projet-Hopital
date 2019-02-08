@@ -147,6 +147,11 @@ public class BaseDeDonnees {
 		data2.importBase("Chirurgies_v2.csv");
 		data.organiserJournees();
 		Journee jourHugo = data.getJournee("01/01/19");
+		System.out.println("Nb de chirurgiens mobilises : "+jourHugo.getChirurgienMobilises().size());
+		for(Chirurgien c : jourHugo.getChirurgienMobilises()) {
+			System.out.println(c);
+		}
+		
 		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit().toString();
 		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
