@@ -144,14 +144,14 @@ public class BaseDeDonnees {
 		// Je tente une résolution cout0 
 		System.out.println("\n \n \n Hugo -- Test de resolution a cout 0 -- 1er essai \n \n");
 		BaseDeDonnees data2 = new BaseDeDonnees();
-		data2.importBase("MiniBase.csv");
-		data2.organiserJournees();
-		Journee jourHugo = data2.getJournee(0);
+		data2.importBase("Chirurgies_v2.csv");
+		data.organiserJournees();
+		Journee jourHugo = data.getJournee("01/01/19");
 		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit().toString();
 		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
 		for (Conflit conf : lesConflits) {
-			jourHugo.resoudreConflitCout0(data2, conf);
+			jourHugo.resoudreConflitCout0(data, conf);
 		}
 		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit().toString();
