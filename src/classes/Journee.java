@@ -24,6 +24,9 @@ public class Journee {
     	sallesOccupeesduJour = new ArrayList<Bloc>();
     }
     
+    
+    
+    
     public Journee(Chirurgie c) { //Instancie une journee a partir des parametres de c
     	date = c.getDate();
     	
@@ -268,11 +271,11 @@ public class Journee {
     }
     
    
-    public ArrayList<Conflit> detectionConflit(){
+    public void detectionConflit(){
         Conflit conf = null;
         boolean b = false;
         int compteur = 0;
-        ArrayList<Conflit> conflitsDuJour = new ArrayList<Conflit>();
+        conflitsDuJour = new ArrayList<Conflit>();
         for (Chirurgie c1 : this.chirurgiesDuJour){
             for (Chirurgie c2 : this.chirurgiesDuJour){
                 if (!c1.equals(c2)){
@@ -298,7 +301,6 @@ public class Journee {
                 
             }
         }
-        return conflitsDuJour;
     }
     
     
@@ -422,7 +424,7 @@ public class Journee {
     public ArrayList<Chirurgie> getChirurgieJour(){
         return this.chirurgiesDuJour;
     }
-    public ArrayList<Conflit> getConflits(){
+    public ArrayList<Conflit> getConflitsDuJour(){
     	return this.conflitsDuJour;
     }
     public LocalDate getDate() {
