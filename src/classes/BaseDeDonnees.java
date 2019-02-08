@@ -142,11 +142,11 @@ public class BaseDeDonnees {
 		
 		
 		// Je tente une résolution cout0 
-		System.out.println("\n \n \n Hugo -- Test de résolution a cout 0 -- 1er essai \n \n");
+		System.out.println("\n \n \n Hugo -- Test de resolution a cout 0 -- 1er essai \n \n");
 		BaseDeDonnees data2 = new BaseDeDonnees();
-		data2.importBase("Chirurgies_v2.csv");
+		data2.importBase("MiniBase.csv");
 		data2.organiserJournees();
-		Journee jourHugo = data2.getJournee("02/01/14");
+		Journee jourHugo = data2.getJournee(0);
 		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit().toString();
 		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
@@ -188,7 +188,7 @@ public class BaseDeDonnees {
     }
 	
 	public Journee getJournee(String date) { //Format jj/mm/aa
-		if(date.length() !=10) {
+		if(date.length() !=8) {
 			System.out.println("Mauvais format de date");
 			return null;
 		}
