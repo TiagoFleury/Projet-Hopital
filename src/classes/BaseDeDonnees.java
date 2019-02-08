@@ -68,8 +68,10 @@ public class BaseDeDonnees {
 		listeChirurgies = new ArrayList<Chirurgie>();
 		
 		File fichier = new File(cheminFichier);
-		System.out.println("Existance : "+fichier.exists());
-		System.out.println("Chemin : "+fichier.getAbsolutePath());
+		if(!fichier.exists()) {
+			System.out.println("Le fichier "+cheminFichier+"n'existe pas");
+			return;
+		}
 		String champs[] = new String[6]; //Ca va stocker les champs
 		BufferedReader reader = null;
 		try {
@@ -143,8 +145,9 @@ public class BaseDeDonnees {
 		System.out.println("\n \n \n Hugo -- Test de résolution a cout 0 -- 1er essai \n \n");
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("Chirurgies_v2.csv");
-		Journee jourHugo = data2.getJournee("02/01/2019");
-		/* jourHugo.planningJourneeParBloc();
+		data2.organiserJournees();
+		Journee jourHugo = data2.getJournee("02/01/14");
+		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit().toString();
 		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
 		for (Conflit conf : lesConflits) {
@@ -154,16 +157,8 @@ public class BaseDeDonnees {
 		jourHugo.detectionConflit().toString();
 		
 		
-		// TIAGO il y a une exception ligne 147 ou askip ma date n'existe pas, ultra relou
-		
-		DU COUP JESSAYE DAFFICHER LES JOURNEES MAIS CA MARCHE PAS TROP
-		
-		for (Entry<LocalDate,Journee> k : listeJournees.entrySet()) {
-			System.out.println(k.getKey());
 		}
-		*/
 		
-	}
 
 	
 	
@@ -185,7 +180,7 @@ public class BaseDeDonnees {
 		
     	Set<LocalDate> cles = listeJournees.keySet();
     	if(indice>=cles.size()) {
-    		System.out.println("La journee demand�e n'existe pas");
+    		System.out.println("La journee demandee n'existe pas (index out of range)");
     		return null;
     	}
 		return listeJournees.get(cles.toArray()[indice]);
@@ -199,7 +194,8 @@ public class BaseDeDonnees {
 		}
 		
 		String[] champs = date.split("/");
-		LocalDate dateVoulue = LocalDate.of(Integer.parseInt(champs[2]), Integer.parseInt(champs[1]), Integer.parseInt(champs[0]));
+		LocalDate dateVoulue = LocalDate.of(Integer.parseInt(champs[2])+2000, Integer.parseInt(champs[1]), Integer.parseInt(champs[0]));
+		
 		if(!listeJournees.containsKey(dateVoulue)) {
 			//Si la date voulue n'existe pas
 			System.out.println("La journee "+date+" n'existe pas dans cette base de donnees");

@@ -1,16 +1,10 @@
 package classes;
 
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
 import java.util.Comparator;
 
 public class Journee {
@@ -19,6 +13,9 @@ public class Journee {
     private ArrayList<Chirurgie> chirurgiesDuJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
     private ArrayList<Bloc> sallesOccupeesduJour;
+    
+    
+    //CONSTRUCTEURS 
     
     public Journee() {
     	conflitsDuJour = new ArrayList<Conflit>();
@@ -43,6 +40,8 @@ public class Journee {
     }
     
     
+    
+    
     public void importerInfoChirurgie(Chirurgie c) { //recupere les infos d'une chirurgie et les ajoute dans la journee 
     											  //SANS creer de doublons
     	if(!chirurgiesDuJour.contains(c)) {
@@ -58,7 +57,9 @@ public class Journee {
     
     // 1. Affichage des chirurgies de la journee - 2 plannings afin de bien voir les conflits : 1 par Blocs, 1 par Chirurgiens
     
-    public String reductionNomChirurgienPourAffichage(Chirurgien albert) {
+    //AUXILIAIRES POUR AFFICHAGE
+    
+    private String reductionNomChirurgienPourAffichage(Chirurgien albert) {
     	String[] separation = albert.getName().split(" ");
     	char[] caracteres = new char[1];
     	separation[0].getChars(0, 1, caracteres, 0);
@@ -66,14 +67,13 @@ public class Journee {
     	String nomDeFamReduit = separation[1].substring(0, 3);
     	return caracteres[0]+"."+nomDeFamReduit; 
     }   
-    
-    public int cbdecaracteresNecessaires(Chirurgie c){
+    private int cbdecaracteresNecessaires(Chirurgie c){
         // va prendre la valeur de dizaines de minutes entre le debut et la fin d'une chirurgie
         double i = ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
         int j = (int) i/5 ;
         return j;
     }
-    public int cbdecaracteresAvant(Chirurgie c){
+    private int cbdecaracteresAvant(Chirurgie c){
         LocalTime debutJournee = LocalTime.of(0, 0);
         double i = ChronoUnit.MINUTES.between(debutJournee, c.getDebut());
         int j= (int) i/5;
@@ -82,6 +82,7 @@ public class Journee {
         return j+15-nbCarac;
     }    
 
+    //TRIS
     
     public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
     	@SuppressWarnings("unchecked") //Warning relou
@@ -98,6 +99,8 @@ public class Journee {
     }
     
     
+    
+    //AFFICHAGES
     
     public void planningJourneeParBloc(){
         System.out.println("\n\n\n");
@@ -264,9 +267,7 @@ public class Journee {
         return c;
     }
     
-    
-
-    
+   
     public ArrayList<Conflit> detectionConflit(){
         Conflit conf = null;
         boolean b = false;
@@ -303,11 +304,11 @@ public class Journee {
     
     
     
-    // 3. Méthodes de base de résolution de conflits
+    // 3. Methodes de base de resolution de conflits
     
-    // Ici resolution facile, trouver une salle disponible totalement disponible sur le créneau : ie ne génère aucun conflit / cout = 0
-    // Dans ce cas (de manière inocente) on va choisir la première dispo qui ne genère aucun conflit
-    // Voir la 1ère qui n'est pas occupée de la Journée entière
+    // Ici resolution facile, trouver une salle disponible totalement disponible sur le creneau : ie ne genere aucun conflit / cout = 0
+    // Dans ce cas (de maniere innocente) on va choisir la premiere dispo qui ne genere aucun conflit
+    // Voir la 1ere qui n'est pas occupee de la Journee entiere
     
 
     
@@ -326,13 +327,12 @@ public class Journee {
     	}
     	
     	if (i.getEtat()==false) {
-			System.out.println("Interference non résolue");
+			System.out.println("Interference non resolue");
 				}
-    	else { System.out.println("Interference résolue");}
+    	else { System.out.println("Interference resolue");}
     		
     	}
     	
-    
     public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirugienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null ;
@@ -344,13 +344,13 @@ public class Journee {
 				u.setEtat(true);
 				compteur = lg;
 			}
-    		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des Chirurgiens NON UTILISES toute la journée car le choisir = cout 0
+    		compteur ++ ; // Ci dessus, j'ai simplement test s'il y avait des Chirurgiens NON UTILISES toute la journee car le choisir = cout 0
     	}
     	
     	if (u.getEtat()==false) {
-			System.out.println("Ubiquité non résolue");
+			System.out.println("Ubiquite non resolue");
 				}
-    	else { System.out.println("Ubiquité résolue");}
+    	else { System.out.println("Ubiquite resolue");}
     		
     	 
     }
