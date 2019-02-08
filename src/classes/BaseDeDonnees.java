@@ -148,13 +148,18 @@ public class BaseDeDonnees {
 		data.organiserJournees();
 		Journee jourHugo = data.getJournee("01/01/19");
 		jourHugo.planningJourneeParBloc();
-		jourHugo.detectionConflit().toString();
+		jourHugo.detectionConflit();
+		System.out.println(jourHugo.getConflitsDuJour().toString());
 		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
-		for (Conflit conf : lesConflits) {
-			jourHugo.resoudreConflitCout0(data, conf);
+		while (b = false) {
+			for (Conflit conf : lesConflits) {
+				jourHugo.resoudreConflitCout0(data, conf);
+		}
+			
+			
 		}
 		jourHugo.planningJourneeParBloc();
-		jourHugo.detectionConflit().toString();
+		System.out.println(jourHugo.detectionConflit().toString());
 		
 		
 		}
