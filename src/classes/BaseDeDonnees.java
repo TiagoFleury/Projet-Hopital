@@ -148,26 +148,20 @@ public class BaseDeDonnees {
 		data.organiserJournees();
 		Journee jourHugo = data.getJournee("01/01/19");
 		System.out.println("Nb de chirurgiens mobilises : "+jourHugo.getChirurgienMobilises().size());
-		for(Chirurgien c : jourHugo.getChirurgienMobilises()) {
-			System.out.println(c);
-		}
 		
-		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit();
-		System.out.println(jourHugo.getConflitsDuJour().toString());
-		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
-		while (b = false) {
-			for (Conflit conf : lesConflits) {
-				jourHugo.resoudreConflitCout0(data, conf);
-		}
-			
-			
-		}
 		jourHugo.planningJourneeParBloc();
-		System.out.println(jourHugo.detectionConflit().toString());
+		System.out.println(jourHugo.getConflits().toString());
 		
-		
+		if (jourHugo.getConflits().size()!=0) {
+			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
 		}
+		
+		jourHugo.detectionConflit();
+		jourHugo.planningJourneeParBloc();
+		System.out.println(jourHugo.getConflits().toString());
+	}
+		
 		
 
 	
