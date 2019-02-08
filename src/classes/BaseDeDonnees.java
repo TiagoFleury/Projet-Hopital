@@ -133,11 +133,11 @@ public class BaseDeDonnees {
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("Chirurgies_v2.csv");
 		data.organiserJournees();
-		Journee jourHugo = data.getJournee("01/01/19");
-		System.out.println("Nb de chirurgiens mobilises : "+jourHugo.getChirurgienMobilises().size());
+		Journee jourHugo = data.getJournee("04/01/19");
+		
+		jourHugo.planningJourneeParBloc();
 		
 		jourHugo.detectionConflit();
-
 		
 		if (jourHugo.getConflits().size()!=0) {
 			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
@@ -146,6 +146,10 @@ public class BaseDeDonnees {
 		jourHugo.detectionConflit();
 		jourHugo.planningJourneeParBloc();
 		System.out.println(jourHugo.getConflits().toString());
+		
+		for(int i=0;i<data.listeJournees.size();i++) {
+			data.getJournee(i).planningJourneeParBloc();
+		}
 	}
 		
 		
