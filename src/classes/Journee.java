@@ -318,7 +318,7 @@ public class Journee {
     	int compteur = 0, lg = database.getTousBlocs().size();
     	while (compteur < lg) {
     		uneSalle = database.getTousBlocs().get(compteur);
-    		if (!this.sallesOccupeesduJour.contains(uneSalle)) {
+    		if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
 				i.getCh1().setSalle(uneSalle); // On donne de manière arbitraire la salle solution a la 1 ere chirurgie
 				i.setEtat(true);
 				compteur = lg;
@@ -334,12 +334,12 @@ public class Journee {
     	}
     	
     public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
-    	Chirurgien chirugienPb = u.getChirurgienPb();
+    	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null ;
     	int compteur = 0, lg = database.getTousChirurgiens().size();
     	while (compteur < lg) {
     		unChirurgien = database.getTousChirurgiens().get(compteur);
-    		if (!this.chirurgiensMobilises.contains(unChirurgien)) {
+    		if (!chirurgiensMobilises.contains(unChirurgien)) {
 				u.getCh1().setChirurgien(unChirurgien);
 				u.setEtat(true);
 				compteur = lg;
