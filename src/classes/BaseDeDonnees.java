@@ -154,8 +154,8 @@ public class BaseDeDonnees {
 		
 		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit();
-		System.out.println(jourHugo.getConflitsDuJour().toString());
-		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
+		System.out.println(jourHugo.getConflits());
+		jourHugo.detectionConflit();
 		while (b = false) {
 			for (Conflit conf : lesConflits) {
 				jourHugo.resoudreConflitCout0(data, conf);
@@ -164,7 +164,7 @@ public class BaseDeDonnees {
 			
 		}
 		jourHugo.planningJourneeParBloc();
-		System.out.println(jourHugo.detectionConflit().toString());
+		System.out.println(jourHugo.getConflits());
 		
 		
 		}

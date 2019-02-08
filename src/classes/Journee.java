@@ -424,7 +424,7 @@ public class Journee {
     public ArrayList<Chirurgie> getChirurgieJour(){
         return this.chirurgiesDuJour;
     }
-    public ArrayList<Conflit> getConflitsDuJour(){
+    public ArrayList<Conflit> getConflits(){
     	return this.conflitsDuJour;
     }
     public LocalDate getDate() {
