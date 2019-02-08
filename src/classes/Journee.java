@@ -333,15 +333,13 @@ public class Journee {
     	}
     	
     
-    // Raisonnemment totalement analogue concernant les chirurgiens
-    
     public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirugienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null ;
     	int compteur = 0, lg = database.getTousChirurgiens().size();
     	while (compteur < lg) {
     		unChirurgien = database.getTousChirurgiens().get(compteur);
-    		if (!this.sallesOccupeesduJour.contains(unChirurgien)) {
+    		if (!this.chirurgiensMobilises.contains(unChirurgien)) {
 				u.getCh1().setChirurgien(unChirurgien);
 				u.setEtat(true);
 				compteur = lg;
@@ -358,11 +356,65 @@ public class Journee {
     }
     
     
+    public void resoudreChevauchementCout0(BaseDeDonnees database, Chevauchement c) {
+    	Chirurgien chirugienPb = c.getChirurgienPb();
+    	Chirurgien unChirurgien = null ;
+    	Bloc sallePb = c.getSallePb();
+    	Bloc uneSalle = null;
+    	boolean a=false, b=false;
+    	
+    	// Resolution de l'ubiquité
+    	int compteur = 0, lg = database.getTousChirurgiens().size();
+    	
+    	while (compteur < lg) {
+    		unChirurgien = database.getTousChirurgiens().get(compteur);
+    		if (!this.sallesOccupeesduJour.contains(unChirurgien)) {
+				c.getCh1().setChirurgien(unChirurgien);
+				a = true;
+				compteur = lg;
+			}
+    		compteur ++ ;
+    	}
+    	
+    	// Resolution de l'interference
+    	compteur = 0;
+    	lg = database.getTousBlocs().size();
+    	while (compteur < lg) {
+    		uneSalle = database.getTousBlocs().get(compteur);
+    		if (!this.sallesOccupeesduJour.contains(uneSalle)) {
+				c.getCh1().setSalle(uneSalle);
+				b = true;
+				compteur = lg;
+			}
+    		compteur ++ ;
+    	}
+    	
+    	
+    	if (a==true && b==true) {
+    		c.setEtat(true);
+			System.out.println("Chevauchement non résolue");
+				}
+    	else { 
+    		c.setEtat(false);
+    		System.out.println("Chevauchement résolue");}
+    }
     
     
     
-    
-    
+    public void resoudreConflitCout0(BaseDeDonnees database, Conflit c) {
+    	if (c instanceof Interference){
+    		Interference cBis = (Interference) c;
+    		resoudreInferenceCout0(database, cBis);
+    	}
+    	if (c instanceof Ubiquite) {
+    		Ubiquite cBis = (Ubiquite) c;
+    		resoudreUbiquiteCout0(database, cBis);
+    	}
+    	if (c instanceof Chevauchement) {
+    		Chevauchement cBis = (Chevauchement) c;
+    		resoudreChevauchementCout0(database, cBis);
+    	}
+    }
     
     
     // ACCESSEURS //

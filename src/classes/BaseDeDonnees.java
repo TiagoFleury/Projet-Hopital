@@ -138,8 +138,40 @@ public class BaseDeDonnees {
 			System.out.println(b);
 		}
 		
+		
+		// Je tente une résolution cout0 
+		System.out.println("\n \n \n Hugo -- Test de résolution a cout 0 -- 1er essai \n \n");
+		BaseDeDonnees data2 = new BaseDeDonnees();
+		data2.importBase("Chirurgies_v2.csv");
+		Journee jourHugo = data2.getJournee("02/01/2019");
+		/* jourHugo.planningJourneeParBloc();
+		jourHugo.detectionConflit().toString();
+		ArrayList<Conflit> lesConflits = jourHugo.detectionConflit();
+		for (Conflit conf : lesConflits) {
+			jourHugo.resoudreConflitCout0(data2, conf);
+		}
+		jourHugo.planningJourneeParBloc();
+		jourHugo.detectionConflit().toString();
+		
+		
+		// TIAGO il y a une exception ligne 147 ou askip ma date n'existe pas, ultra relou
+		
+		DU COUP JESSAYE DAFFICHER LES JOURNEES MAIS CA MARCHE PAS TROP
+		
+		for (Entry<LocalDate,Journee> k : listeJournees.entrySet()) {
+			System.out.println(k.getKey());
+		}
+		*/
+		
 	}
 
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -161,7 +193,7 @@ public class BaseDeDonnees {
     }
 	
 	public Journee getJournee(String date) { //Format jj/mm/aa
-		if(date.length() >8) {
+		if(date.length() !=10) {
 			System.out.println("Mauvais format de date");
 			return null;
 		}
@@ -178,6 +210,7 @@ public class BaseDeDonnees {
 		}
 		
 	}
+	
 	
 	public ArrayList<Chirurgien> getTousChirurgiens(){
 		return this.chirurgiensExistants;
