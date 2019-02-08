@@ -77,6 +77,7 @@ class BaseDeDonneesTEST {
 		assertEquals(j.getDate().toString(),"2019-01-06");
 		
 		j = data.getJournee("01/01/19");
+	
 		assertEquals(j.getDate().toString(),"2019-01-01");
 		
 		j = data.getJournee("06/01/19");
