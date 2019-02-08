@@ -138,7 +138,7 @@ public class BaseDeDonnees {
 		jourHugo.planningJourneeParBloc();
 		
 		jourHugo.detectionConflit();
-		
+
 		if (jourHugo.getConflits().size()!=0) {
 			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
 		}
