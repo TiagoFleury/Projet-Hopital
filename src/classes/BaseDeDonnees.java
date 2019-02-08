@@ -126,48 +126,28 @@ public class BaseDeDonnees {
 	public static void main(String[] Args) {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
-		for(Chirurgie c : data.listeChirurgies) {
-			System.out.println(c);
-		}
-		System.out.println("\nListe chirurgiens : ");
-		
-		for(Chirurgien c : data.chirurgiensExistants) {
-			System.out.println("- "+c);
-		}
-		
-		System.out.println("\n\nListe des blocs :");
-		for(Bloc b : data.blocsExistants) {
-			System.out.println(b);
-		}
 		
 		
-		// Je tente une résolution cout0 
+		// Je tente une resolution cout0 
 		System.out.println("\n \n \n Hugo -- Test de resolution a cout 0 -- 1er essai \n \n");
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("Chirurgies_v2.csv");
 		data.organiserJournees();
 		Journee jourHugo = data.getJournee("01/01/19");
 		System.out.println("Nb de chirurgiens mobilises : "+jourHugo.getChirurgienMobilises().size());
-		for(Chirurgien c : jourHugo.getChirurgienMobilises()) {
-			System.out.println(c);
-		}
 		
-		jourHugo.planningJourneeParBloc();
 		jourHugo.detectionConflit();
-		System.out.println(jourHugo.getConflits());
+
+		
+		if (jourHugo.getConflits().size()!=0) {
+			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
+		}
+		
 		jourHugo.detectionConflit();
-		while (b = false) {
-			for (Conflit conf : lesConflits) {
-				jourHugo.resoudreConflitCout0(data, conf);
-		}
-			
-			
-		}
 		jourHugo.planningJourneeParBloc();
-		System.out.println(jourHugo.getConflits());
+		System.out.println(jourHugo.getConflits().toString());
+	}
 		
-		
-		}
 		
 
 	

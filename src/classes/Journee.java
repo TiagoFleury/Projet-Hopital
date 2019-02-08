@@ -270,7 +270,7 @@ public class Journee {
         return c;
     }
     
-   
+   // Cette méthode ne fait que mettre dans conflitsDuJour les conflits encore présents
     public void detectionConflit(){
         Conflit conf = null;
         boolean b = false;
