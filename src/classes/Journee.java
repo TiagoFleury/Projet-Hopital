@@ -417,6 +417,7 @@ public class Journee {
     }
     
     
+    
     // ACCESSEURS //
     public ArrayList<Chirurgie> getChirurgieJour(){
         return this.chirurgiesDuJour;
