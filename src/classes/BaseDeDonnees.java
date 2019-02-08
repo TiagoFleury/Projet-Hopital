@@ -68,8 +68,10 @@ public class BaseDeDonnees {
 		listeChirurgies = new ArrayList<Chirurgie>();
 		
 		File fichier = new File(cheminFichier);
-		System.out.println("Existance : "+fichier.exists());
-		System.out.println("Chemin : "+fichier.getAbsolutePath());
+		if(!fichier.exists()) {
+			System.out.println("Le fichier "+cheminFichier+"n'existe pas");
+			return;
+		}
 		String champs[] = new String[6]; //Ca va stocker les champs
 		BufferedReader reader = null;
 		try {
@@ -120,25 +122,7 @@ public class BaseDeDonnees {
 		}
 		
 	}
-	
-	public static void main(String[] Args) {
-		BaseDeDonnees data = new BaseDeDonnees();
-		data.importBase("MiniBase.csv");
-		for(Chirurgie c : data.listeChirurgies) {
-			System.out.println(c);
-		}
-		System.out.println("\nListe chirurgiens : ");
-		
-		for(Chirurgien c : data.chirurgiensExistants) {
-			System.out.println("- "+c);
-		}
-		
-		System.out.println("\n\nListe des blocs :");
-		for(Bloc b : data.blocsExistants) {
-			System.out.println(b);
-		}
-		
-	}
+
 
 	
 	
@@ -153,7 +137,7 @@ public class BaseDeDonnees {
 		
     	Set<LocalDate> cles = listeJournees.keySet();
     	if(indice>=cles.size()) {
-    		System.out.println("La journee demand�e n'existe pas");
+    		System.out.println("La journee demandee n'existe pas (index out of range)");
     		return null;
     	}
 		return listeJournees.get(cles.toArray()[indice]);
@@ -167,7 +151,8 @@ public class BaseDeDonnees {
 		}
 		
 		String[] champs = date.split("/");
-		LocalDate dateVoulue = LocalDate.of(Integer.parseInt(champs[2]), Integer.parseInt(champs[1]), Integer.parseInt(champs[0]));
+		LocalDate dateVoulue = LocalDate.of(Integer.parseInt(champs[2])+2000, Integer.parseInt(champs[1]), Integer.parseInt(champs[0]));
+		
 		if(!listeJournees.containsKey(dateVoulue)) {
 			//Si la date voulue n'existe pas
 			System.out.println("La journee "+date+" n'existe pas dans cette base de donnees");

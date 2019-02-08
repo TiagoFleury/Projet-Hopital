@@ -1,6 +1,6 @@
 package classes;
-import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public class Bloc implements Comparable{
     private String nom;
     private int id;

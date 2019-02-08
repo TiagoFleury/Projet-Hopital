@@ -7,8 +7,6 @@ import classes.Journee;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,20 +19,19 @@ class BaseDeDonneesTEST {
 		data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
-		Journee jour = data.getJournee(0);
+//		Journee jour = data.getJournee("23/04/15");
+//		
+		//jour.planningJourneeParBloc();
+		
 		
 		//Petite base
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("MiniBase.csv");
 		
 		data2.organiserJournees();
-		Journee jour2 = data2.getJournee(1);
+		//Journee jour2 = data2.getJournee(1);
 		
 		assertEquals(6,data2.listeJournees.size());
-		
-		jour2.planningJourneeParBloc();
-		System.out.println("Grosse base : "+jour.detectionConflit());
-		System.out.println("Petite base :"+jour2.detectionConflit());
 		
 		//jour.planningJourneeParChirurgien();
 		
@@ -72,12 +69,22 @@ class BaseDeDonneesTEST {
 	void testGetJournee() {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
-		
-		Journee j = data.getJournee(8);
-		//assertTrue(j == null);
-		
+		data.organiserJournees();
+		Journee j = data.getJournee(6);
+		assertTrue(j == null);
 		j = data.getJournee(5);
+		
 		assertEquals(j.getDate().toString(),"2019-01-06");
+		
+		j = data.getJournee("01/01/19");
+		assertEquals(j.getDate().toString(),"2019-01-01");
+		
+		j = data.getJournee("06/01/19");
+		assertEquals(j.getDate().toString(),"2019-01-06");
+		
+
+		j = data.getJournee("07/01/19");
+		assertTrue(j == null);
 		
 	}
 }

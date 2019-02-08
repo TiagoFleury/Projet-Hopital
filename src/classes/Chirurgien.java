@@ -1,7 +1,6 @@
 package classes;
 
-import java.util.ArrayList;
-
+@SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
     
