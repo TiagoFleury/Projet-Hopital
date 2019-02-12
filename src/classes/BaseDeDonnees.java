@@ -2,6 +2,7 @@ package classes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeMap;
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,8 +68,10 @@ public class BaseDeDonnees {
 		listeChirurgies = new ArrayList<Chirurgie>();
 		
 		File fichier = new File(cheminFichier);
-		System.out.println("Existance : "+fichier.exists());
-		System.out.println("Chemin : "+fichier.getAbsolutePath());
+		if(!fichier.exists()) {
+			System.out.println("Le fichier "+cheminFichier+"n'existe pas");
+			return;
+		}
 		String champs[] = new String[6]; //Ca va stocker les champs
 		BufferedReader reader = null;
 		try {
@@ -123,19 +126,88 @@ public class BaseDeDonnees {
 	public static void main(String[] Args) {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
-		for(Chirurgie c : data.listeChirurgies) {
-			System.out.println(c);
-		}
-		System.out.println("\nListe chirurgiens : ");
 		
-		for(Chirurgien c : data.chirurgiensExistants) {
-			System.out.println("- "+c);
+		
+		// Je tente une resolution cout0 
+		System.out.println("\n \n \n Hugo -- Test de resolution a cout 0 -- 1er essai \n \n");
+		BaseDeDonnees data2 = new BaseDeDonnees();
+		data2.importBase("Chirurgies_v2.csv");
+		data.organiserJournees();
+		Journee jourHugo = data.getJournee("04/01/19");
+		
+		jourHugo.planningJourneeParBloc();
+		
+		jourHugo.detectionConflit();
+
+		if (jourHugo.getConflits().size()!=0) {
+			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
 		}
 		
-		System.out.println("\n\nListe des blocs :");
-		for(Bloc b : data.blocsExistants) {
-			System.out.println(b);
+		jourHugo.detectionConflit();
+		jourHugo.planningJourneeParBloc();
+		System.out.println(jourHugo.getConflits().toString());
+		
+		for(int i=0;i<data.listeJournees.size();i++) {
+			data.getJournee(i).planningJourneeParBloc();
+		}
+	}
+		
+		
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//ACCESSEURS
+	public Journee getJournee(int indice) { //Retourne la n eme journee de listeJournee
+		
+    	Set<LocalDate> cles = listeJournees.keySet();
+    	if(indice>=cles.size()) {
+    		System.out.println("La journee demandee n'existe pas (index out of range)");
+    		return null;
+    	}
+		return listeJournees.get(cles.toArray()[indice]);
+
+    }
+	
+	public Journee getJournee(String date) { //Format jj/mm/aa
+		if(date.length() !=8) {
+			System.out.println("Mauvais format de date");
+			return null;
+		}
+		
+		String[] champs = date.split("/");
+		LocalDate dateVoulue = LocalDate.of(Integer.parseInt(champs[2])+2000, Integer.parseInt(champs[1]), Integer.parseInt(champs[0]));
+		
+		if(!listeJournees.containsKey(dateVoulue)) {
+			//Si la date voulue n'existe pas
+			System.out.println("La journee "+date+" n'existe pas dans cette base de donnees");
+			return null;
+		}
+		else {
+			return listeJournees.get(dateVoulue);
 		}
 		
 	}
+	
+	
+	public ArrayList<Chirurgien> getTousChirurgiens(){
+		return this.chirurgiensExistants;
+	}
+	
+	public ArrayList<Bloc> getTousBlocs(){
+		return this.blocsExistants;
+	}
+	
 }

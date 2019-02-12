@@ -19,10 +19,6 @@ import org.junit.jupiter.api.Test;
 
 class ConflitTEST {
 
-	@Test
-	void testConflit() {
-		fail("Not yet implemented"); // TODO
-	}
 
 	// Pour chaque sorte de conflit faire 3 conflits différents, dont 2 sont égaux
 	@Test
@@ -59,10 +55,10 @@ class ConflitTEST {
 		
 		// 1. Ubiquité 
 		
-		Chirurgie ch1 = new Chirurgie(date1, time1Deb, time1Fin, gymnase, albert);
-		Chirurgie ch2 = new Chirurgie();
-		Chirurgie ch3 = new Chirurgie();
-		Conflit c1 = new Conflit(ch1, ch2);
+//		Chirurgie ch1 = new Chirurgie(date1, time1Deb, time1Fin, gymnase, albert);
+//		Chirurgie ch2 = new Chirurgie();
+//		Chirurgie ch3 = new Chirurgie();
+//		Conflit c1 = new Conflit(ch1, ch2);
 	}
 
 	// Tester également dans la classe JourneeTEST la méthode conflitOuPas()
