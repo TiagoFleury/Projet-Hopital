@@ -394,11 +394,11 @@ public class Journee {
     	
     	if (a==true && b==true) {
     		c.setEtat(true);
-			System.out.println("Chevauchement non résolue");
+			System.out.println("Chevauchement résolu");
 				}
     	else { 
     		c.setEtat(false);
-    		System.out.println("Chevauchement résolue");}
+    		System.out.println("Chevauchement non résolu");}
     }
     
     

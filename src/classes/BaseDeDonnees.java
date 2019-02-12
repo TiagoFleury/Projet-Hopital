@@ -126,30 +126,51 @@ public class BaseDeDonnees {
 	public static void main(String[] Args) {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
+		data.organiserJournees();
+		Journee jour1 = data.getJournee("04/01/19");
 		
 		
-		// Je tente une resolution cout0 
+		
+		// Je tente 2 resolutions cout0 
 		System.out.println("\n \n \n Hugo -- Test de resolution a cout 0 -- 1er essai \n \n");
+		System.out.println("\n \n \n  Ici sur la Mini Base \n");
+		jour1.planningJourneeParBloc();
+		jour1.detectionConflit();
+		System.out.println("\n Voici la liste des conflits encore présents : " + jour1.getConflits().toString());
+		
+		if (jour1.getConflits().size()!=0) {
+			jour1.resoudreConflitCout0(data, jour1.getConflits().get(0));
+			jour1.detectionConflit();
+			jour1.planningJourneeParBloc();
+			System.out.println(jour1.getConflits().toString());
+		}
+		
+		
+		
+		System.out.println("\n \n \n \n Et là sur la grosse base de données \n");
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("Chirurgies_v2.csv");
-		data.organiserJournees();
-		Journee jourHugo = data.getJournee("04/01/19");
+		data2.organiserJournees();
+		Journee jourHugo = data2.getJournee("04/01/15");
 		
 		jourHugo.planningJourneeParBloc();
-		
 		jourHugo.detectionConflit();
+		System.out.println("\n Voici la liste des conflits encore présents : " + jourHugo.getConflits().toString());
 
+		
 		if (jourHugo.getConflits().size()!=0) {
 			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
+			jourHugo.detectionConflit();
+			jourHugo.planningJourneeParBloc();
+			System.out.println(jourHugo.getConflits().toString());
+			
 		}
 		
-		jourHugo.detectionConflit();
-		jourHugo.planningJourneeParBloc();
-		System.out.println(jourHugo.getConflits().toString());
 		
-		for(int i=0;i<data.listeJournees.size();i++) {
-			data.getJournee(i).planningJourneeParBloc();
-		}
+		
+		//for(int i=0;i<data.listeJournees.size();i++) {
+		//	data.getJournee(i).planningJourneeParBloc();
+		// }
 	}
 		
 		
