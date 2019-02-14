@@ -7,8 +7,8 @@ import java.util.ArrayList;
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
-    private ArrayList<LocalDate> joursDeTravail ; 
-    
+    private ArrayList<LocalDate> joursDeTravail ;
+    private double tempsMoyenChirurgie;
     
     
   
@@ -56,5 +56,17 @@ public class Chirurgien implements Comparable{
 	public int compareTo(Object o) {
 		
 		return this.nom.compareTo(((Chirurgien)o).getName());
+	}
+
+	//ACCESSEURS
+	public double getTempsMoyen() {
+		return tempsMoyenChirurgie;
+	}
+	
+
+	//MUTATEURS
+	public void setTempsMoyenChirurgie(double moyenne) {
+		tempsMoyenChirurgie = moyenne;
+		
 	}
 }
