@@ -125,6 +125,28 @@ public class BaseDeDonnees {
 		
 	}
 	
+	
+	public float tempsMoyenChirurgien(Chirurgien albert) {
+		int sum = 0, compteur = 0;
+		ArrayList<Long> tempsChirurgies = new ArrayList<Long>();
+		for (Chirurgie c : this.listeChirurgies) {
+			if (c.getChirurgien().equals(albert)){
+				tempsChirurgies.add(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
+				sum+=(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
+				compteur+=1;
+			}
+		}
+		System.out.println("Ses temps de chirurgies sont (pour repérer les abérations) : \n " + tempsChirurgies.toString());
+		return sum/compteur;
+	}
+
+	
+	
+	
+	
+	
+	
+	
 	public static void main(String[] Args) {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
@@ -170,25 +192,23 @@ public class BaseDeDonnees {
 		
 		
 		
+		System.out.println("\n \n \n \n ALALLALALA \n");
+		Journee jourHugoBIS = data2.getJournee("21/01/14");
+		jourHugoBIS.planningJourneeParBloc();
+		jourHugoBIS.detectionConflit();
+		System.out.println("\n Voici la liste des conflits encore présents : " + jourHugoBIS.getConflits().toString());
+		
+		
+		
+		
+		
 		//for(int i=0;i<data.listeJournees.size();i++) {
 		//	data.getJournee(i).planningJourneeParBloc();
 		// }
 	}
 		
 	
-	public float tempsMoyenChirurgien(Chirurgien albert) {
-		int sum = 0, compteur = 0;
-		ArrayList<Long> tempsChirurgies = new ArrayList<Long>();
-		for (Chirurgie c : this.listeChirurgies) {
-			if (c.getChirurgien().equals(albert)){
-				tempsChirurgies.add(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
-				sum+=(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
-				compteur+=1;
-			}
-		}
-		System.out.println("Ses temps de chirurgies sont (pour repérer les abérations) : \n " + tempsChirurgies.toString());
-		return sum/compteur;
-	}
+	
 
 	
 	
