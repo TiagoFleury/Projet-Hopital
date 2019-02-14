@@ -7,8 +7,10 @@ public class Bloc implements Comparable{
     
 
     public Bloc(String leNom) {
-    	id = Integer.parseInt(leNom.substring(6));
     	nom = leNom;
+    	
+    	id = Integer.parseInt(leNom.substring(6));
+    	
     }
     
     

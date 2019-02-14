@@ -19,9 +19,9 @@ class BaseDeDonneesTEST {
 		data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
-//		Journee jour = data.getJournee("23/04/15");
-//		
-		//jour.planningJourneeParBloc();
+		Journee jour = data.getJournee("31/12/16");
+		
+		jour.planningJourneeParBloc();
 		
 		
 		//Petite base
@@ -29,11 +29,11 @@ class BaseDeDonneesTEST {
 		data2.importBase("MiniBase.csv");
 		
 		data2.organiserJournees();
-		//Journee jour2 = data2.getJournee(1);
+		Journee jour2 = data2.getJournee(1);
 		
 		assertEquals(6,data2.listeJournees.size());
 		
-		//jour.planningJourneeParChirurgien();
+		jour2.planningJourneeParChirurgien();
 		
 	}
 	
@@ -61,6 +61,9 @@ class BaseDeDonneesTEST {
 			resultat += b+",";
 		}
 		assertEquals(resultat, "BLOC-E1  id:1,BLOC-E2  id:2,BLOC-E3  id:3,");
+		BaseDeDonnees data2 = new BaseDeDonnees();
+		data2.importBase("Chirurgies_v2.csv");
+		System.out.println("Les blocs : "+data2.getTousBlocs());
 	}
 	
 	
