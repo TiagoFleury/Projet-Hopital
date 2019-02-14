@@ -1,6 +1,8 @@
 package classes;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeMap;
@@ -173,7 +175,20 @@ public class BaseDeDonnees {
 		// }
 	}
 		
-		
+	
+	public float tempsMoyenChirurgien(Chirurgien albert) {
+		int sum = 0, compteur = 0;
+		ArrayList<Long> tempsChirurgies = new ArrayList<Long>();
+		for (Chirurgie c : this.listeChirurgies) {
+			if (c.getChirurgien().equals(albert)){
+				tempsChirurgies.add(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
+				sum+=(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
+				compteur+=1;
+			}
+		}
+		System.out.println("Ses temps de chirurgies sont (pour repérer les abérations) : \n " + tempsChirurgies.toString());
+		return sum/compteur;
+	}
 
 	
 	

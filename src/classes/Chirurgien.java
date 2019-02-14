@@ -11,6 +11,9 @@ public class Chirurgien implements Comparable{
 		
 	}
     
+    
+    
+    
     @Override
     public boolean equals(Object o) {
     	if (o==null) {
