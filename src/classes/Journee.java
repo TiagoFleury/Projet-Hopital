@@ -325,13 +325,30 @@ public class Journee {
     public void resoudreInferenceCout0(BaseDeDonnees database , Interference i) {
     	Bloc sallePb = i.getSallePb();
     	Bloc uneSalle = null ;
+    	LocalTime debLimite = LocalTime.of(8,00);
+    	LocalTime finLimite = LocalTime.of(20,00);
+    	
     	int compteur = 0, lg = database.getTousBlocs().size();
     	while (compteur < lg) {
     		uneSalle = database.getTousBlocs().get(compteur);
+    		
     		if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
-				i.getCh1().setSalle(uneSalle); // On donne de manière arbitraire la salle solution a la 1 ere chirurgie
-				i.setEtat(true);
-				compteur = lg;
+    			
+    			if (i.getCh1().getDebut().isBefore(debLimite) || (i.getCh1().getFin().isAfter(finLimite))) { // Sur cette plage horaire on envoie forcément dans un bloc urgence
+    				// alors on envoie forcément dans un Bloc Urgence
+    				if (uneSalle.getID()>=4) {
+    					i.getCh1().setSalle(uneSalle);
+    					i.setEtat(true);
+    					compteur = lg;
+    				}
+    			}
+    			else { // Dans le cas ou ce n'est pas sur une période de 20h-...-8h alors on envoie dans une salle normale
+    				if (uneSalle.getID()<=3) {
+    					i.getCh1().setSalle(uneSalle);
+    					i.setEtat(true);
+    					compteur = lg;
+    				}
+    			}
 			}
     		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des salles NON UTILISEES toute la journée car la choisir = cout 0
     	}
@@ -343,6 +360,8 @@ public class Journee {
     		
     	}
     	
+    
+    
     public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null ;

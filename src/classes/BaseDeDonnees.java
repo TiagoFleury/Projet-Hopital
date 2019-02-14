@@ -126,6 +126,7 @@ public class BaseDeDonnees {
 	}
 	
 	
+	
 	public float tempsMoyenChirurgien(Chirurgien albert) {
 		int sum = 0, compteur = 0;
 		ArrayList<Long> tempsChirurgies = new ArrayList<Long>();
@@ -139,6 +140,7 @@ public class BaseDeDonnees {
 		System.out.println("Ses temps de chirurgies sont (pour repérer les abérations) : \n " + tempsChirurgies.toString());
 		return sum/compteur;
 	}
+	
 
 	
 	

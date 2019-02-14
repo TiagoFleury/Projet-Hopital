@@ -1,8 +1,14 @@
 package classes;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
+    private ArrayList<LocalDate> joursDeTravail ; 
+    
     
     
   
