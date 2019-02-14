@@ -273,14 +273,20 @@ public class Journee {
    // Cette méthode ne fait que mettre dans conflitsDuJour les conflits encore présents
     public void detectionConflit(){
         Conflit conf = null;
-        boolean b = false;
-        int compteur = 0;
+        // boolean b = false;
+        // int compteur = 0;
         conflitsDuJour = new ArrayList<Conflit>();
         for (Chirurgie c1 : this.chirurgiesDuJour){
             for (Chirurgie c2 : this.chirurgiesDuJour){
                 if (!c1.equals(c2)){
                     conf=conflitOuPas(c1,c2);
                 }
+                if ((conflitsDuJour.size()!=0) && conf!=null) {
+                	if (!conflitsDuJour.contains(conf)) {
+                		conflitsDuJour.add(conf);
+                	}
+                }
+                /*
                 compteur=0;
                 if ((conflitsDuJour.size()!=0)&&(conf!=null)) {
                 	for (Conflit unConflit : conflitsDuJour) {
@@ -293,6 +299,8 @@ public class Journee {
                     	conflitsDuJour.add(conf);
                     }
                 }
+                */
+                
                 else if (conflitsDuJour.size()==0) {
                 	if (conf!=null) {
                 		conflitsDuJour.add(conf);
