@@ -17,7 +17,7 @@ public class BaseDeDonnees {
 	public ArrayList<Chirurgien> chirurgiensExistants;
 	public ArrayList<Bloc> blocsExistants;
 	public TreeMap<LocalDate,Journee> listeJournees;
-	
+	public int nbConflits;
 	//Constructeur
 	public BaseDeDonnees() {
 		listeChirurgies = new ArrayList<Chirurgie>();
@@ -136,7 +136,7 @@ public class BaseDeDonnees {
 		System.out.println("\n \n \n  Ici sur la Mini Base \n");
 		jour1.planningJourneeParBloc();
 		jour1.detectionConflit();
-		System.out.println("\n Voici la liste des conflits encore présents : " + jour1.getConflits().toString());
+		System.out.println("\n Voici la liste des conflits encore presents : " + jour1.getConflits().toString());
 		
 		if (jour1.getConflits().size()!=0) {
 			jour1.resoudreConflitCout0(data, jour1.getConflits().get(0));
@@ -147,26 +147,54 @@ public class BaseDeDonnees {
 		
 		
 		
-		System.out.println("\n \n \n \n Et là sur la grosse base de données \n");
+		System.out.println("\n \n \n \n Et la� sur la grosse base de donnees \n");
+		
+		
+		
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("Chirurgies_v2.csv");
 		data2.organiserJournees();
-		Journee jourHugo = data2.getJournee("04/01/15");
-		
-		jourHugo.planningJourneeParBloc();
-		jourHugo.detectionConflit();
-		System.out.println("\n Voici la liste des conflits encore présents : " + jourHugo.getConflits().toString());
+		Journee jourHugo = null;
+		int nbConflits = 0;
+		ArrayList<Journee> journeesAconflits= new ArrayList<>();
+		for(int i=0;i<data2.listeJournees.size();i++){
+			jourHugo = data2.getJournee(i);
 
-		
-		if (jourHugo.getConflits().size()!=0) {
-			jourHugo.resoudreConflitCout0(data, jourHugo.getConflits().get(0));
 			jourHugo.detectionConflit();
-			jourHugo.planningJourneeParBloc();
-			System.out.println(jourHugo.getConflits().toString());
-			
+			nbConflits += jourHugo.getConflits().size();
+			if(jourHugo.getConflits().size()>0) {
+				journeesAconflits.add(jourHugo);
+			}
+		}
+		System.out.println("Nombre de conflits dans la base : "+nbConflits);
+		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
+		
+		data2.getJournee("21/01/14").planningJourneeParBloc();
+		data2.getJournee("21/01/14").detectionConflit();
+		System.out.println(data2.getJournee("21/01/14").getConflits()+"\n\n");
+		
+		for(Journee j : journeesAconflits) {
+			for(Conflit c : j.getConflits()) {
+				j.resoudreConflitCout0(data2, c);
+			}
 		}
 		
+		nbConflits = 0;
+		journeesAconflits= new ArrayList<>();
+		for(int i=0;i<data2.listeJournees.size();i++){
+			jourHugo = data2.getJournee(i);
+
+			jourHugo.detectionConflit();
+			nbConflits += jourHugo.getConflits().size();
+			if(jourHugo.getConflits().size()>0) {
+				journeesAconflits.add(jourHugo);
+			}
+		}
+
+		System.out.println("Nombre de conflits dans la base : "+nbConflits);
+		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
 		
+		journeesAconflits.get(1).planningJourneeParBloc();
 		
 		//for(int i=0;i<data.listeJournees.size();i++) {
 		//	data.getJournee(i).planningJourneeParBloc();
