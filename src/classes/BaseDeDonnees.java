@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.Math;
 
 public class BaseDeDonnees {
     
@@ -149,7 +150,7 @@ public class BaseDeDonnees {
 	
 	public static void main(String[] Args) {
 		
-		System.out.println("\n \n \n \n Et la  sur la grosse base de donnees \n");
+		System.out.println("\n \n \n \n Et laï¿½ sur la grosse base de donnees \n");
 		
 		
 		
@@ -223,7 +224,7 @@ public class BaseDeDonnees {
 		for(Chirurgien c : chirurgiensExistants) { //Pour chaque chirurgien, on va calculer son temps moyen d'operation
 			for(Chirurgie chir : listeChirurgies) {
 				
-				if(chir.getChirurgien().equals(c)) { //Si c'est bien ce chirurgien qui a opéré
+				if(chir.getChirurgien().equals(c)) { //Si c'est bien ce chirurgien qui a opï¿½rï¿½
 					
 					//Et si la chirurgie n'est pas n'est pas dans un conflit
 					if(!chir.estEnConflit()) {
@@ -269,6 +270,54 @@ public class BaseDeDonnees {
 	
 	
 	
+	// Methodes Statistiques gÃ©nÃ©rales pour un certain ensemble de donnees
+	
+	public double moyenneDeDonnees(ArrayList<Double> lesDonnees) {
+		int somme = 0;
+		double moyenne = 0;
+		for (Double d : lesDonnees) {
+			somme+=d;
+		}
+		if (lesDonnees.size()!=0) {
+			return somme/lesDonnees.size();
+		}
+		else { return 0;}
+	}
+	
+	
+	public double varianceDeDonnees(ArrayList<Double> lesDonnees) {
+		double moy = moyenneDeDonnees(lesDonnees);
+		double sum = 0;
+		for (double d : lesDonnees) {
+			sum=sum+ ((d-moy)*(d-moy));
+		}
+		if (lesDonnees.size()>1) {
+			return sum/(lesDonnees.size()-1);
+		}
+		else { return 0;}
+	}
+	
+	
+	public ArrayList<Double> intervalleConfiance95(ArrayList<Double> dodonnees) {
+		ArrayList<Double> intervalle =null;
+		if (dodonnees.size()>1) {
+			System.out.println("il n'y a pas assez de donnees");
+			return intervalle;
+		}
+		else {
+			double moyenne=moyenneDeDonnees(dodonnees); 
+			double ecartType = Math.sqrt(varianceDeDonnees(dodonnees));
+			intervalle.add(moyenne - 1.96*ecartType/Math.sqrt(dodonnees.size()-1) );
+			intervalle.add(moyenne + 1.96*ecartType/Math.sqrt(dodonnees.size()-1) );
+			return intervalle;
+		}
+		
+		
+	}
+	
+	
+	// MAINTENANT IL SUFFIRA DE checker une donnee au sein d'une certaine listes de donnees si elle est dans l'IC 95%
+	// cela nous permettra direct d'en dÃ©duire si on la corrige ou pas etc
 	
 	
 	

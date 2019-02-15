@@ -7,14 +7,10 @@ import java.util.ArrayList;
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
-<<<<<<< HEAD
     private ArrayList<Chirurgie> sesChirurgies;
     private ArrayList<Float> moyennesJours;
-    
-=======
     private ArrayList<LocalDate> joursDeTravail ;
     private double tempsMoyenChirurgie;
->>>>>>> Branche-Tiago
     
     
   
