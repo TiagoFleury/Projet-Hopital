@@ -20,12 +20,14 @@ public class BaseDeDonnees {
 	public ArrayList<Bloc> blocsExistants;
 	public TreeMap<LocalDate,Journee> listeJournees;
 	public int nbConflits;
+	public double tempsMoyenEntreDeuxChirurgies;
 	//Constructeur
 	public BaseDeDonnees() {
 		listeChirurgies = new ArrayList<Chirurgie>();
 		chirurgiensExistants = new ArrayList<Chirurgien>();
 		blocsExistants = new ArrayList<Bloc>();
 		listeJournees = new TreeMap<LocalDate,Journee>();
+		tempsMoyenEntreDeuxChirurgies = 0;
 	}
 	
 	//Methode pour remplir la liste des journees.
@@ -42,6 +44,9 @@ public class BaseDeDonnees {
 				listeJournees.put(c.getDate(), new Journee(c));
 				
 			}
+		}
+		for(int i=0;i<listeJournees.size();i++) { //On initialise aussi tous les conflits
+			getJournee(i).detectionConflit();
 		}
 		
 	}
@@ -127,19 +132,6 @@ public class BaseDeDonnees {
 	
 	
 	
-	public float tempsMoyenChirurgien(Chirurgien albert) {
-		int sum = 0, compteur = 0;
-		ArrayList<Long> tempsChirurgies = new ArrayList<Long>();
-		for (Chirurgie c : this.listeChirurgies) {
-			if (c.getChirurgien().equals(albert)){
-				tempsChirurgies.add(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
-				sum+=(ChronoUnit.MINUTES.between(c.getDebut(), c.getFin()));
-				compteur+=1;
-			}
-		}
-		System.out.println("Ses temps de chirurgies sont (pour rep√©rer les ab√©rations) : \n " + tempsChirurgies.toString());
-		return sum/compteur;
-	}
 	
 
 	
@@ -156,28 +148,6 @@ public class BaseDeDonnees {
 	
 	
 	public static void main(String[] Args) {
-		BaseDeDonnees data = new BaseDeDonnees();
-		data.importBase("MiniBase.csv");
-		data.organiserJournees();
-		Journee jour1 = data.getJournee("04/01/19");
-		
-		
-		
-		// Je tente 2 resolutions cout0 
-		System.out.println("\n \n \n Hugo -- Test de resolution a cout 0 -- 1er essai \n \n");
-		System.out.println("\n \n \n  Ici sur la Mini Base \n");
-		jour1.planningJourneeParBloc();
-		jour1.detectionConflit();
-		System.out.println("\n Voici la liste des conflits encore presents : " + jour1.getConflits().toString());
-		
-		if (jour1.getConflits().size()!=0) {
-			jour1.resoudreConflitCout0(data, jour1.getConflits().get(0));
-			jour1.detectionConflit();
-			jour1.planningJourneeParBloc();
-			System.out.println(jour1.getConflits().toString());
-		}
-		
-		
 		
 		System.out.println("\n \n \n \n Et la† sur la grosse base de donnees \n");
 		
@@ -201,9 +171,13 @@ public class BaseDeDonnees {
 		System.out.println("Nombre de conflits dans la base : "+nbConflits);
 		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
 		
-		data2.getJournee("21/01/14").planningJourneeParBloc();
-		data2.getJournee("21/01/14").detectionConflit();
-		System.out.println(data2.getJournee("21/01/14").getConflits()+"\n\n");
+		Journee jourTest = data2.getJournee("20/01/14");
+		jourTest.planningJourneeParBloc();
+		jourTest.detectionConflit();
+		jourTest.resoudreConflitCout0(data2, jourTest.getConflits().get(0));
+		System.out.println(data2.getJournee("20/01/14").getConflits()+"\n\n");
+		
+		
 		
 		for(Journee j : journeesAconflits) {
 			for(Conflit c : j.getConflits()) {
@@ -226,15 +200,8 @@ public class BaseDeDonnees {
 		System.out.println("Nombre de conflits dans la base : "+nbConflits);
 		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
 		
-		journeesAconflits.get(1).planningJourneeParBloc();
-		
-		System.out.println("\n \n \n \n ALALLALALA \n");
-		Journee jourHugoBIS = data2.getJournee("21/01/14");
-		jourHugoBIS.planningJourneeParBloc();
-		jourHugoBIS.detectionConflit();
-		System.out.println("\n Voici la liste des conflits encore pr√©sents : " + jourHugoBIS.getConflits().toString());
-		
-		
+		journeesAconflits.get(2).planningJourneeParBloc();
+//		
 		
 		
 		
@@ -246,10 +213,57 @@ public class BaseDeDonnees {
 	
 	
 
+	//STATS
 	
 	
+	public void calculTempsMoyensChirurgies() {
+		int somme = 0;
+		int compteur = 0;
+		double moyenne = 0;
+		for(Chirurgien c : chirurgiensExistants) { //Pour chaque chirurgien, on va calculer son temps moyen d'operation
+			for(Chirurgie chir : listeChirurgies) {
+				
+				if(chir.getChirurgien().equals(c)) { //Si c'est bien ce chirurgien qui a opÈrÈ
+					
+					//Et si la chirurgie n'est pas n'est pas dans un conflit
+					if(!chir.estEnConflit()) {
+						//ALORS on la compte dans les stats
+						compteur++;
+						somme += ChronoUnit.MINUTES.between(chir.getDebut(), chir.getFin());
+					}
+				}
+			}
+			if(compteur != 0) {
+				moyenne = somme/compteur;
+			}
+			else
+				moyenne=0;
+			c.setTempsMoyenChirurgie(moyenne);
+			
+			somme = 0;
+			compteur = 0;
+		}
+	}
 	
 	
+	public void calculTempsEntreDeuxChirurgies() {
+		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un bloc, il y moyen qu'il faille faire gaffe aux jours aussi
+		
+		for(Bloc bloc : blocsExistants) {
+			for(Chirurgie chir : listeChirurgies) {
+				if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
+					liste.add(chir);
+					
+				}
+			}
+			
+			//Ici il faut trier la liste dans l'ordre par heure de commencement
+			
+			for(int i=0;i<liste.size();i++) {
+				//Ici faire un truc qui calcule le temps entre deux chirurgies consecutives uniquement si aucune des deux n'est dans un conflit
+			}
+		}
+	}
 	
 	
 	

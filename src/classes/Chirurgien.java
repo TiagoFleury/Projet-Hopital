@@ -7,9 +7,14 @@ import java.util.ArrayList;
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
+<<<<<<< HEAD
     private ArrayList<Chirurgie> sesChirurgies;
     private ArrayList<Float> moyennesJours;
     
+=======
+    private ArrayList<LocalDate> joursDeTravail ;
+    private double tempsMoyenChirurgie;
+>>>>>>> Branche-Tiago
     
     
   
@@ -42,20 +47,7 @@ public class Chirurgien implements Comparable{
     
     
     
-    
-    public void remplirAttributsChirurgieEtMoyenne(BaseDeDonnees database) {
-    	int lundi = 0, mardi = 0, mercredi = 0, jeudi = 0, vendredi =0, samedi =0, dimanche = 0;
-    	
-    	for (Chirurgie c : database.getTousChirurgies()) {
-    		if (c.getChirurgien().equals(this)){
-    			sesChirurgies.add(c);
-    			if (c.getDate().getDayOfWeek().equals("Monday")){
-    				lundi+=1;
-    			}
-    			else if ()
-    		}
-    	}
-    }
+   
     
 
 
@@ -76,5 +68,17 @@ public class Chirurgien implements Comparable{
 	@Override
 	public int compareTo(Object o) {
 		return this.nom.compareTo(((Chirurgien)o).getName());
+	}
+
+	//ACCESSEURS
+	public double getTempsMoyen() {
+		return tempsMoyenChirurgie;
+	}
+	
+
+	//MUTATEURS
+	public void setTempsMoyenChirurgie(double moyenne) {
+		tempsMoyenChirurgie = moyenne;
+		
 	}
 }

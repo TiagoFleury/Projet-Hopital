@@ -13,6 +13,7 @@ public class Chirurgie {
     private LocalTime heureFin;
     private Bloc salle;
     private Chirurgien chirurgien;
+    private boolean estEnConflit;
     
 
     public Chirurgie(String[] champs) {  //Instancie avec Heure
@@ -85,7 +86,9 @@ public class Chirurgie {
     public int getID() {
     	return id;
     }
-    
+    public boolean estEnConflit() {
+		return estEnConflit;
+	}
     
     
     //MUTATEURS
@@ -98,4 +101,11 @@ public class Chirurgie {
 		chirurgien = surgeon;
 		
 	}
+
+	public void setEnConflit(boolean b) {
+		estEnConflit = b;
+		
+	}
+
+	
 }

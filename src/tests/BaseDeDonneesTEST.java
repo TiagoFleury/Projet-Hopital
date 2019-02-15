@@ -12,6 +12,28 @@ import org.junit.jupiter.api.Test;
 
 class BaseDeDonneesTEST {
 
+	
+	@Test
+	void testCalculTempsMoyensChirurgie() {
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("MiniBase.csv");
+		
+		data.organiserJournees();
+		
+		data.calculTempsMoyensChirurgies();
+		
+		System.out.println("------------------------");
+		for(int i=0;i<data.listeJournees.size();i++) {
+			data.getJournee(i).planningJourneeParChirurgien();
+		}
+		//Test pour le temps moyen de gregory house (3 chirurgies comptables de 120 + 90 + 120)
+		// 330/3 = 110
+		
+		assertEquals(data.getTousChirurgiens().get(0).getTempsMoyen(), 110);
+		
+	}
+	
+	
 	@Test
 	void testOrganiserJournees() {
 		//Grosse base

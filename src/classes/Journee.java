@@ -270,11 +270,9 @@ public class Journee {
         return c;
     }
     
-   // Cette méthode ne fait que mettre dans conflitsDuJour les conflits encore présents
+   // Cette methode ne fait que mettre dans conflitsDuJour les conflits encore presents
     public void detectionConflit(){
         Conflit conf = null;
-        // boolean b = false;
-        // int compteur = 0;
         conflitsDuJour = new ArrayList<Conflit>();
         for (Chirurgie c1 : this.chirurgiesDuJour){
             for (Chirurgie c2 : this.chirurgiesDuJour){
@@ -284,26 +282,15 @@ public class Journee {
                 if ((conflitsDuJour.size()!=0) && conf!=null) {
                 	if (!conflitsDuJour.contains(conf)) {
                 		conflitsDuJour.add(conf);
+                		c2.setEnConflit(true);
+                		c1.setEnConflit(true);
                 	}
                 }
-                /*
-                compteur=0;
-                if ((conflitsDuJour.size()!=0)&&(conf!=null)) {
-                	for (Conflit unConflit : conflitsDuJour) {
-                    	b=conf.equals(unConflit);
-                    	if (b==true) {
-                    		compteur+=1;
-                    	}
-                    }
-                    if ((conf!=null)&&(compteur==0)){
-                    	conflitsDuJour.add(conf);
-                    }
-                }
-                */
-                
                 else if (conflitsDuJour.size()==0) {
                 	if (conf!=null) {
                 		conflitsDuJour.add(conf);
+                		c1.setEnConflit(true);
+                		c2.setEnConflit(true);
                 	}
                 }
                 
@@ -334,15 +321,15 @@ public class Journee {
     		
     		if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
     			
-    			if (i.getCh1().getDebut().isBefore(debLimite) || (i.getCh1().getFin().isAfter(finLimite))) { // Sur cette plage horaire on envoie forcément dans un bloc urgence
-    				// alors on envoie forcément dans un Bloc Urgence
+    			if (i.getCh1().getDebut().isBefore(debLimite) || (i.getCh1().getFin().isAfter(finLimite))) { // Sur cette plage horaire on envoie forcement dans un bloc urgence
+    				// alors on envoie forcement dans un Bloc Urgence
     				if (uneSalle.getID()>=4) {
     					i.getCh1().setSalle(uneSalle);
     					i.setEtat(true);
     					compteur = lg;
     				}
     			}
-    			else { // Dans le cas ou ce n'est pas sur une période de 20h-...-8h alors on envoie dans une salle normale
+    			else { // Dans le cas ou ce n'est pas sur une periode de 20h-...-8h alors on envoie dans une salle normale
     				if (uneSalle.getID()<=3) {
     					i.getCh1().setSalle(uneSalle);
     					i.setEtat(true);
@@ -350,7 +337,7 @@ public class Journee {
     				}
     			}
 			}
-    		compteur ++ ; // Ci dessus, j'ai simplement testé s'il y avait des salles NON UTILISEES toute la journée car la choisir = cout 0
+    		compteur ++ ; // Ci dessus, j'ai simplement teste s'il y avait des salles NON UTILISEES toute la journee car la choisir = cout 0
     	}
     	
     	if (i.getEtat()==false) {
@@ -421,11 +408,11 @@ public class Journee {
     	
     	if (a==true && b==true) {
     		c.setEtat(true);
-			System.out.println("Chevauchement résolu");
+			System.out.println("Chevauchement resolu");
 				}
     	else { 
     		c.setEtat(false);
-    		System.out.println("Chevauchement non résolu");}
+    		System.out.println("Chevauchement non resolu");}
     }
     
     
