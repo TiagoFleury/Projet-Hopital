@@ -143,7 +143,13 @@ public class BaseDeDonnees {
 	
 
 	
-	
+	public void envoieChirurgies(Chirurgien albert) {
+		for (Chirurgie c : listeChirurgies) {
+			if (c.getChirurgien().equals(albert)) {
+				albert.getChirurgies().add(c);
+			}
+		}
+	}
 	
 	
 	
@@ -266,6 +272,10 @@ public class BaseDeDonnees {
 	
 	public ArrayList<Bloc> getTousBlocs(){
 		return this.blocsExistants;
+	}
+	
+	public ArrayList<Chirurgie> getTousChirurgies(){
+		return this.listeChirurgies;
 	}
 	
 }
