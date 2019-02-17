@@ -221,25 +221,25 @@ public class BaseDeDonnees {
 			for (Chirurgie chi : c.getChirurgies()) {
 				leJour = chi.getDate().getDayOfWeek().toString();
 				
-				if (leJour.equals(joursSemaine[0])) {
+				if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
 					compteur1+=1; //Dimanche
 				}
-				if (leJour.equals(joursSemaine[1])) {
+				if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
 					compteur2+=1; //Lundi
 				}
-				if (leJour.equals(joursSemaine[2])) {
+				if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
 					compteur3+=1; //Mardi
 				}
-				if (leJour.equals(joursSemaine[3])) {
+				if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
 					compteur4+=1; //Mercredi
 				}
-				if (leJour.equals(joursSemaine[4])) {
+				if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
 					compteur5+=1; //Jeudi
 				}
-				if (leJour.equals(joursSemaine[5])) {
+				if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
 					compteur6+=1; // Vendredi
 				}
-				if (leJour.equals(joursSemaine[6])) {
+				if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
 					compteur7+=1; // Samedi
 				}
 			}
@@ -293,25 +293,25 @@ public class BaseDeDonnees {
 			for (Chirurgie chi : salle.getChirurgies()) {
 				leJour = chi.getDate().getDayOfWeek().toString();
 				
-				if (leJour.equals(joursSemaine[0])) {
+				if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
 					compteur1+=1; //Dimanche
 				}
-				if (leJour.equals(joursSemaine[1])) {
+				if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
 					compteur2+=1; //Lundi
 				}
-				if (leJour.equals(joursSemaine[2])) {
+				if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
 					compteur3+=1; //Mardi
 				}
-				if (leJour.equals(joursSemaine[3])) {
+				if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
 					compteur4+=1; //Mercredi
 				}
-				if (leJour.equals(joursSemaine[4])) {
+				if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
 					compteur5+=1; //Jeudi
 				}
-				if (leJour.equals(joursSemaine[5])) {
+				if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
 					compteur6+=1; //Vendredi
 				}
-				if (leJour.equals(joursSemaine[6])) {
+				if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
 					compteur7+=1; //Samedi
 				}
 			}
@@ -468,7 +468,14 @@ public class BaseDeDonnees {
 		System.out.println(datest.getDayOfWeek().toString());
 		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
 		String[] joursSemaine = dfsEN.getWeekdays();
-		System.out.println(joursSemaine[0].toString() + "j'ai affiché un jour, je le suppose vide");
+		System.out.println(joursSemaine[0].toString() + "j'ai affiché un jour, je le suppose vide \n \n");
+		
+		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[1].toString()));
+		System.out.println(joursSemaine[6].toString());
+		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6]));
+		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6].toString().toUpperCase()));
+		System.out.println(datest.getDayOfWeek().equals(joursSemaine[5]));
+		
 	}
 		
 	
