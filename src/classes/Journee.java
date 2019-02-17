@@ -83,8 +83,9 @@ public class Journee {
         @SuppressWarnings("deprecation")
 		int nbCarac = new Integer(c.getID()).toString().length();
         return j+15-nbCarac;
-    }    
+    }
 
+    
     //TRIS
     
     public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
@@ -270,6 +271,9 @@ public class Journee {
         return c;
     }
     
+   
+    
+    
    // Cette methode ne fait que mettre dans conflitsDuJour les conflits encore presents
     public void detectionConflit(){
         Conflit conf = null;
@@ -293,7 +297,6 @@ public class Journee {
                 		c2.setEnConflit(true);
                 	}
                 }
-                
             }
         }
     }
@@ -307,47 +310,46 @@ public class Journee {
     // Dans ce cas (de maniere innocente) on va choisir la premiere dispo qui ne genere aucun conflit
     // Voir la 1ere qui n'est pas occupee de la Journee entiere
     
-
     
-    public void resoudreInferenceCout0(BaseDeDonnees database , Interference i) {
+    
+    public void resoudreInterferenceCout0(BaseDeDonnees database, Interference i){
     	Bloc sallePb = i.getSallePb();
-    	Bloc uneSalle = null ;
+    	Bloc uneSalle = null;
     	LocalTime debLimite = LocalTime.of(8,00);
     	LocalTime finLimite = LocalTime.of(20,00);
     	
     	int compteur = 0, lg = database.getTousBlocs().size();
-    	while (compteur < lg) {
-    		uneSalle = database.getTousBlocs().get(compteur);
-    		
-    		if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
-    			
-    			if (i.getCh1().getDebut().isBefore(debLimite) || (i.getCh1().getFin().isAfter(finLimite))) { // Sur cette plage horaire on envoie forcement dans un bloc urgence
-    				// alors on envoie forcement dans un Bloc Urgence
-    				if (uneSalle.getID()>=4) {
-    					i.getCh1().setSalle(uneSalle);
-    					i.setEtat(true);
-    					compteur = lg;
-    				}
+    	if (i.getCh1().getDebut().isBefore(debLimite) || (i.getCh1().getFin().isAfter(finLimite))) {
+    		while ((compteur < lg) && (database.getTousBlocs().get(compteur).getID()<4)){ // Ici je veux juste arriver a une salle Urgence, tout en restant dans la liste des blocs
+    				compteur++;
     			}
-    			else { // Dans le cas ou ce n'est pas sur une periode de 20h-...-8h alors on envoie dans une salle normale
-    				if (uneSalle.getID()<=3) {
-    					i.getCh1().setSalle(uneSalle);
-    					i.setEtat(true);
-    					compteur = lg;
-    				}
+    		if (compteur < lg) {
+    			uneSalle = database.getTousBlocs().get(compteur);
+    			if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
+    				i.getCh1().setSalle(uneSalle);
+    				i.setEtat(true);
     			}
-			}
-    		compteur ++ ; // Ci dessus, j'ai simplement teste s'il y avait des salles NON UTILISEES toute la journee car la choisir = cout 0
+    		}
     	}
     	
+    	else { // Cas ou les horaires sont normaux on l'envoie dans une salle normale
+    		while ((compteur < lg) && (database.getTousBlocs().get(compteur).getID()>4)) {
+    			compteur++;
+    		}
+    		if (compteur < lg) {
+    			uneSalle = database.getTousBlocs().get(compteur);
+    			if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
+    				i.getCh1().setSalle(uneSalle);
+    				i.setEtat(true);
+    			}
+    		}
+    	}
     	if (i.getEtat()==false) {
 			System.out.println("Interference non resolue");
 				}
     	else { System.out.println("Interference resolue");}
-    		
-    	}
     	
-    
+    }
     
     public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
@@ -370,7 +372,6 @@ public class Journee {
     		
     	 
     }
-    
     
     public void resoudreChevauchementCout0(BaseDeDonnees database, Chevauchement c) {
     	Chirurgien chirugienPb = c.getChirurgienPb();
@@ -420,7 +421,7 @@ public class Journee {
     public void resoudreConflitCout0(BaseDeDonnees database, Conflit c) {
     	if (c instanceof Interference){
     		Interference cBis = (Interference) c;
-    		resoudreInferenceCout0(database, cBis);
+    		resoudreInterferenceCout0(database, cBis);
     	}
     	if (c instanceof Ubiquite) {
     		Ubiquite cBis = (Ubiquite) c;
@@ -434,6 +435,8 @@ public class Journee {
     
     
     
+    
+    
     // ACCESSEURS //
     public ArrayList<Chirurgie> getChirurgieJour(){
         return this.chirurgiesDuJour;
@@ -444,7 +447,7 @@ public class Journee {
     public LocalDate getDate() {
     	return date;
     }
-    public ArrayList<Chirurgien> getChirurgienMobilises(){
+    public ArrayList<Chirurgien> getChirurgiensMobilises(){
     	return chirurgiensMobilises;
     }
     

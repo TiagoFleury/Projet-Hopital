@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Chirurgien implements Comparable{
     private String nom;
     private ArrayList<Chirurgie> sesChirurgies;
-    private ArrayList<Float> moyennesJours;
+    private ArrayList<Double> moyennesJours;
     private ArrayList<LocalDate> joursDeTravail ;
     private double tempsMoyenChirurgie;
     
@@ -75,6 +75,13 @@ public class Chirurgien implements Comparable{
 	//MUTATEURS
 	public void setTempsMoyenChirurgie(double moyenne) {
 		tempsMoyenChirurgie = moyenne;
-		
+	}
+	
+	public void setMoyenneJours(ArrayList<Double> listemoyennes) {
+		moyennesJours=listemoyennes;
+	}
+	
+	public void setChirurgies(ArrayList<Chirurgie> liste) {
+		sesChirurgies = liste;
 	}
 }
