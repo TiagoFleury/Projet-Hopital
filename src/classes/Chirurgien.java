@@ -1,15 +1,26 @@
 package classes;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
+    private ArrayList<Chirurgie> sesChirurgies;
+    private ArrayList<Double> moyennesJours;
+    private ArrayList<LocalDate> joursDeTravail ;
+    private double tempsMoyenChirurgie;
     
     
   
     public Chirurgien(String nom) {
 		this.nom = nom;
-		
+		this.moyennesJours=null;
 	}
+    
+    
+    
     
     @Override
     public boolean equals(Object o) {
@@ -30,6 +41,10 @@ public class Chirurgien implements Comparable{
     	return true;
     }
     
+    
+    
+   
+    
 
 
     @Override
@@ -41,11 +56,32 @@ public class Chirurgien implements Comparable{
     public String getName() {
     	return nom;
     }
+    public ArrayList<Chirurgie> getChirurgies(){
+    	return sesChirurgies;
+    }
 
 
 	@Override
 	public int compareTo(Object o) {
-		
 		return this.nom.compareTo(((Chirurgien)o).getName());
+	}
+
+	//ACCESSEURS
+	public double getTempsMoyen() {
+		return tempsMoyenChirurgie;
+	}
+	
+
+	//MUTATEURS
+	public void setTempsMoyenChirurgie(double moyenne) {
+		tempsMoyenChirurgie = moyenne;
+	}
+	
+	public void setMoyenneJours(ArrayList<Double> listemoyennes) {
+		moyennesJours=listemoyennes;
+	}
+	
+	public void setChirurgies(ArrayList<Chirurgie> liste) {
+		sesChirurgies = liste;
 	}
 }

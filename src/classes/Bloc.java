@@ -1,14 +1,18 @@
 package classes;
+import java.util.ArrayList;
 
 @SuppressWarnings("rawtypes")
 public class Bloc implements Comparable{
     private String nom;
     private int id;
-    
+    private ArrayList<Double> moyennesJours;
+    private ArrayList<Chirurgie> chirurgies;
 
     public Bloc(String leNom) {
-    	id = Integer.parseInt(leNom.substring(6));
     	nom = leNom;
+    	
+    	id = Integer.parseInt(leNom.substring(6));
+    	
     }
     
     
@@ -34,6 +38,9 @@ public class Bloc implements Comparable{
     	return id;
     }
 
+    public ArrayList<Chirurgie> getChirurgies(){
+    	return chirurgies;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -55,5 +62,15 @@ public class Bloc implements Comparable{
 			return this.id - b.id;
 		}
 		return 0;
+	}
+	
+	
+	
+	// Mutateurs //
+	public void setMoyennesJours(ArrayList<Double> listemoyennes) {
+		moyennesJours=listemoyennes;
+	}
+	public void setChirurgies(ArrayList<Chirurgie> liste) {
+		chirurgies = liste;
 	}
 }
