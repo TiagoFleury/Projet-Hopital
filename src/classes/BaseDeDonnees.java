@@ -143,7 +143,7 @@ public class BaseDeDonnees {
 	//STATS
 	
 	
-	public void calculTempsMoyensChirurgies() {
+	public void calculTempsMoyensChirurgien() {
 		int somme = 0;
 		int compteur = 0;
 		double moyenne = 0;
@@ -243,7 +243,7 @@ public class BaseDeDonnees {
 					compteur7+=1; // Samedi
 				}
 			}
-			if (c.getChirurgies().size()!=0) {
+			if (c.getChirurgies().size()!=0) { // ATTENTION : je crée ici une liste de taille 7 / donc position de 0 à 6
 				listeProportionsJours.add((double) compteur1/c.getChirurgies().size());
 				listeProportionsJours.add((double) compteur2/c.getChirurgies().size());
 				listeProportionsJours.add((double) compteur3/c.getChirurgies().size());
@@ -266,6 +266,7 @@ public class BaseDeDonnees {
 	}
 	
 	
+	
 	public void envoieChirurgiesBloc(Bloc cantine) {
 		ArrayList<Chirurgie> lesChirurgies=null;
 		for (Chirurgie c : listeChirurgies) {
@@ -276,8 +277,6 @@ public class BaseDeDonnees {
 		cantine.setChirurgies(lesChirurgies);
 		
 	}
-	
-	
 	
 	public void calculJoursRecurrentsDeTravailBlocs() {
 		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
@@ -475,6 +474,7 @@ public class BaseDeDonnees {
 		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6]));
 		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6].toString().toUpperCase()));
 		System.out.println(datest.getDayOfWeek().equals(joursSemaine[5]));
+		
 		
 	}
 		

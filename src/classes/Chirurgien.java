@@ -71,7 +71,12 @@ public class Chirurgien implements Comparable{
 		return tempsMoyenChirurgie;
 	}
 	
+	public ArrayList<Double> getProportions(){
+		return moyennesJours;
+	}
+	
 
+	
 	//MUTATEURS
 	public void setTempsMoyenChirurgie(double moyenne) {
 		tempsMoyenChirurgie = moyenne;

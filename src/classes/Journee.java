@@ -2,10 +2,13 @@ package classes;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
+import java.math.*;
 
 public class Journee {
     private LocalDate date;
@@ -13,6 +16,7 @@ public class Journee {
     private ArrayList<Chirurgie> chirurgiesDuJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
     private ArrayList<Bloc> sallesOccupeesduJour;
+    private ArrayList<Anomalie> anomaliesDuJour;
     
     
     //CONSTRUCTEURS 
@@ -304,7 +308,92 @@ public class Journee {
     
     
     
-    // 3. Methodes de base de resolution de conflits
+    // 3. Detection d'anomalies parmis les chirurgies qui sont en conflits
+    
+    
+    // On définit ici des méthodes qui s'applique à toute chirurgie, mais on ne regardera QUE pour des chirurgies en conflit
+    
+    
+    // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 
+    //   pour un seuil fixé, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
+    
+    public boolean AnomalieJourOuPas(Chirurgie x, double seuil) {
+    	boolean b = false;
+    	String leJour = null;
+    	leJour = x.getDate().getDayOfWeek().toString();
+    	DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
+		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday]
+		
+    	int numero = 0;
+    	
+    	if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
+			numero = 0; //Dimanche
+		}
+		if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
+			numero = 1; //Lundi
+		}
+		if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
+			numero = 2; //Mardi
+		}
+		if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
+			numero = 3; //Mercredi
+		}
+		if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
+			numero = 4; //Jeudi
+		}
+		if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
+			numero = 5; //Vendredi
+		}
+		if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
+			numero = 6; //Samedi
+		}
+		
+		if (x.getChirurgien().getProportions().get(numero)<seuil) {
+			b=true;
+		}
+		return b;
+    }
+    
+    
+    // Pour une chirurgie en conflit donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
+    //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci
+    public boolean AnomalieDureeChirurgie(Chirurgie x, double seuil) {
+    	boolean b = false;
+    	double time = ChronoUnit.MINUTES.between(x.getDebut(), x.getFin());
+    	if (Math.abs(x.getChirurgien().getTempsMoyen()-time)>seuil) {
+    		b=true;
+    	}
+    	return b;
+    }
+    
+    
+    public boolean AnomalieSurchageChirurgien(Chirurgie x, double seuilTemps, int seuilNb) {
+    	boolean b = false;
+    	double sum;
+    	int nombreCh = 0;
+    	for (Chirurgie c : x.getChirurgien().getChirurgies()) {
+    		sum += ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
+    		nombreCh ++ ;
+    	}
+    	if ((sum > seuilTemps) || (nombreCh > seuilNb)  {
+    		b = true;
+    	}
+    	return b;
+    }
+    
+    
+    
+    
+    // Methode qui va passer en attribut d'une instance Journée, toutes les anomalies de chirurgie en conflit
+    public void detectionsAnomalie() {
+    	
+    }
+    
+    
+    
+    
+    
+    // 4. Methodes de base de resolution de conflits
     
     // Ici resolution facile, trouver une salle disponible totalement disponible sur le creneau : ie ne genere aucun conflit / cout = 0
     // Dans ce cas (de maniere innocente) on va choisir la premiere dispo qui ne genere aucun conflit
@@ -432,6 +521,9 @@ public class Journee {
     		resoudreChevauchementCout0(database, cBis);
     	}
     }
+    
+    
+    
     
     
     
