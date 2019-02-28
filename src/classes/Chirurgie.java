@@ -29,7 +29,7 @@ public class Chirurgie {
 	}
     
     @Override
-    //Deux chirurgies sont egales si elles ont les mêmes valeurs dans tous leurs attributs sauf ID
+    //Deux chirurgies sont egales si elles ont les mï¿½mes valeurs dans tous leurs attributs sauf ID
     public boolean equals(Object o) {
     	if(this == o) { //C'est la meme adresse memoire
     		return true;
@@ -99,12 +99,17 @@ public class Chirurgie {
 
 	public void setChirurgien(Chirurgien surgeon) {
 		chirurgien = surgeon;
-		
 	}
 
 	public void setEnConflit(boolean b) {
 		estEnConflit = b;
-		
+	}
+	
+	public void setDebut(LocalTime deb) {
+		heureDebut=deb;
+	}
+	public void setFin(LocalTime fin) {
+		heureFin=fin;
 	}
 
 	

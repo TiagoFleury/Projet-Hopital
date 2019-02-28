@@ -317,7 +317,7 @@ public class Journee {
     // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 
     //   pour un seuil fixé, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
     
-    public boolean AnomalieJourOuPas(Chirurgie x, double seuil) {
+    public boolean anomalieJourOuPas(Chirurgie x, double seuil) {
     	boolean b = false;
     	String leJour = null;
     	leJour = x.getDate().getDayOfWeek().toString();
@@ -355,9 +355,9 @@ public class Journee {
     }
     
     
-    // Pour une chirurgie en conflit donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
-    //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci
-    public boolean AnomalieDureeChirurgie(Chirurgie x, double seuil) {
+    // Pour une chirurgie (en conflit) donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
+    //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolérance)
+    public boolean anomalieDureeChirurgieOuPas(Chirurgie x, double seuil) {
     	boolean b = false;
     	double time = ChronoUnit.MINUTES.between(x.getDebut(), x.getFin());
     	if (Math.abs(x.getChirurgien().getTempsMoyen()-time)>seuil) {
@@ -367,15 +367,15 @@ public class Journee {
     }
     
     
-    public boolean AnomalieSurchageChirurgien(Chirurgie x, double seuilTemps, int seuilNb) {
+    public boolean anomalieSurchageChirurgienOuPas(Chirurgie x, double seuilTemps, int seuilNb) {
     	boolean b = false;
-    	double sum;
+    	double sum=0;
     	int nombreCh = 0;
     	for (Chirurgie c : x.getChirurgien().getChirurgies()) {
     		sum += ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
     		nombreCh ++ ;
     	}
-    	if ((sum > seuilTemps) || (nombreCh > seuilNb)  {
+    	if ((sum > seuilTemps) || (nombreCh > seuilNb))  {
     		b = true;
     	}
     	return b;
@@ -383,10 +383,18 @@ public class Journee {
     
     
     
+    public boolean anomalieDureeInterOpeBlocOuPas(Chirurgie x, double seuil) {
+    	boolean b = false;
+    	return b;
+    }
+    
     
     // Methode qui va passer en attribut d'une instance Journée, toutes les anomalies de chirurgie en conflit
     public void detectionsAnomalie() {
-    	
+    	boolean b1=false, b2=false, b3=false, b4=false;
+    	for (Conflit conf : conflitsDuJour) {
+    		
+    	}
     }
     
     
@@ -400,6 +408,33 @@ public class Journee {
     // Voir la 1ere qui n'est pas occupee de la Journee entiere
     
     
+    
+    
+    public void raccourcirChirurgieDebut(Chirurgie ch, long nbMin) {
+    	ch.setDebut(ch.getDebut().plusMinutes(nbMin));
+    }
+    
+    public void raccourcirChirurgieFin(Chirurgie ch, long nbMin) {
+    	ch.setFin(ch.getFin().minusMinutes(nbMin));
+    }
+    
+    public void deplacerChirurgieAvant(Chirurgie ch, long nbMin) {
+    	ch.setDebut(ch.getDebut().minusMinutes(nbMin));
+    	ch.setFin(ch.getFin().minusMinutes(nbMin));
+    }
+    
+    public void deplacerChirurgieApres(Chirurgie ch, long nbMin) {
+    	ch.setDebut(ch.getDebut().plusMinutes(nbMin));
+    	ch.setFin(ch.getFin().plusMinutes(nbMin));
+    }
+    
+    
+    
+    
+    
+    
+    // RESOLUTION INTERFERENCE
+    ///////////////////////////////////////////
     
     public void resoudreInterferenceCout0(BaseDeDonnees database, Interference i){
     	Bloc sallePb = i.getSallePb();
@@ -440,13 +475,25 @@ public class Journee {
     	
     }
     
+    
+    
+    
+    
+    // RESOLUTION D'UBIQUITE 
+    /////////////////////////////////////////////
+    
+    public void resolutionUbiquite(BaseDeDonnees database, Ubiquite u) {
+    	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles résolutions
+    }
+    
+    
     public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null ;
     	int compteur = 0, lg = database.getTousChirurgiens().size();
     	while (compteur < lg) {
     		unChirurgien = database.getTousChirurgiens().get(compteur);
-    		if (!chirurgiensMobilises.contains(unChirurgien)) {
+    		if (!chirurgiensMobilises.contains(unChirurgien) ) {
 				u.getCh1().setChirurgien(unChirurgien);
 				u.setEtat(true);
 				compteur = lg;
@@ -461,6 +508,148 @@ public class Journee {
     		
     	 
     }
+    
+    
+    
+    
+    
+    // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
+    public void resoudreUbiquite0(BaseDeDonnees database, Ubiquite u) {
+    	Chirurgien chirurgienPb = u.getChirurgienPb();
+    	Chirurgien unChirurgien = null;
+    	Chirurgie chirurgieTest = null;
+    	
+    	int compteur = 0, lg = database.getTousChirurgiens().size();
+    	int nbConflitsGeneres = 0;
+
+    	while (compteur < lg) {
+    		unChirurgien = database.getTousChirurgiens().get(compteur);
+        	chirurgieTest = u.getCh1();
+        	chirurgieTest.setChirurgien(unChirurgien);
+        	for (Chirurgie compteuse : chirurgiesDuJour) {
+        		if (conflitOuPas(chirurgieTest, compteuse)!=null) {
+        			nbConflitsGeneres++;
+        		}
+        		
+        	}
+        	if (chirurgiensMobilises.contains(unChirurgien) && conflitOuPas(chirurgieTest,u.getCh2())==null && nbConflitsGeneres==0) {
+    			u.getCh1().setChirurgien(unChirurgien);
+    			u.setEtat(true);
+    			compteur = lg;
+        	}
+    	}
+    	
+    	
+    	if (u.getEtat()==false) {
+    		compteur = 0;
+    		lg = database.getTousChirurgiens().size();
+    		nbConflitsGeneres =0;
+
+        	while (compteur < lg) {
+        		unChirurgien = database.getTousChirurgiens().get(compteur);
+            	chirurgieTest = u.getCh2();
+            	chirurgieTest.setChirurgien(unChirurgien);
+            	for (Chirurgie compteuse : chirurgiesDuJour) {
+            		if (conflitOuPas(chirurgieTest, compteuse)!=null) {
+            			nbConflitsGeneres++;
+            		}
+            		
+            	}
+            	if (chirurgiensMobilises.contains(unChirurgien) && conflitOuPas(chirurgieTest,u.getCh1())==null && nbConflitsGeneres==0 ) {
+        			u.getCh2().setChirurgien(unChirurgien);
+        			u.setEtat(true);
+        			compteur = lg;
+            	}
+        	}
+    	}
+        		
+    		
+    }
+    
+    
+    // Si celle au dessus n'a pas marché, alors aller chercher parmis ceux qui bossent pas de la journée (ex : ceux qui bossent pas le mardi15)
+    // lesquels ont la plus grosse probas de bosser un mardi
+    
+    public void resoudreUbiquite1(BaseDeDonnees database, Ubiquite u) {
+    	Chirurgien chirurgienPb = u.getChirurgienPb();
+    	Chirurgien unChirurgien = null;
+    	Chirurgie chirurgieTest = null;
+    	
+    	int compteur = 0, lg = database.getTousChirurgiens().size();
+    	float probasMax=0;
+    	
+    	String leJour = null;
+    	leJour = u.getDate().getDayOfWeek().toString();
+    	DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
+		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday]
+		
+    	int numero = 0;
+    	
+    	if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
+			numero = 0; //Dimanche
+		}
+		if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
+			numero = 1; //Lundi
+		}
+		if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
+			numero = 2; //Mardi
+		}
+		if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
+			numero = 3; //Mercredi
+		}
+		if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
+			numero = 4; //Jeudi
+		}
+		if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
+			numero = 5; //Vendredi
+		}
+		if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
+			numero = 6; //Samedi
+		}
+    	
+    	
+		Chirurgien theSurgeon = null;
+		int nbChirurgiensComptabilisés=0;
+    	
+    	while (compteur < lg) {
+    		unChirurgien = database.getTousChirurgiens().get(compteur);
+    		
+    		if (!chirurgiensMobilises.contains(unChirurgien) ) {
+    			
+    			if (unChirurgien.getProportions().get(numero)>probasMax) {
+    				theSurgeon=unChirurgien;
+    			}
+    			nbChirurgiensComptabilisés++;
+			}
+    		compteur ++ ; // Ci dessus, j'ai simplement test s'il y avait des Chirurgiens NON UTILISES toute la journee car le choisir = cout 0
+    	}
+    	
+    	if (nbChirurgiensComptabilisés!=0 && !theSurgeon.equals(chirurgienPb) && !chirurgiensMobilises.contains(theSurgeon)) {
+    		u.getCh1().setChirurgien(theSurgeon);
+    		u.setEtat(true);
+    	}
+		
+    }
+    
+    
+    
+    
+    
+    // Ubiquite classique + cas où le chirurgien travaille un jour ou il ne devrait pas
+    public void resoudreUbiquite2(BaseDeDonnees database, Ubiquite u) {
+    	
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // RESOLUTION CHEVAUCHEMENT 
+    ///////////////////////////////////////////////
     
     public void resoudreChevauchementCout0(BaseDeDonnees database, Chevauchement c) {
     	Chirurgien chirugienPb = c.getChirurgienPb();
@@ -526,7 +715,10 @@ public class Journee {
     
     
     
+   
     
+    
+    ////////////////////////////////////////////////////////
     
     
     // ACCESSEURS //
