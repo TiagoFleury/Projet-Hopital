@@ -184,7 +184,7 @@ public class BaseDeDonnees {
 			Journee journee = getJournee(i);
 			
 			for(Bloc bloc : journee.getBlocs()) { //Pour chaque blocs de chaque journees
-				for(Chirurgie chir : journee.getChirurgieJour()) { //On va recuperer toutes les chirurgies de ce bloc
+				for(Chirurgie chir : journee.getChirurgiesJour()) { //On va recuperer toutes les chirurgies de ce bloc
 					
 					if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
 						liste.add(chir); //On l'ajoute a la liste
@@ -224,7 +224,7 @@ public class BaseDeDonnees {
 			for(int i=0;i<listeJournees.size();i++) { //Pour chaque journee
 				Journee journee = getJournee(i);
 			
-				for(Chirurgie chir : journee.getChirurgieJour()) { //On va recuperer toutes les chirurgies de ce chirurgien
+				for(Chirurgie chir : journee.getChirurgiesJour()) { //On va recuperer toutes les chirurgies de ce chirurgien
 					
 					if(chir.getChirurgien().equals(chirurgien)) {//On verifie que c'est une chirurgie de ce chirurgien
 						liste.add(chir); //On l'ajoute a la liste
@@ -501,12 +501,6 @@ public class BaseDeDonnees {
 		
 		
 		
-		for(Journee j : journeesAconflits) {
-			for(Conflit c : j.getConflits()) {
-				j.resoudreConflitCout0(data2, c);
-			}
-		}
-		
 		nbConflits = 0;
 		journeesAconflits= new ArrayList<>();
 		for(int i=0;i<data2.listeJournees.size();i++){
@@ -542,6 +536,16 @@ public class BaseDeDonnees {
 		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6]));
 		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6].toString().toUpperCase()));
 		System.out.println(datest.getDayOfWeek().equals(joursSemaine[5]));
+		
+		
+		
+		Journee j = data2.getJournee("08/06/16");
+		j.detectionConflit();
+		System.out.println(j.getConflits().size());
+		System.out.println(j.getChirurgiesJour().size());
+		j.planningJourneeParChirurgien();
+		
+		
 		
 		
 	}

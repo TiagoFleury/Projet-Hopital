@@ -696,6 +696,8 @@ public class Journee {
     
     
     
+    
+    
     public void resoudreConflitCout0(BaseDeDonnees database, Conflit c) {
     	if (c instanceof Interference){
     		Interference cBis = (Interference) c;
@@ -715,14 +717,29 @@ public class Journee {
     
     
     
+    // Resolution de conflit
+    /////////////////////////////////////////////////////////
+    
+    public void resolutionConflit(BaseDeDonnees database, Conflit c) {
+    	// 1ere etape, penser a checker que si, pr les 2 chirurgies en conflits, leur durees n'est pas du tout coherente
+    	// ie intervalle de confiance 95%  && qu'en plus, cela résoud le conflit  -- alors on la raccourcie direct
+    	
+    	// puis resoudre conflit
+    }
+    
+    
    
+    
+    
+    
+    
     
     
     ////////////////////////////////////////////////////////
     
     
     // ACCESSEURS //
-    public ArrayList<Chirurgie> getChirurgieJour(){
+    public ArrayList<Chirurgie> getChirurgiesJour(){
         return this.chirurgiesDuJour;
     }
     public ArrayList<Conflit> getConflits(){
