@@ -609,7 +609,7 @@ public class Journee {
     	
     	
 		Chirurgien theSurgeon = null;
-		int nbChirurgiensComptabilisés=0;
+		int nbChirurgiensComptabilises=0;
     	
     	while (compteur < lg) {
     		unChirurgien = database.getTousChirurgiens().get(compteur);
@@ -619,12 +619,12 @@ public class Journee {
     			if (unChirurgien.getProportions().get(numero)>probasMax) {
     				theSurgeon=unChirurgien;
     			}
-    			nbChirurgiensComptabilisés++;
+    			nbChirurgiensComptabilises++;
 			}
     		compteur ++ ; // Ci dessus, j'ai simplement test s'il y avait des Chirurgiens NON UTILISES toute la journee car le choisir = cout 0
     	}
     	
-    	if (nbChirurgiensComptabilisés!=0 && !theSurgeon.equals(chirurgienPb) && !chirurgiensMobilises.contains(theSurgeon)) {
+    	if (nbChirurgiensComptabilises!=0 && !theSurgeon.equals(chirurgienPb) && !chirurgiensMobilises.contains(theSurgeon)) {
     		u.getCh1().setChirurgien(theSurgeon);
     		u.setEtat(true);
     	}
