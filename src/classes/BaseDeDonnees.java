@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeMap;
 import java.io.BufferedReader;
@@ -25,7 +28,7 @@ public class BaseDeDonnees {
 	public ArrayList<Bloc> blocsExistants;
 	public TreeMap<LocalDate,Journee> listeJournees;
 	public int nbConflits;
-	public double tempsMoyenEntreDeuxChirurgies;
+	public double tempsMoyenEntreDeuxChirurgiesMemeBloc;
 	
 	//Constructeur
 	public BaseDeDonnees() {
@@ -33,7 +36,7 @@ public class BaseDeDonnees {
 		chirurgiensExistants = new ArrayList<Chirurgien>();
 		blocsExistants = new ArrayList<Bloc>();
 		listeJournees = new TreeMap<LocalDate,Journee>();
-		tempsMoyenEntreDeuxChirurgies = 0;
+		tempsMoyenEntreDeuxChirurgiesMemeBloc = 0;
 	}
 	
 	// IMPORT DE BASE DE DONNEES 
@@ -172,25 +175,90 @@ public class BaseDeDonnees {
 		}
 	}
 	
-	
-	public void calculTempsEntreDeuxChirurgies() {
+	//Attention pour cette methode il faut que les attributs "estEnConflit" soient a jour
+	public void calculTempsEntreDeuxChirurgiesMemeBloc() {
 		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un bloc, il y moyen qu'il faille faire gaffe aux jours aussi
-		
-		for(Bloc bloc : blocsExistants) {
-			for(Chirurgie chir : listeChirurgies) {
-				if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
-					liste.add(chir);
+		double somme = 0;
+		int compte = 0;
+		for(int i=0;i<listeJournees.size();i++) {
+			Journee journee = getJournee(i);
+			
+			for(Bloc bloc : journee.getBlocs()) { //Pour chaque blocs de chaque journees
+				for(Chirurgie chir : journee.getChirurgieJour()) { //On va recuperer toutes les chirurgies de ce bloc
+					
+					if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
+						liste.add(chir); //On l'ajoute a la liste
+						
+					}
+				}
+				
+				Comparator<Chirurgie> CHRONOLOGIQUE = Comparator.comparing(Chirurgie::getDebut);
+				
+				Collections.sort(liste,CHRONOLOGIQUE);
+				
+				
+				for(int j=0;j<liste.size()-1;j++) {
+					System.out.println();
+					if(!(liste.get(j).estEnConflit()) && !(liste.get(j+1).estEnConflit())) { //Si aucune des deux chirurgies n'est en conflit,
+						//On compte leur ecart
+						compte++;
+						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
+						somme += ecart;
+						System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
+					}
 					
 				}
-			}
-			
-			//Ici il faut trier la liste dans l'ordre par heure de commencement
-			
-			for(int i=0;i<liste.size();i++) {
-				//Ici faire un truc qui calcule le temps entre deux chirurgies consecutives uniquement si aucune des deux n'est dans un conflit
+				liste.clear();
 			}
 		}
+		double moyenne = somme / compte;
+		tempsMoyenEntreDeuxChirurgiesMemeBloc = ((int)(moyenne*100))/100.0;
 	}
+	
+	public void calculTempsEntreDeuxChirurgiesMemeChirurgien() {
+		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un chirurgien dans une journee
+		double somme = 0;
+		int compte = 0;
+		for(Chirurgien chirurgien : chirurgiensExistants) { //Pour chaque chirurgien, on va calculer la moyenne
+			
+			for(int i=0;i<listeJournees.size();i++) { //Pour chaque journee
+				Journee journee = getJournee(i);
+			
+				for(Chirurgie chir : journee.getChirurgieJour()) { //On va recuperer toutes les chirurgies de ce chirurgien
+					
+					if(chir.getChirurgien().equals(chirurgien)) {//On verifie que c'est une chirurgie de ce chirurgien
+						liste.add(chir); //On l'ajoute a la liste
+						
+					}
+				}
+				
+				//Ensuite on trie par ordre chronologique d'heure de debut
+				Comparator<Chirurgie> CHRONOLOGIQUE = Comparator.comparing(Chirurgie::getDebut);
+				
+				Collections.sort(liste,CHRONOLOGIQUE);
+				
+				
+				for(int j=0;j<liste.size()-1;j++) {
+					System.out.println();
+					if(!(liste.get(j).estEnConflit()) && !(liste.get(j+1).estEnConflit())) { //Si aucune des deux chirurgies n'est en conflit,
+						//On compte leur ecart
+						compte++;
+						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
+						somme += ecart;
+						System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
+					}
+					
+				}
+				liste.clear();
+			}
+			double moyenne = somme / compte;
+			chirurgien.tempsMoyenEntreDeuxChirurgies = ((int)(moyenne*100))/100.0;
+			somme=0;
+			compte=0;
+			
+		}
+	}
+	
 	
 	
 	
