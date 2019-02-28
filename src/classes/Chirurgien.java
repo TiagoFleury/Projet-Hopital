@@ -9,6 +9,7 @@ public class Chirurgien implements Comparable{
     private String nom;
     private ArrayList<Chirurgie> sesChirurgies;
     private ArrayList<Double> moyennesJours;
+    public static double tempsMoyenEntreDeuxChirurgies;
     private ArrayList<LocalDate> joursDeTravail ;
     private double tempsMoyenChirurgie;
     

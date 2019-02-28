@@ -7,6 +7,7 @@ public class Bloc implements Comparable{
     private int id;
     private ArrayList<Double> moyennesJours;
     private ArrayList<Chirurgie> chirurgies;
+    public static double tempsMoyenEntreDeuxChirurgies;
 
     public Bloc(String leNom) {
     	nom = leNom;
