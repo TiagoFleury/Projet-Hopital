@@ -7,6 +7,7 @@ import java.util.ArrayList;
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
     private String nom;
+    public static double tempsMoyenEntreDeuxChirurgies;
     private ArrayList<LocalDate> joursDeTravail ;
     private double tempsMoyenChirurgie;
     

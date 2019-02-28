@@ -4,7 +4,7 @@ package classes;
 public class Bloc implements Comparable{
     private String nom;
     private int id;
-    
+    public static double tempsMoyenEntreDeuxChirurgies;
 
     public Bloc(String leNom) {
     	nom = leNom;

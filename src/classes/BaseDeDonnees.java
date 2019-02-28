@@ -244,10 +244,12 @@ public class BaseDeDonnees {
 		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un bloc, il y moyen qu'il faille faire gaffe aux jours aussi
 		
 		for(Bloc bloc : blocsExistants) {
-			for(Chirurgie chir : listeChirurgies) {
-				if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
-					liste.add(chir);
-					
+			for(int i=0;i<listeJournees.size();i++) {
+				Journee j = getJournee(i);
+				for(Chirurgie chir : j.getChirurgieJour()) { //Pour chaque chirurgies de chaques jours
+					if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
+						liste.add(chir);
+					}
 				}
 			}
 			
