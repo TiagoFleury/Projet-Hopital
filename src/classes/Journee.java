@@ -375,7 +375,7 @@ public class Journee {
     		sum += ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
     		nombreCh ++ ;
     	}
-    	if ((sum > seuilTemps) || (nombreCh > seuilNb))  {
+    	if ((sum > seuilTemps) || (nombreCh > seuilNb) ) {
     		b = true;
     	}
     	return b;
@@ -733,6 +733,9 @@ public class Journee {
     }
     public ArrayList<Chirurgien> getChirurgiensMobilises(){
     	return chirurgiensMobilises;
+    }
+    public ArrayList<Bloc> getBlocs(){
+    	return sallesOccupeesduJour;
     }
     
            
