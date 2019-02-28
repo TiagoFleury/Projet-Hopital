@@ -511,7 +511,7 @@ public class Journee {
     
     
     
-    
+    // DABORD ALLER CHERCHER LES CHIRURGIENS QUI ONT 0 CONFLITS, car les AUTRES ON EST SUR QU'ils ne sont pas la
     
     // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
     public void resoudreUbiquite0(BaseDeDonnees database, Ubiquite u) {
