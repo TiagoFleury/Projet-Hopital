@@ -20,16 +20,39 @@ class BaseDeDonneesTEST {
 		
 		data.organiserJournees();
 		
-		data.calculTempsMoyensChirurgies();
+		data.calculTempsMoyensChirurgien();
 		
 		System.out.println("------------------------");
-		for(int i=0;i<data.listeJournees.size();i++) {
-			data.getJournee(i).planningJourneeParChirurgien();
-		}
+//		for(int i=0;i<data.listeJournees.size();i++) {
+//			data.getJournee(i).planningJourneeParChirurgien();
+//		}
 		//Test pour le temps moyen de gregory house (3 chirurgies comptables de 120 + 90 + 120)
 		// 330/3 = 110
 		
 		assertEquals(data.getTousChirurgiens().get(0).getTempsMoyen(), 110);
+		
+	}
+	
+	
+	@Test
+	void testTpsMoyenEntre2Chirurgies() {
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("Chirurgies_v2.csv");
+		
+		data.organiserJournees();
+		
+		
+		
+		data.calculTempsEntreDeuxChirurgiesMemeBloc();
+
+		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
+		for(Chirurgien c : data.getTousChirurgiens()) {
+			System.out.println("Temps moyen "+c.getName()+" : "+c.tempsMoyenEntreDeuxChirurgies+"min");
+		}
+		System.out.println("temps moyen meme bloc (minutes) : "+data.tempsMoyenEntreDeuxChirurgiesMemeBloc);
+
+//		for(int i=0;i<data.listeJournees.size();i++)
+//			data.getJournee(i).planningJourneeParChirurgien();//Journee ou il y a un gros 400 minutes d'ecart
 		
 	}
 	
@@ -43,7 +66,7 @@ class BaseDeDonneesTEST {
 		data.organiserJournees();
 		Journee jour = data.getJournee("31/12/16");
 		
-		jour.planningJourneeParBloc();
+		//jour.planningJourneeParBloc();
 		
 		
 		//Petite base
@@ -55,7 +78,7 @@ class BaseDeDonneesTEST {
 		
 		assertEquals(6,data2.listeJournees.size());
 		
-		jour2.planningJourneeParChirurgien();
+		//jour2.planningJourneeParChirurgien();
 		
 	}
 	
@@ -85,7 +108,7 @@ class BaseDeDonneesTEST {
 		assertEquals(resultat, "BLOC-E1  id:1,BLOC-E2  id:2,BLOC-E3  id:3,");
 		BaseDeDonnees data2 = new BaseDeDonnees();
 		data2.importBase("Chirurgies_v2.csv");
-		System.out.println("Les blocs : "+data2.getTousBlocs());
+		//System.out.println("Les blocs : "+data2.getTousBlocs());
 	}
 	
 	

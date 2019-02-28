@@ -369,13 +369,13 @@ public class Journee {
     
     public boolean AnomalieSurchageChirurgien(Chirurgie x, double seuilTemps, int seuilNb) {
     	boolean b = false;
-    	double sum;
+    	double sum=0;
     	int nombreCh = 0;
     	for (Chirurgie c : x.getChirurgien().getChirurgies()) {
     		sum += ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
     		nombreCh ++ ;
     	}
-    	if ((sum > seuilTemps) || (nombreCh > seuilNb)  {
+    	if ((sum > seuilTemps) || (nombreCh > seuilNb) ) {
     		b = true;
     	}
     	return b;
@@ -541,6 +541,9 @@ public class Journee {
     }
     public ArrayList<Chirurgien> getChirurgiensMobilises(){
     	return chirurgiensMobilises;
+    }
+    public ArrayList<Bloc> getBlocs(){
+    	return sallesOccupeesduJour;
     }
     
            
