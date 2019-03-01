@@ -17,6 +17,7 @@ class BaseDeDonneesTEST {
 	void testCalculTempsMoyensChirurgie() {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
+		//data.importBase("Chirurgies_v2.csv");
 		
 		data.organiserJournees();
 		
@@ -29,7 +30,7 @@ class BaseDeDonneesTEST {
 		//Test pour le temps moyen de gregory house (3 chirurgies comptables de 120 + 90 + 120)
 		// 330/3 = 110
 		
-		assertEquals(data.getTousChirurgiens().get(0).getTempsMoyen(), 110);
+		assertEquals(110, data.getTousChirurgiens().get(0).getTempsMoyen());
 		
 	}
 	
@@ -47,9 +48,9 @@ class BaseDeDonneesTEST {
 
 		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
 		for(Chirurgien c : data.getTousChirurgiens()) {
-			System.out.println("Temps moyen "+c.getName()+" : "+c.tempsMoyenEntreDeuxChirurgies+"min");
+			System.out.println("Temps moyen "+c.getName()+" : "+c.getTempsInteroperatoireMoyen()+"min");
 		}
-		System.out.println("temps moyen meme bloc (minutes) : "+data.tempsMoyenEntreDeuxChirurgiesMemeBloc);
+		System.out.println("temps moyen meme bloc (minutes) : "+data.getTempsMoyenInteroperatoireBloc());
 
 //		for(int i=0;i<data.listeJournees.size();i++)
 //			data.getJournee(i).planningJourneeParChirurgien();//Journee ou il y a un gros 400 minutes d'ecart
@@ -90,7 +91,7 @@ class BaseDeDonneesTEST {
 		data.importBase("MiniBase.csv");
 		
 		data.organiserJournees();
-		data.getJournee(3).planningJourneeParBloc();
+		//data.getJournee(3).planningJourneeParBloc();
 		
 		data.exportBase();
 	}

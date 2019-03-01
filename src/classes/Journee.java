@@ -360,13 +360,13 @@ public class Journee {
     
     
     
-    // Pour une chirurgie (en conflit) donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
-    //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolérance)
-    
+
+    // Pour une chirurgie (en conflit) donnee, et pour un certain seuil, la chirurgie passe en anomalie si : 
+    //    il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolerance)
     public boolean anomalieDureeChirurgieOuPas(Chirurgie x) {
     	boolean b = false;
     	double time = x.getDuree();
-    	ArrayList<Double> interv = BaseDeDonnees.intervalleConfiance95(x.getChirurgien().getLesTempsdeChirurgies());
+    	ArrayList<Double> interv = x.getChirurgien().getICtempsMoyen();
     	if ( (time<interv.get(0)) || (time>interv.get(1))){
     		b=true;
     	}
