@@ -1,6 +1,7 @@
 package classes;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
@@ -90,34 +91,19 @@ public class Journee {
     }
 
     
-    //TRIS
-    
-    public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
-    	@SuppressWarnings("unchecked") //Warning relou
-		Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
-    	
-    	Collections.sort(liste, PAR_BLOC);
-    	return liste;
-    }
-    public static ArrayList<Chirurgie> triParChirurgien(ArrayList<Chirurgie> liste){
-    	@SuppressWarnings("unchecked") //Warning relou
-		Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
-    	Collections.sort(liste, PAR_CHIRURGIEN);
-    	return liste;
-    }
-    
     
     
     //AFFICHAGES
     
     public void planningJourneeParBloc(){
         System.out.println("\n\n\n");
-        System.out.println("                                                     PLANNING DU "+date+"\n\n");
+        System.out.println("                                                     PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n");
         System.out.println("Salle          0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h   8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
         //  A gauche du '.' c'est 8h,   A droite du '.' c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
+        chirurgiesJourTriees = chirurgiesDuJour;
+        Collections.sort(chirurgiesJourTriees, Chirurgie.PAR_BLOC);
         Bloc blocActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
@@ -145,13 +131,14 @@ public class Journee {
     
     public void planningJourneeParChirurgien(){
         System.out.println("\n\n\n");
-        System.out.println("                                                      PLANNING DU "+date+"\n\n");
+        System.out.println("                                                      PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n");
         System.out.println("Chirurgien     0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  A� gauche du . c'est 8h, A� droite du . c'est 8h05
+        //  A gauche du . c'est 8h, A droite du . c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = triParChirurgien(chirurgiesDuJour);
+        chirurgiesJourTriees = chirurgiesDuJour;
         
+        Collections.sort(chirurgiesJourTriees, Chirurgie.PAR_CHIRURGIEN);
         Chirurgien chirurgienActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
@@ -311,18 +298,18 @@ public class Journee {
     // 3. Detection d'anomalies parmis les chirurgies qui sont en conflits
     
     
-    // On définit ici des méthodes qui s'applique à toute chirurgie, mais on ne regardera QUE pour des chirurgies en conflit
+    // On definit ici des methodes qui s'applique à toute chirurgie, mais on ne regardera QUE pour des chirurgies en conflit
     
     
-    // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 
-    //   pour un seuil fixé, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
+    // Ici, pour un chirurgien donne, la chirurgie devient une anomalie si : 
+    //   pour un seuil fixe, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
     
     public boolean anomalieJourOuPas(Chirurgie x, double seuil) {
     	boolean b = false;
     	String leJour = null;
     	leJour = x.getDate().getDayOfWeek().toString();
     	DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
-		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday]
+		String[] joursSemaine = dfsEN.getWeekdays(); // Je cree un [jour de la semaine 1=Sunday, 7=Saturday]
 		
     	int numero = 0;
     	
@@ -356,7 +343,7 @@ public class Journee {
     
     
     // Pour une chirurgie (en conflit) donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
-    //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolérance)
+    //    il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolérance)
     public boolean anomalieDureeChirurgieOuPas(Chirurgie x, double seuil) {
     	boolean b = false;
     	double time = ChronoUnit.MINUTES.between(x.getDebut(), x.getFin());
@@ -483,7 +470,7 @@ public class Journee {
     /////////////////////////////////////////////
     
     public void resolutionUbiquite(BaseDeDonnees database, Ubiquite u) {
-    	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles résolutions
+    	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles resolutions
     }
     
     
@@ -513,7 +500,7 @@ public class Journee {
     
     // DABORD ALLER CHERCHER LES CHIRURGIENS QUI ONT 0 CONFLITS, car les AUTRES ON EST SUR QU'ils ne sont pas la
     
-    // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
+    // Si dans la journee, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment la�, et qui provoque 0 conflit
     public void resoudreUbiquite0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null;

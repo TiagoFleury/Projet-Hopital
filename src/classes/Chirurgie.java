@@ -3,6 +3,7 @@ package classes;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 
 public class Chirurgie {
@@ -14,6 +15,26 @@ public class Chirurgie {
     private Bloc salle;
     private Chirurgien chirurgien;
     private boolean estEnConflit;
+    
+    
+    
+    public static Comparator<Chirurgie> CHRONOLOGIQUE = new Comparator<Chirurgie>(){
+    	
+    	public int compare(Chirurgie ch1, Chirurgie ch2) {
+    		if(ch1.getDate().equals(ch2.getDate()))
+    			return ch1.getDebut().compareTo(ch2.getDebut());
+    		
+    		return ch1.getDate().compareTo(ch2.getDate());
+    		
+    		
+    	}
+    };
+        
+    @SuppressWarnings("unchecked")
+	public static Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
+    @SuppressWarnings("unchecked")
+	public static Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
+    
     
 
     public Chirurgie(String[] champs) {  //Instancie avec Heure
