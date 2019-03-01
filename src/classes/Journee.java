@@ -1,7 +1,6 @@
 package classes;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
@@ -91,19 +90,34 @@ public class Journee {
     }
 
     
+    //TRIS
+    
+    public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
+    	@SuppressWarnings("unchecked") //Warning relou
+		Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
+    	
+    	Collections.sort(liste, PAR_BLOC);
+    	return liste;
+    }
+    public static ArrayList<Chirurgie> triParChirurgien(ArrayList<Chirurgie> liste){
+    	@SuppressWarnings("unchecked") //Warning relou
+		Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
+    	Collections.sort(liste, PAR_CHIRURGIEN);
+    	return liste;
+    }
+    
     
     
     //AFFICHAGES
     
     public void planningJourneeParBloc(){
         System.out.println("\n\n\n");
-        System.out.println("                                                     PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n");
+        System.out.println("                                                     PLANNING DU "+date+"\n\n");
         System.out.println("Salle          0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h   8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
         //  A gauche du '.' c'est 8h,   A droite du '.' c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = chirurgiesDuJour;
-        Collections.sort(chirurgiesJourTriees, Chirurgie.PAR_BLOC);
+        chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
         Bloc blocActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
@@ -131,14 +145,13 @@ public class Journee {
     
     public void planningJourneeParChirurgien(){
         System.out.println("\n\n\n");
-        System.out.println("                                                      PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n");
+        System.out.println("                                                      PLANNING DU "+date+"\n\n");
         System.out.println("Chirurgien     0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  A gauche du . c'est 8h, A droite du . c'est 8h05
+        //  A� gauche du . c'est 8h, A� droite du . c'est 8h05
         System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = chirurgiesDuJour;
+        chirurgiesJourTriees = triParChirurgien(chirurgiesDuJour);
         
-        Collections.sort(chirurgiesJourTriees, Chirurgie.PAR_CHIRURGIEN);
         Chirurgien chirurgienActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
@@ -191,6 +204,7 @@ public class Journee {
         return b;
     }
     
+    
 
     public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
         boolean b=false;
@@ -210,6 +224,7 @@ public class Journee {
         }
         return b;
     }
+    
     
     
     
@@ -265,6 +280,8 @@ public class Journee {
    
     
     
+    
+    
    // Cette methode ne fait que mettre dans conflitsDuJour les conflits encore presents
     public void detectionConflit(){
         Conflit conf = null;
@@ -298,18 +315,18 @@ public class Journee {
     // 3. Detection d'anomalies parmis les chirurgies qui sont en conflits
     
     
-    // On definit ici des methodes qui s'applique à toute chirurgie, mais on ne regardera QUE pour des chirurgies en conflit
+    // On définit ici des méthodes qui s'applique à toute chirurgie, mais on ne regardera QUE pour des chirurgies en conflit
     
     
-    // Ici, pour un chirurgien donne, la chirurgie devient une anomalie si : 
-    //   pour un seuil fixe, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
+    // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 
+    //   pour un seuil fixé, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
     
     public boolean anomalieJourOuPas(Chirurgie x, double seuil) {
     	boolean b = false;
     	String leJour = null;
     	leJour = x.getDate().getDayOfWeek().toString();
     	DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
-		String[] joursSemaine = dfsEN.getWeekdays(); // Je cree un [jour de la semaine 1=Sunday, 7=Saturday]
+		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday]
 		
     	int numero = 0;
     	
@@ -343,9 +360,10 @@ public class Journee {
     
     
     
-    // Pour une chirurgie (en conflit) donnee, et pour un certain seuil, la chirurgie passe en anomalie si : 
-    //    il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolerance)
-    public boolean anomalieDureeChirurgieOuPas(Chirurgie x, double seuil) {
+    // Pour une chirurgie (en conflit) donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
+    //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolérance)
+    
+    public boolean anomalieDureeChirurgieOuPas(Chirurgie x) {
     	boolean b = false;
     	double time = x.getDuree();
     	ArrayList<Double> interv = BaseDeDonnees.intervalleConfiance95(x.getChirurgien().getLesTempsdeChirurgies());
@@ -375,20 +393,14 @@ public class Journee {
     }
     
     
+	
+	
     
     public boolean anomalieDureeInterOpeBlocOuPas(Chirurgie x, double seuil) {
     	boolean b = false;
     	return b;
     }
     
-    
-    // Methode qui va passer en attribut d'une instance Journée, toutes les anomalies de chirurgie en conflit
-    public void detectionsAnomalie() {
-    	boolean b1=false, b2=false, b3=false, b4=false;
-    	for (Conflit conf : conflitsDuJour) {
-    		
-    	}
-    }
     
     
     
@@ -476,56 +488,118 @@ public class Journee {
     /////////////////////////////////////////////
     
     public void resolutionUbiquite(BaseDeDonnees database, Ubiquite u) {
-    	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles resolutions
+    	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles résolutions
     }
     
     
+    
+    
+    // Cette résolution va s'occuper d'un cas spécifique où : 
+    //    une des deux chirurgies est anormalement longue, et dans ce cas je la raccourcir
+    //    le cas où une chirurgie est apres le début ET avant la fin n'est pas pris en compte, et sera résolue d'une autre manière
     
     public void resoudreUbiquite00(BaseDeDonnees database, Ubiquite u) {
     	boolean b1=false;
     	boolean b2=false;
-    	b1=anomalieDureeChirurgieOuPas(u.getCh1());
-    	b2=anomalieDureeChirurgieOuPas(u.getCh2());
+    	Chirurgie copie1 = u.getCh1();
+    	Chirurgie copie2 = u.getCh2();
+    	b1=anomalieDureeChirurgieOuPas(copie1);
+    	b2=anomalieDureeChirurgieOuPas(copie2);
+    	
     	if (b1==true && b2==false) {
-    		// RACCOURCIR ou RALLONGER ch1
+    		// Racourcir ch1 jusqu'a ce que ce ne soit plus un conflit
+    		if (copie1.getDebut().isBefore(copie2.getDebut()) && !copie1.getFin().isAfter(copie2.getFin())) {
+    			while (anomalieDureeChirurgieOuPas(copie1)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie1.setFin(copie1.getFin().minusMinutes(1));
+    			}
+    			
+    		}
+    		if (copie1.getFin().isAfter(copie2.getFin()) && !copie1.getDebut().isBefore(copie2.getDebut())) {
+    			while (anomalieDureeChirurgieOuPas(copie1)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie1.setDebut(copie1.getDebut().plusMinutes(1));
+    				
+    			}
+    		}
     	}
+    	
     	if (b1==false && b2==true) {
-    		// ici ch2
+    		// Racourcir ch2 jusqu'a ce que ne soit plus un conflit
+    		if (copie2.getDebut().isBefore(copie1.getDebut()) && !copie2.getFin().isAfter(copie1.getFin())) {
+    			while (anomalieDureeChirurgieOuPas(copie2)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie2.setFin(copie2.getFin().minusMinutes(1));
+    			}
+    		}
+    		if (copie2.getFin().isAfter(copie1.getFin()) && !copie2.getDebut().isBefore(copie1.getDebut())) {
+    			while (anomalieDureeChirurgieOuPas(copie2)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie2.setDebut(copie2.getDebut().plusMinutes(1));
+    			}
+    		}
     	}
     	if (b1==true && b2==true) {
-    		// Que faire ??
-    	}
-    	
-    }
-    
-    
-    public void resoudreUbiquiteCout0(BaseDeDonnees database, Ubiquite u) {
-    	Chirurgien chirurgienPb = u.getChirurgienPb();
-    	Chirurgien unChirurgien = null ;
-    	int compteur = 0, lg = database.getTousChirurgiens().size();
-    	while (compteur < lg) {
-    		unChirurgien = database.getTousChirurgiens().get(compteur);
-    		if (!chirurgiensMobilises.contains(unChirurgien) ) {
-				u.getCh1().setChirurgien(unChirurgien);
-				u.setEtat(true);
-				compteur = lg;
-			}
-    		compteur ++ ; // Ci dessus, j'ai simplement test s'il y avait des Chirurgiens NON UTILISES toute la journee car le choisir = cout 0
-    	}
-    	
-    	if (u.getEtat()==false) {
-			System.out.println("Ubiquite non resolue");
-				}
-    	else { System.out.println("Ubiquite resolue");}
+    		if (copie1.getDebut().isBefore(copie2.getDebut()) && !copie1.getFin().isAfter(copie2.getFin())) {
+    			while (anomalieDureeChirurgieOuPas(copie1)==true && anomalieDureeChirurgieOuPas(copie2)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie1.setFin(copie1.getFin().minusMinutes(1));
+    				copie2.setDebut(copie2.getDebut().plusMinutes(1));
+    			}
+    			while (anomalieDureeChirurgieOuPas(copie1)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie1.setFin(copie1.getFin().minusMinutes(1));
+    			}
+    			while (anomalieDureeChirurgieOuPas(copie2)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie2.setDebut(copie2.getDebut().plusMinutes(1));
+    			}
+    		}
     		
-    	 
+    		
+    		if (copie2.getDebut().isBefore(copie1.getDebut()) && !copie2.getFin().isAfter(copie1.getFin())) {
+    			while (anomalieDureeChirurgieOuPas(copie1)==true && anomalieDureeChirurgieOuPas(copie2)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie2.setFin(copie2.getFin().minusMinutes(1));
+    				copie1.setDebut(copie1.getDebut().plusMinutes(1));
+    			}
+    			while (anomalieDureeChirurgieOuPas(copie1)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie1.setDebut(copie1.getDebut().plusMinutes(1));
+    			}
+    			while (anomalieDureeChirurgieOuPas(copie2)==true && conflitOuPas(copie1,copie2)!=null) {
+    				copie2.setFin(copie2.getFin().minusMinutes(1));
+    			}
+    		}
+    	}
+    	LocalTime debEcart = null;
+    	LocalTime finEcart = null;
+    	
+    	if (copie1.getDebut().isBefore(copie2.getDebut())) {
+    		debEcart = copie1.getFin();
+    		finEcart = copie2.getDebut();
+    	}
+    	else {
+    		debEcart = copie2.getFin();
+    		finEcart = copie1.getDebut();
+    	}
+    	
+    	
+    	if (conflitOuPas(copie1,copie2)==null && ChronoUnit.MINUTES.between(debEcart, finEcart)>u.getChirurgienPb().getICtempsInterOperatoire().get(0) && ChronoUnit.MINUTES.between(debEcart, finEcart)<u.getChirurgienPb().getICtempsInterOperatoire().get(1) ) {
+    		// Alors on décide d'appliquer ce changement
+    		u.getCh1().setDebut(copie1.getDebut());
+    		u.getCh1().setFin(copie1.getFin());
+    		u.getCh2().setDebut(copie2.getDebut());
+    		u.getCh2().setFin(copie2.getFin());
+    	}
+    	
     }
     
     
     
-    // DABORD ALLER CHERCHER LES CHIRURGIENS QUI ONT 0 CONFLITS, car les AUTRES ON EST SUR QU'ils ne sont pas la
     
-    // Si dans la journee, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment la�, et qui provoque 0 conflit
+    // DABORD ALLER CHERCHER LES CHIRURGIENS QUI ONT au moins 1 ch en non conflit, car les AUTRES ON EST SUR QU'ils ne sont pas la
+    
+    // Puis parmis ces memes chirurgiens qui ne sont pas en FULL conflits, il faut vérifier qu'en leurs ajoutant cette chirurgie,
+    // cela reste dans IC95 de leurs temps de chirurgies moyens par jour.
+    // ie -- qu'on ne provoque pas une anomalieSurchageTravail()
+    
+    // du coup avant, faire une methode qui envoie dans Chirurgien son IC95 de temps de travail par jour, et redefinir bien anomalie
+    
+    
+    
+    // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
     public void resoudreUbiquite0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null;
@@ -650,6 +724,7 @@ public class Journee {
     // Ubiquite classique + cas où le chirurgien travaille un jour ou il ne devrait pas
     public void resoudreUbiquite2(BaseDeDonnees database, Ubiquite u) {
     	
+    	// Cest une application classique de changement de chirurgien, il suffit d'appeller Ubiquite0 ????
     }
     
     
@@ -717,7 +792,7 @@ public class Journee {
     	}
     	if (c instanceof Ubiquite) {
     		Ubiquite cBis = (Ubiquite) c;
-    		resoudreUbiquiteCout0(database, cBis);
+    		// resoudreUbiquiteCout0(database, cBis);
     	}
     	if (c instanceof Chevauchement) {
     		Chevauchement cBis = (Chevauchement) c;
