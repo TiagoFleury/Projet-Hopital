@@ -159,7 +159,7 @@ public class BaseDeDonnees {
 					if(!chir.estEnConflit()) {
 						//ALORS on la compte dans les stats
 						compteur++;
-						somme += ChronoUnit.MINUTES.between(chir.getDebut(), chir.getFin());
+						somme += chir.getDuree();
 					}
 				}
 			}
@@ -263,11 +263,13 @@ public class BaseDeDonnees {
 	
 	
 	
-	public void envoieChirurgiesChirurgien(Chirurgien albert) {
+	public void envoieChirurgiesEtLesTempsChirurgien(Chirurgien albert) {
 		ArrayList<Chirurgie> lesChirurgies = null;
+		ArrayList<Double> lesTemps=null;
 		for (Chirurgie c : listeChirurgies) {
 			if (c.getChirurgien().equals(albert)) {
 				lesChirurgies.add(c);
+				lesTemps.add(c.getDuree());
 			}
 		}
 		albert.setChirurgies(lesChirurgies);
@@ -285,7 +287,7 @@ public class BaseDeDonnees {
 		for (Chirurgien c : chirurgiensExistants) {
 			listeProportionsJours = null;
 			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
-			envoieChirurgiesChirurgien(c);
+			envoieChirurgiesEtLesTempsChirurgien(c);
 			for (Chirurgie chi : c.getChirurgies()) {
 				leJour = chi.getDate().getDayOfWeek().toString();
 				
@@ -451,13 +453,11 @@ public class BaseDeDonnees {
 			return intervalle;
 		}
 		
-		
 	}
 	// MAINTENANT IL SUFFIRA DE checker une donnee au sein d'une certaine listes de donnees si elle est dans l'IC 95%
 	// cela nous permettra direct d'en déduire si on la corrige ou pas etc
 	
-	
-	
+
 	
 	
 	

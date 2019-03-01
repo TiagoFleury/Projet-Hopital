@@ -8,19 +8,19 @@ import java.util.ArrayList;
 public class Chirurgien implements Comparable{
     private String nom;
     private ArrayList<Chirurgie> sesChirurgies;
-    private ArrayList<Double> moyennesJours;
+    private ArrayList<Double> proportionsJoursTravail;
     public double tempsMoyenEntreDeuxChirurgies;
     private ArrayList<LocalDate> joursDeTravail ;
     private double tempsMoyenChirurgie;
     public int nbChirurgies;
+    private ArrayList<Double> tempsDesChirurgies;
     
     
   
     public Chirurgien(String nom) {
 		this.nom = nom;
-		this.moyennesJours=null;
+		this.proportionsJoursTravail=null;
 	}
-    
     
     
     
@@ -45,6 +45,14 @@ public class Chirurgien implements Comparable{
     
     
     
+    
+    public float proportionTempsdeChirurgieEnDureeInterOpe() {
+    	float result = 0;
+    	for (Chirurgie c : sesChirurgies) {
+    		
+    	}
+    	return result;
+    }
    
     
 
@@ -74,9 +82,12 @@ public class Chirurgien implements Comparable{
 	}
 	
 	public ArrayList<Double> getProportions(){
-		return moyennesJours;
+		return proportionsJoursTravail;
 	}
 	
+	public ArrayList<Double> getLesTempsdeChirurgies(){
+		return tempsDesChirurgies;
+	}
 
 	
 	//MUTATEURS
@@ -85,7 +96,7 @@ public class Chirurgien implements Comparable{
 	}
 	
 	public void setMoyenneJours(ArrayList<Double> listemoyennes) {
-		moyennesJours=listemoyennes;
+		proportionsJoursTravail=listemoyennes;
 	}
 	
 	public void setChirurgies(ArrayList<Chirurgie> liste) {

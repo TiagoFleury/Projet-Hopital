@@ -355,16 +355,21 @@ public class Journee {
     }
     
     
+    
     // Pour une chirurgie (en conflit) donnée, et pour un certain seuil, la chirurgie passe en anomalie si : 
     //    il y a une trop grande différence entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolérance)
-    public boolean anomalieDureeChirurgieOuPas(Chirurgie x, double seuil) {
+    
+    public boolean anomalieDureeChirurgieOuPas(Chirurgie x) {
     	boolean b = false;
-    	double time = ChronoUnit.MINUTES.between(x.getDebut(), x.getFin());
-    	if (Math.abs(x.getChirurgien().getTempsMoyen()-time)>seuil) {
+    	double time = x.getDuree();
+    	ArrayList<Double> interv = intervalleConfiance95(x.getChirurgien().getLesTempsdeChirurgies());
+    	if ( (time<interv.get(0)) || (time>interv.get(1))){
     		b=true;
+    	
     	}
     	return b;
     }
+    
     
     
     public boolean anomalieSurchageChirurgienOuPas(Chirurgie x, double seuilTemps, int seuilNb) {
@@ -372,7 +377,7 @@ public class Journee {
     	double sum=0;
     	int nombreCh = 0;
     	for (Chirurgie c : x.getChirurgien().getChirurgies()) {
-    		sum += ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
+    		sum += x.getDuree();
     		nombreCh ++ ;
     	}
     	if ((sum > seuilTemps) || (nombreCh > seuilNb) ) {
@@ -484,6 +489,25 @@ public class Journee {
     
     public void resolutionUbiquite(BaseDeDonnees database, Ubiquite u) {
     	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles résolutions
+    }
+    
+    
+    
+    public void resoudreUbiquite00(BaseDeDonnees database, Ubiquite u) {
+    	boolean b1=false;
+    	boolean b2=false;
+    	b1=anomalieDureeChirurgieOuPas(u.getCh1());
+    	b2=anomalieDureeChirurgieOuPas(u.getCh2());
+    	if (b1==true && b2==false) {
+    		// RACCOURCIR ou RALLONGER ch1
+    	}
+    	if (b1==false && b2==true) {
+    		// ici ch2
+    	}
+    	if (b1==true && b2==true) {
+    		// Que faire ??
+    	}
+    	
     }
     
     

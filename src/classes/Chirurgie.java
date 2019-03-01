@@ -3,6 +3,7 @@ package classes;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 
 
 public class Chirurgie {
@@ -14,6 +15,7 @@ public class Chirurgie {
     private Bloc salle;
     private Chirurgien chirurgien;
     private boolean estEnConflit;
+    private double nbMinutes ;
     
 
     public Chirurgie(String[] champs) {  //Instancie avec Heure
@@ -26,6 +28,7 @@ public class Chirurgie {
 		heureFin = LocalTime.parse(champs[3]);
 		salle = null;
 		chirurgien = null;
+		nbMinutes = ChronoUnit.MINUTES.between(heureDebut,heureFin);
 	}
     
     @Override
@@ -89,6 +92,9 @@ public class Chirurgie {
     public boolean estEnConflit() {
 		return estEnConflit;
 	}
+    public double getDuree() {
+    	return nbMinutes;
+    }
     
     
     //MUTATEURS
