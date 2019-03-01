@@ -1,6 +1,7 @@
 ﻿package classes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.time.temporal.ChronoUnit;
@@ -49,7 +50,11 @@ public class Chirurgie {
 		heureFin = LocalTime.parse(champs[3]);
 		salle = null;
 		chirurgien = null;
+		
 		nbMinutes = ChronoUnit.MINUTES.between(heureDebut,heureFin);
+		if(nbMinutes<0) { //C'est le cas ou une chirurgie est sur deux jours
+			nbMinutes = ChronoUnit.MINUTES.between(LocalDateTime.of(date, heureDebut),LocalDateTime.of(date, heureFin).plusDays(1));
+		}
 	}
     
     @Override

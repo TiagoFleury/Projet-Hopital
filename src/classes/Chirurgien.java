@@ -9,9 +9,11 @@ public class Chirurgien implements Comparable{
     private String nom;
     private ArrayList<Chirurgie> sesChirurgies;
     private ArrayList<Double> proportionsJoursTravail;
-    public double[] StatsTempsInteroperatoire;  // [temps, borne1 IC, borne2 IC]
+    
     private ArrayList<LocalDate> joursDeTravail ;
     private double[] StatsTempsMoyenDeChirurgie; // [temps, borne1 IC, borne2 IC]
+    private double[] StatsTempsDeTravail;        //  [temps, borne1 IC, borne2 IC]
+    public double[] StatsTempsInteroperatoire;  // [temps, borne1 IC, borne2 IC]
     public int nbChirurgies;
     private ArrayList<Double> tempsDesChirurgies;
     
@@ -22,6 +24,7 @@ public class Chirurgien implements Comparable{
 		this.proportionsJoursTravail=null;
 		this.StatsTempsMoyenDeChirurgie = new double[3];
 		this.StatsTempsInteroperatoire = new double[3];
+		this.StatsTempsDeTravail = new double[3];
 	}
     
     
@@ -90,6 +93,21 @@ public class Chirurgien implements Comparable{
 		return retour;
 	}
 	
+
+
+	public double getTempsTravailMoyenParJour() {
+		return StatsTempsDeTravail[0];
+	}
+	
+	public ArrayList<Double> getICtempsTravailParJour(){
+		ArrayList<Double> retour = new ArrayList<Double>();
+		retour.add(StatsTempsDeTravail[1]);
+		retour.add(StatsTempsDeTravail[2]);
+		
+		return retour;
+	}
+
+	
 	public double getTempsInteroperatoireMoyen() {
 		return StatsTempsInteroperatoire[0];
 	}
@@ -136,6 +154,18 @@ public class Chirurgien implements Comparable{
 	
 	public void setChirurgies(ArrayList<Chirurgie> liste) {
 		sesChirurgies = liste;
+	}
+
+
+
+
+	public void setTempsTravailMoyenParJour(double moyenne) {
+		StatsTempsDeTravail[0] = moyenne;
+	}
+	
+	public void setICtempsTravailParJour(ArrayList<Double> IC95) {
+		StatsTempsDeTravail[1] = IC95.get(0);
+		StatsTempsDeTravail[2] = IC95.get(1);
 	}
 
 

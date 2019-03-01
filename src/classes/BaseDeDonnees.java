@@ -306,7 +306,47 @@ public class BaseDeDonnees {
 	}
 	
 	
-	
+	public void calculTempsDeTravailChirurgiens() {
+		
+		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un chirurgien dans une journee
+		double somme = 0;
+		long compte = 0;
+		ArrayList<Double> donnees = new ArrayList<>(); //Stocke les donnees pour l'intervalle de confiance
+		
+		for(Chirurgien chirurgien : chirurgiensExistants) { //Pour chaque chirurgien, on va calculer la temps moyen de travail par jour
+			
+			for(int i=0;i<listeJournees.size();i++) { //Pour chaque journee
+				Journee journee = getJournee(i);
+				int tempsJournee = 0; //On va calculer le temps de travail sur la journee
+				
+				for(Chirurgie chir : journee.getChirurgiesJour()) { //On va recuperer toutes les chirurgies de ce chirurgien
+					
+					if(chir.getChirurgien().equals(chirurgien) && !chir.estEnConflit()) {//On verifie que c'est une chirurgie de ce chirurgien et qu'elle n'est pas en conflit
+						liste.add(chir); //On l'ajoute a la liste
+						
+					}
+				}
+				
+				if(liste.size()!=0) { //Si c'est une journee ou il travaille, c'est a dire au moins une chirurgie de lui sans conflit
+					for(Chirurgie c : liste) {
+						tempsJournee+=c.getDuree();//On somme toutes les durees
+						
+					}
+					donnees.add((double)tempsJournee);
+					somme+=tempsJournee;
+					compte++;
+				}
+				liste.clear();
+			}
+			double moyenne = somme / compte;
+			chirurgien.setTempsTravailMoyenParJour((int)moyenne);
+			chirurgien.setICtempsTravailParJour(intervalleConfiance95(donnees));
+			donnees.clear();
+			somme=0;
+			compte=0;
+			
+		}
+	}
 	
 	
 	
@@ -495,8 +535,8 @@ public class BaseDeDonnees {
 		else {
 			double moyenne=moyenneDeDonnees(dodonnees); 
 			double ecartType = Math.sqrt(varianceDeDonnees(dodonnees));
-			intervalle.add(moyenne - 1.96*ecartType/Math.sqrt(dodonnees.size()-1) );
-			intervalle.add(moyenne + 1.96*ecartType/Math.sqrt(dodonnees.size()-1) );
+			intervalle.add((int)(moyenne - 1.96*ecartType/Math.sqrt(dodonnees.size()-1))/1.0);
+			intervalle.add((int)(moyenne + 1.96*ecartType/Math.sqrt(dodonnees.size()-1))/1.0);
 			return intervalle;
 		}
 		
