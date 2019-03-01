@@ -411,7 +411,7 @@ public class BaseDeDonnees {
 	
 	// Methodes Statistiques générales pour un certain ensemble de donnees
 	
-	public double moyenneDeDonnees(ArrayList<Double> lesDonnees) {
+	public static double moyenneDeDonnees(ArrayList<Double> lesDonnees) {
 		int somme = 0;
 		double moyenne = 0;
 		for (Double d : lesDonnees) {
@@ -425,7 +425,7 @@ public class BaseDeDonnees {
 	
 	
 	
-	public double varianceDeDonnees(ArrayList<Double> lesDonnees) {
+	public static double varianceDeDonnees(ArrayList<Double> lesDonnees) {
 		double moy = moyenneDeDonnees(lesDonnees);
 		double sum = 0;
 		for (double d : lesDonnees) {
@@ -439,9 +439,9 @@ public class BaseDeDonnees {
 	
 	
 	
-	public ArrayList<Double> intervalleConfiance95(ArrayList<Double> dodonnees) {
+	public static ArrayList<Double> intervalleConfiance95(ArrayList<Double> dodonnees) {
 		ArrayList<Double> intervalle =null;
-		if (dodonnees.size()>1) {
+		if (dodonnees.size()<1) {
 			System.out.println("il n'y a pas assez de donnees");
 			return intervalle;
 		}
@@ -471,7 +471,7 @@ public class BaseDeDonnees {
 	
 	public static void main(String[] Args) {
 		
-		System.out.println("\n \n \n \n Et la� sur la grosse base de donnees \n");
+		System.out.println("\n \n \n \n Et la sur la grosse base de donnees \n");
 		
 		
 		
@@ -479,11 +479,23 @@ public class BaseDeDonnees {
 		data2.importBase("Chirurgies_v2.csv");
 		data2.organiserJournees();
 		Journee jourHugo = null;
-		int nbConflits = 0;
+		
+		int nbConflits = 0, compteur =0;
 		ArrayList<Journee> journeesAconflits= new ArrayList<>();
+		ArrayList<Journee> joursConcernes = new ArrayList<>();
+		
+		
 		for(int i=0;i<data2.listeJournees.size();i++){
 			jourHugo = data2.getJournee(i);
-
+			for (Chirurgie c : jourHugo.getChirurgiesJour()) {
+				for (Chirurgie ch : jourHugo.getChirurgiesJour()) {
+					if (c.equals(ch) && c.getID()!=ch.getID()){
+						compteur++;
+						joursConcernes.add(data2.getJournee(i));
+						
+					}
+				}
+			}
 			jourHugo.detectionConflit();
 			nbConflits += jourHugo.getConflits().size();
 			if(jourHugo.getConflits().size()>0) {
@@ -493,38 +505,10 @@ public class BaseDeDonnees {
 		System.out.println("Nombre de conflits dans la base : "+nbConflits);
 		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
 		
-		Journee jourTest = data2.getJournee("20/01/14");
-		jourTest.planningJourneeParBloc();
-		jourTest.detectionConflit();
-		jourTest.resoudreConflitCout0(data2, jourTest.getConflits().get(0));
-		System.out.println(data2.getJournee("20/01/14").getConflits()+"\n\n");
 		
 		
 		
-		nbConflits = 0;
-		journeesAconflits= new ArrayList<>();
-		for(int i=0;i<data2.listeJournees.size();i++){
-			jourHugo = data2.getJournee(i);
-
-			jourHugo.detectionConflit();
-			nbConflits += jourHugo.getConflits().size();
-			if(jourHugo.getConflits().size()>0) {
-				journeesAconflits.add(jourHugo);
-			}
-		}
-
-		System.out.println("Nombre de conflits dans la base : "+nbConflits);
-		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
-		
-		journeesAconflits.get(2).planningJourneeParBloc();
-		
-		
-		//for(int i=0;i<data.listeJournees.size();i++) {
-		//	data.getJournee(i).planningJourneeParBloc();
-		// }
-		
-		
-		LocalDate datest = LocalDate.of(2019, 02, 01);
+		/* LocalDate datest = LocalDate.of(2019, 02, 01);
 		System.out.println(datest.toString());
 		System.out.println(datest.getDayOfWeek().toString());
 		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
@@ -536,15 +520,13 @@ public class BaseDeDonnees {
 		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6]));
 		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6].toString().toUpperCase()));
 		System.out.println(datest.getDayOfWeek().equals(joursSemaine[5]));
+		*/
 		
 		
-		
-		Journee j = data2.getJournee("08/06/16");
-		j.detectionConflit();
-		System.out.println(j.getConflits().size());
-		System.out.println(j.getChirurgiesJour().size());
-		j.planningJourneeParChirurgien();
-		
+		System.out.println(compteur);
+		for (Journee j : joursConcernes) {
+			j.planningJourneeParBloc();
+		}
 		
 		
 		

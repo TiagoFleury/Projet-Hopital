@@ -362,17 +362,19 @@ public class Journee {
     public boolean anomalieDureeChirurgieOuPas(Chirurgie x) {
     	boolean b = false;
     	double time = x.getDuree();
-    	ArrayList<Double> interv = intervalleConfiance95(x.getChirurgien().getLesTempsdeChirurgies());
+    	ArrayList<Double> interv = BaseDeDonnees.intervalleConfiance95(x.getChirurgien().getLesTempsdeChirurgies());
     	if ( (time<interv.get(0)) || (time>interv.get(1))){
     		b=true;
-    	
     	}
     	return b;
     }
     
-    
-    
-    public boolean anomalieSurchageChirurgienOuPas(Chirurgie x, double seuilTemps, int seuilNb) {
+
+
+
+
+
+	public boolean anomalieSurchageChirurgienOuPas(Chirurgie x, double seuilTemps, int seuilNb) {
     	boolean b = false;
     	double sum=0;
     	int nombreCh = 0;
