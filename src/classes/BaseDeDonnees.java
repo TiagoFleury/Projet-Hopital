@@ -1,25 +1,23 @@
 package classes;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.text.DateFormatSymbols;
-import java.util.Date;
 import java.util.Locale;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeMap;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.Math;
-
 public class BaseDeDonnees {
     
     //Attributs
@@ -80,6 +78,40 @@ public class BaseDeDonnees {
 		return null;
 	}
 	
+	
+	//EXPORT EN CSV
+	
+	public void exportBase() {
+		File fichier = new File("NouvelleBase.csv");
+	
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(fichier));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		try {
+			writer.write("ID CHIRURGIE;DATE CHIRURGIE;HEURE_DEBUT CHIRURGIE;HEURE_FIN CHIRURGIE;SALLE;CHIRURGIEN");
+			writer.newLine();
+			Collections.sort(listeChirurgies,Chirurgie.CHRONOLOGIQUE);
+			for(Chirurgie chir : listeChirurgies) {
+					writer.write(""+chir.getID()+";"+chir.getDate().format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+";"+chir.getDebut()+";"+chir.getFin()+";"+chir.getSalle().getName()+";"+chir.getChirurgien().getName());
+					writer.newLine();
+					writer.flush();
+			}
+			writer.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	//IMPORT
 	public void importBase(String cheminFichier) {
 		listeChirurgies = new ArrayList<Chirurgie>();
 		
@@ -192,9 +224,8 @@ public class BaseDeDonnees {
 					}
 				}
 				
-				Comparator<Chirurgie> CHRONOLOGIQUE = Comparator.comparing(Chirurgie::getDebut);
 				
-				Collections.sort(liste,CHRONOLOGIQUE);
+				Collections.sort(liste,Chirurgie.CHRONOLOGIQUE);
 				
 				
 				for(int j=0;j<liste.size()-1;j++) {
@@ -204,7 +235,7 @@ public class BaseDeDonnees {
 						compte++;
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
 						somme += ecart;
-						System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
+						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 					}
 					
 				}
@@ -233,9 +264,7 @@ public class BaseDeDonnees {
 				}
 				
 				//Ensuite on trie par ordre chronologique d'heure de debut
-				Comparator<Chirurgie> CHRONOLOGIQUE = Comparator.comparing(Chirurgie::getDebut);
-				
-				Collections.sort(liste,CHRONOLOGIQUE);
+				Collections.sort(liste,Chirurgie.CHRONOLOGIQUE);
 				
 				
 				for(int j=0;j<liste.size()-1;j++) {
@@ -245,7 +274,7 @@ public class BaseDeDonnees {
 						compte++;
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
 						somme += ecart;
-						System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
+						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 					}
 					
 				}

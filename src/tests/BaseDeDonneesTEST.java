@@ -78,9 +78,24 @@ class BaseDeDonneesTEST {
 		
 		assertEquals(6,data2.listeJournees.size());
 		
-		//jour2.planningJourneeParChirurgien();
+		jour2.planningJourneeParChirurgien();
+		jour2.planningJourneeParBloc();
 		
 	}
+
+	@Test
+	public void testExportBase(){
+		BaseDeDonnees data = new BaseDeDonnees();
+		//data.importBase("Chirurgies_v2.csv");
+		data.importBase("MiniBase.csv");
+		
+		data.organiserJournees();
+		data.getJournee(3).planningJourneeParBloc();
+		
+		data.exportBase();
+	}
+	
+	
 	
 	@Test
 	void testImportBase() {

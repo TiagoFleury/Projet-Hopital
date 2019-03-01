@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 
 import classes.BaseDeDonnees;
@@ -33,7 +35,7 @@ class JourneeTEST {
 	void testTriParChirurgien() {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("MiniBase.csv");
-		Journee.triParChirurgien(data.listeChirurgies);
+		Collections.sort(data.listeChirurgies, Chirurgie.PAR_CHIRURGIEN);
 		for(Chirurgie c : data.listeChirurgies)
 			System.out.println(c);
 	}
