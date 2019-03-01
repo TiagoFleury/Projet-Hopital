@@ -576,8 +576,8 @@ public class Journee {
     	}
     	
     	
-    	if (conflitOuPas(copie1,copie2)==null && ChronoUnit.MINUTES.between(debEcart, finEcart)>u.getChirurgienPb().getICtempsInterOperatoire().get(0) && ChronoUnit.MINUTES.between(debEcart, finEcart)<u.getChirurgienPb().getICtempsInterOperatoire().get(1) ) {
-    		// Alors on décide d'appliquer ce changement
+    	if (conflitOuPas(copie1,copie2)==null && ChronoUnit.MINUTES.between(debEcart, finEcart)>u.getChirurgienPb().getICtempsInteroperatoire().get(0) && ChronoUnit.MINUTES.between(debEcart, finEcart)<u.getChirurgienPb().getICtempsInteroperatoire().get(1) ) {
+    		// Alors on decide d'appliquer ce changement
     		u.getCh1().setDebut(copie1.getDebut());
     		u.getCh1().setFin(copie1.getFin());
     		u.getCh2().setDebut(copie2.getDebut());
