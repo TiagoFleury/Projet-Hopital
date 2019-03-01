@@ -26,7 +26,7 @@ public class BaseDeDonnees {
 	public ArrayList<Bloc> blocsExistants;
 	public TreeMap<LocalDate,Journee> listeJournees;
 	public int nbConflits;
-	public double tempsMoyenEntreDeuxChirurgiesMemeBloc;
+	private double[] tempsInterOperatoireBloc;
 	
 	//Constructeur
 	public BaseDeDonnees() {
@@ -34,10 +34,10 @@ public class BaseDeDonnees {
 		chirurgiensExistants = new ArrayList<Chirurgien>();
 		blocsExistants = new ArrayList<Bloc>();
 		listeJournees = new TreeMap<LocalDate,Journee>();
-		tempsMoyenEntreDeuxChirurgiesMemeBloc = 0;
+		tempsInterOperatoireBloc = new double[3];
 	}
 	
-	// IMPORT DE BASE DE DONNEES 
+	// ORGANISATION DES DONNEES
 	//Methode pour remplir la liste des journees.
 	public void organiserJournees() {
 		for(Chirurgie c : listeChirurgies) {
@@ -175,6 +175,8 @@ public class BaseDeDonnees {
 	
 	
 
+	
+	
 	//STATS
 	
 	
@@ -182,6 +184,7 @@ public class BaseDeDonnees {
 		int somme = 0;
 		int compteur = 0;
 		double moyenne = 0;
+		ArrayList<Double> donnees= new ArrayList<>();
 		for(Chirurgien c : chirurgiensExistants) { //Pour chaque chirurgien, on va calculer son temps moyen d'operation
 			for(Chirurgie chir : listeChirurgies) {
 				
@@ -192,18 +195,22 @@ public class BaseDeDonnees {
 						//ALORS on la compte dans les stats
 						compteur++;
 						somme += chir.getDuree();
+						donnees.add(chir.getDuree());
 					}
 				}
 			}
 			if(compteur != 0) {
-				moyenne = somme/compteur;
+				moyenne = (int) (somme/compteur);
 			}
 			else
 				moyenne=0;
 			c.setTempsMoyenChirurgie(moyenne);
-			
+			System.out.println("TAILLE DU TABLEAU POUR "+c+": "+ donnees.size());
+			c.setICtempsMoyen(intervalleConfiance95(donnees));
 			somme = 0;
 			compteur = 0;
+			donnees.clear();
+			
 		}
 	}
 	
@@ -212,6 +219,9 @@ public class BaseDeDonnees {
 		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un bloc, il y moyen qu'il faille faire gaffe aux jours aussi
 		double somme = 0;
 		int compte = 0;
+		ArrayList<Double> donnees = new ArrayList<>(); //Stocke les donnees pour l'intervalle de confiance
+		
+		
 		for(int i=0;i<listeJournees.size();i++) {
 			Journee journee = getJournee(i);
 			
@@ -229,12 +239,12 @@ public class BaseDeDonnees {
 				
 				
 				for(int j=0;j<liste.size()-1;j++) {
-					System.out.println();
 					if(!(liste.get(j).estEnConflit()) && !(liste.get(j+1).estEnConflit())) { //Si aucune des deux chirurgies n'est en conflit,
 						//On compte leur ecart
 						compte++;
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
 						somme += ecart;
+						donnees.add((double)ecart);
 						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 					}
 					
@@ -243,13 +253,18 @@ public class BaseDeDonnees {
 			}
 		}
 		double moyenne = somme / compte;
-		tempsMoyenEntreDeuxChirurgiesMemeBloc = ((int)(moyenne*100))/100.0;
+		setTempsMoyenInteroperatoireBloc((int)moyenne);
+		setICtempsInteroperatoireBloc(intervalleConfiance95(donnees));
 	}
 	
+
+
 	public void calculTempsEntreDeuxChirurgiesMemeChirurgien() {
 		ArrayList<Chirurgie> liste = new ArrayList<>(); //Ce sera toutes les chirurgies d'un chirurgien dans une journee
 		double somme = 0;
 		int compte = 0;
+		ArrayList<Double> donnees = new ArrayList<>(); //Stocke les donnees pour l'intervalle de confiance
+		
 		for(Chirurgien chirurgien : chirurgiensExistants) { //Pour chaque chirurgien, on va calculer la moyenne
 			
 			for(int i=0;i<listeJournees.size();i++) { //Pour chaque journee
@@ -268,12 +283,12 @@ public class BaseDeDonnees {
 				
 				
 				for(int j=0;j<liste.size()-1;j++) {
-					System.out.println();
 					if(!(liste.get(j).estEnConflit()) && !(liste.get(j+1).estEnConflit())) { //Si aucune des deux chirurgies n'est en conflit,
 						//On compte leur ecart
 						compte++;
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
 						somme += ecart;
+						donnees.add((double) ecart);
 						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 					}
 					
@@ -281,12 +296,15 @@ public class BaseDeDonnees {
 				liste.clear();
 			}
 			double moyenne = somme / compte;
-			chirurgien.tempsMoyenEntreDeuxChirurgies = ((int)(moyenne*100))/100.0;
+			chirurgien.setTempsInteroperatoireMoyen((int) moyenne);
+			chirurgien.setICtempsInteroperatoire(intervalleConfiance95(donnees));
+			donnees.clear();
 			somme=0;
 			compte=0;
 			
 		}
 	}
+	
 	
 	
 	
@@ -435,10 +453,10 @@ public class BaseDeDonnees {
 		}
 	}
 	
+
 	
 	
-	
-	// Methodes Statistiques générales pour un certain ensemble de donnees
+	// Methodes Statistiques generales pour un certain ensemble de donnees
 	
 	public static double moyenneDeDonnees(ArrayList<Double> lesDonnees) {
 		int somme = 0;
@@ -451,8 +469,6 @@ public class BaseDeDonnees {
 		}
 		else { return 0;}
 	}
-	
-	
 	
 	public static double varianceDeDonnees(ArrayList<Double> lesDonnees) {
 		double moy = moyenneDeDonnees(lesDonnees);
@@ -469,9 +485,11 @@ public class BaseDeDonnees {
 	
 	
 	public static ArrayList<Double> intervalleConfiance95(ArrayList<Double> dodonnees) {
-		ArrayList<Double> intervalle =null;
+		ArrayList<Double> intervalle = new ArrayList<>();
 		if (dodonnees.size()<1) {
 			System.out.println("il n'y a pas assez de donnees");
+			intervalle.add(0.0);
+			intervalle.add(0.0);
 			return intervalle;
 		}
 		else {
@@ -484,7 +502,7 @@ public class BaseDeDonnees {
 		
 	}
 	// MAINTENANT IL SUFFIRA DE checker une donnee au sein d'une certaine listes de donnees si elle est dans l'IC 95%
-	// cela nous permettra direct d'en déduire si on la corrige ou pas etc
+	// cela nous permettra direct d'en deduire si on la corrige ou pas etc
 	
 
 	
@@ -500,64 +518,18 @@ public class BaseDeDonnees {
 	
 	public static void main(String[] Args) {
 		
-		System.out.println("\n \n \n \n Et la sur la grosse base de donnees \n");
 		
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("Chirurgies_v2.csv");
+		data.organiserJournees();
 		
-		
-		BaseDeDonnees data2 = new BaseDeDonnees();
-		data2.importBase("Chirurgies_v2.csv");
-		data2.organiserJournees();
-		Journee jourHugo = null;
-		
-		int nbConflits = 0, compteur =0;
-		ArrayList<Journee> journeesAconflits= new ArrayList<>();
-		ArrayList<Journee> joursConcernes = new ArrayList<>();
-		
-		
-		for(int i=0;i<data2.listeJournees.size();i++){
-			jourHugo = data2.getJournee(i);
-			for (Chirurgie c : jourHugo.getChirurgiesJour()) {
-				for (Chirurgie ch : jourHugo.getChirurgiesJour()) {
-					if (c.equals(ch) && c.getID()!=ch.getID()){
-						compteur++;
-						joursConcernes.add(data2.getJournee(i));
-						
-					}
-				}
-			}
-			jourHugo.detectionConflit();
-			nbConflits += jourHugo.getConflits().size();
-			if(jourHugo.getConflits().size()>0) {
-				journeesAconflits.add(jourHugo);
+		for(int i=0;i<data.listeJournees.size();i++) {
+			Journee j = data.getJournee(i);
+			int nbInterferences = 0;
+			for(Conflit c : j.getConflits()) {
+				
 			}
 		}
-		System.out.println("Nombre de conflits dans la base : "+nbConflits);
-		System.out.println("Nombre de jours a conflits dans la base : "+journeesAconflits.size());
-		
-		
-		
-		
-		/* LocalDate datest = LocalDate.of(2019, 02, 01);
-		System.out.println(datest.toString());
-		System.out.println(datest.getDayOfWeek().toString());
-		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
-		String[] joursSemaine = dfsEN.getWeekdays();
-		System.out.println(joursSemaine[0].toString() + "j'ai affiché un jour, je le suppose vide \n \n");
-		
-		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[1].toString()));
-		System.out.println(joursSemaine[6].toString());
-		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6]));
-		System.out.println(datest.getDayOfWeek().toString().equals(joursSemaine[6].toString().toUpperCase()));
-		System.out.println(datest.getDayOfWeek().equals(joursSemaine[5]));
-		*/
-		
-		
-		System.out.println(compteur);
-		for (Journee j : joursConcernes) {
-			j.planningJourneeParBloc();
-		}
-		
-		
 		
 	}
 		
@@ -604,7 +576,6 @@ public class BaseDeDonnees {
 		
 	}
 	
-	
 	public ArrayList<Chirurgien> getTousChirurgiens(){
 		return this.chirurgiensExistants;
 	}
@@ -615,6 +586,23 @@ public class BaseDeDonnees {
 	
 	public ArrayList<Chirurgie> getTousChirurgies(){
 		return this.listeChirurgies;
+	}
+
+	public double getTempsMoyenInteroperatoireBloc() {
+		return tempsInterOperatoireBloc[0];
+	}
+
+	
+	
+	//MUTATEURS
+	public void setTempsMoyenInteroperatoireBloc(double tempsMoyenEntreDeuxChirurgiesMemeBloc) {
+		this.tempsInterOperatoireBloc[0] = tempsMoyenEntreDeuxChirurgiesMemeBloc;
+	}
+	
+	private void setICtempsInteroperatoireBloc(ArrayList<Double> IC95) {
+		tempsInterOperatoireBloc[1] = IC95.get(0);
+		tempsInterOperatoireBloc[2] = IC95.get(1);
+		
 	}
 	
 }
