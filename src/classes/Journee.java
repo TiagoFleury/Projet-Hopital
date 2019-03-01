@@ -372,10 +372,6 @@ public class Journee {
     	}
     	return b;
     }
-    
-
-
-
 
 
 	public boolean anomalieSurchageChirurgienOuPas(Chirurgie x, double seuilTemps, int seuilNb) {
@@ -392,8 +388,6 @@ public class Journee {
     	return b;
     }
     
-    
-	
 	
     
     public boolean anomalieDureeInterOpeBlocOuPas(Chirurgie x, double seuil) {
@@ -601,6 +595,42 @@ public class Journee {
     
     // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
     public void resoudreUbiquite0(BaseDeDonnees database, Ubiquite u) {
+    	Chirurgien chirurgienPb = u.getChirurgienPb();
+    	Chirurgien unChirurgien = null;
+    	Chirurgie chirurgieTest = null;
+    	
+    	int compteur = 0, lg = database.getTousChirurgiens().size();
+    	int nbConflitsGeneres = 0;
+    	int nbConflitsJourChirurgien;
+    	int nbChirurgies = 0;
+    	ArrayList<Chirurgien> chEtudies = new ArrayList<>();
+    	while (compteur < lg) {
+    		nbConflitsJourChirurgien = 0;
+    		unChirurgien = database.getTousChirurgiens().get(compteur);
+    		for (Chirurgie c : unChirurgien.getChirurgies()) {
+    			if (u.getCh2().getDate().equals(c.getDate())) {
+    				if (c.estEnConflit()==true) {
+    					nbConflitsJourChirurgien++;
+    				}
+    				nbChirurgies ++ ;
+    			}
+    		}
+    		if (nbConflitsJourChirurgien<=(nbChirurgies-1) &&  nbChirurgies>=2) {
+    			chEtudies.add(unChirurgien);
+    		}
+    		
+    		// checker si pas d'anomalie de surcharge de taff
+    		// on prend le chirurgien tel que quand on lui rajoute la chirurgie, la durée de sa journée ressemble a sa durée moyenne de journée
+    		// et aussi tel que la durée de chirurgie ressemble de ouf a ses durées habituelles de chirurgies
+    		
+    	}
+    }
+    
+    
+    
+    
+    
+    public void resoudreUbiquiteee0(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
