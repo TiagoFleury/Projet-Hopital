@@ -28,10 +28,10 @@ public class Interference extends Conflit {
     	return this.sallePb;
     }
     
-    private void essayerChangementDeSalleEvident() {
+    private void essayerChangementDeSalleEvident(BaseDeDonnees data) {
     	//Conditions :
     	//1. Gros chevauchement   2. 
-//    	if(pourcentageChevauchement(ch1, ch2)) {
+//    	if(pourcentageChevauchement(chirurgie1, chirurgie2)) {
 //    		
 //    	}
     }
