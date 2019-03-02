@@ -189,28 +189,29 @@ public class Chirurgie {
     
     
     
-    public int anomalieChirurgienDureeInterOpeBlocOuPas() {
+    public int anomalieChirurgienDureeInterOpeBlocOuPas(BaseDeDonnees database) {
     	int retour = 0;
     	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
     	
+    	Journee j = database.getJournee(date);
     	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
-    	for (Chirurgie c : this.chirurgiesDuJour) {
-    		if (c.getChirurgien().equals(albert)) {
+    	for (Chirurgie c : j.getChirurgiesJour()) {
+    		if (c.getChirurgien().equals(this.chirurgien)) {
     			sesChirurgiesAuj.add(c);
     		}
     	}
     	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
-    	int i = sesChirurgiesAuj.indexOf(x);
+    	int i = sesChirurgiesAuj.indexOf(this);
     	// On traite le cas de la chirurgie d'avant
     	boolean b1 = false, b2 = false;
     	if (i>0) {
-    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < albert.getICtempsInteroperatoire().get(1) ) ||  enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), heureDebut) < chirurgien.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
         		b1=true;
         	}
     	}
     	
     	if (i<sesChirurgiesAuj.size()-1) {
-    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < albert.getICtempsInteroperatoire().get(1)  ||  enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
+    		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < chirurgien.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
     			b2=true;
     		}
     	}
@@ -233,11 +234,12 @@ public class Chirurgie {
 
     // Detection d'anomalies
 	public boolean anomalieSurchargeChirurgienOuPas(BaseDeDonnees database) {
+		Chirurgien albert = this.chirurgien;
+		Journee j = database.getJournee(date);
     	boolean b = false;
     	double sum=0;
     	int nombreCh = 0;
-    	Journee jj = database.getJournee(date)
-    	for (Chirurgie c : chirurgiesDuJour) {
+    	for (Chirurgie c : j.getChirurgiesJour()) {
     		if (c.getChirurgien().equals(albert)) {
         		sum += c.getDuree();
         		nombreCh ++ ;

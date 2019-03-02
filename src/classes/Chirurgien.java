@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 
 @SuppressWarnings("rawtypes")
 public class Chirurgien implements Comparable{
@@ -10,9 +11,9 @@ public class Chirurgien implements Comparable{
     private ArrayList<Chirurgie> sesChirurgies;
     private ArrayList<Double> proportionsJoursTravail;
     private ArrayList<LocalDate> joursDeTravail ;
-    private double[] StatsTempsMoyenDeChirurgie; // [temps, borne1 IC, borne2 IC]
-    private double[] StatsTempsDeTravail;        //  [temps, borne1 IC, borne2 IC]
-    public double[] StatsTempsInteroperatoire;  // [temps, borne1 IC, borne2 IC]
+    private double[] statsTempsMoyenDeChirurgie; // [temps, borne1 IC, borne2 IC]
+    private double[] statsTempsDeTravail;        //  [temps, borne1 IC, borne2 IC]
+    public double[] statsTempsInteroperatoire;  // [temps, borne1 IC, borne2 IC]
     public int nbChirurgies;
     private ArrayList<Double> tempsDesChirurgies;
     
@@ -21,9 +22,9 @@ public class Chirurgien implements Comparable{
     public Chirurgien(String nom) {
 		this.nom = nom;
 		this.proportionsJoursTravail=null;
-		this.StatsTempsMoyenDeChirurgie = new double[3];
-		this.StatsTempsInteroperatoire = new double[3];
-		this.StatsTempsDeTravail = new double[3];
+		this.statsTempsMoyenDeChirurgie = new double[3];
+		this.statsTempsInteroperatoire = new double[3];
+		this.statsTempsDeTravail = new double[3];
 	}
     
     
@@ -50,22 +51,49 @@ public class Chirurgien implements Comparable{
     
     
 
-    // Detection d'anomalies
-	public boolean anomalieSurchargeChirurgienOuPas() {
-    	boolean b = false;
-    	double sum=0;
-    	int nombreCh = 0;
-    	for (Chirurgie c : chirurgiesDuJour) {
-    		if (c.getChirurgien().equals(albert)) {
-        		sum += c.getDuree();
-        		nombreCh ++ ;
+     // Detection d'anomalies
+    
+    public int anomalieChirurgienDureeInterOpeBlocOuPas(BaseDeDonnees database, Journee j, Chirurgie x) {
+    	int retour = 0;
+    	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
+    	
+    	
+    	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
+    	for (Chirurgie c : j.getChirurgiesJour()) {
+    		if (c.getChirurgien().equals(this)) {
+    			sesChirurgiesAuj.add(c);
     		}
     	}
-    	if ( sum > albert.getICtempsTravailParJour().get(2) ) {
-    		b = true;
+    	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
+    	int i = sesChirurgiesAuj.indexOf(this);
+    	// On traite le cas de la chirurgie d'avant
+    	boolean b1 = false, b2 = false;
+    	if (i>0) {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < this.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
+        		b1=true;
+        	}
     	}
-    	return b;
+    	
+    	if (i<sesChirurgiesAuj.size()-1) {
+    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < this.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
+    			b2=true;
+    		}
+    	}
+
+    	if (b1==true && b2==false) {
+    		retour=-1;
+    	}
+    	if (b1==false && b2==true) {
+    		retour = 1;
+    	}
+    	if (b1==true && b2==true) {
+    		retour = 2;
+    	}
+    	return retour;
     }
+    
+    
+    
    
     
     
@@ -96,12 +124,12 @@ public class Chirurgien implements Comparable{
 
 	//ACCESSEURS
 	public double getTempsMoyen() {
-		return StatsTempsMoyenDeChirurgie[0];
+		return statsTempsMoyenDeChirurgie[0];
 	}
 	public ArrayList<Double> getICtempsMoyen(){
 		ArrayList<Double> retour = new ArrayList<Double>();
-		retour.add(StatsTempsMoyenDeChirurgie[1]);
-		retour.add(StatsTempsMoyenDeChirurgie[2]);
+		retour.add(statsTempsMoyenDeChirurgie[1]);
+		retour.add(statsTempsMoyenDeChirurgie[2]);
 		
 		return retour;
 	}
@@ -109,25 +137,25 @@ public class Chirurgien implements Comparable{
 
 
 	public double getTempsTravailMoyenParJour() {
-		return StatsTempsDeTravail[0];
+		return statsTempsDeTravail[0];
 	}
 	
 	public ArrayList<Double> getICtempsTravailParJour(){
 		ArrayList<Double> retour = new ArrayList<Double>();
-		retour.add(StatsTempsDeTravail[1]);
-		retour.add(StatsTempsDeTravail[2]);
+		retour.add(statsTempsDeTravail[1]);
+		retour.add(statsTempsDeTravail[2]);
 		
 		return retour;
 	}
 
 	
 	public double getTempsInteroperatoireMoyen() {
-		return StatsTempsInteroperatoire[0];
+		return statsTempsInteroperatoire[0];
 	}
 	public ArrayList<Double> getICtempsInteroperatoire(){
 		ArrayList<Double> retour = new ArrayList<Double>();
-		retour.add(StatsTempsInteroperatoire[1]);
-		retour.add(StatsTempsInteroperatoire[2]);
+		retour.add(statsTempsInteroperatoire[1]);
+		retour.add(statsTempsInteroperatoire[2]);
 		
 		return retour;
 	}
@@ -143,21 +171,21 @@ public class Chirurgien implements Comparable{
 	
 	//MUTATEURS
 	public void setTempsMoyenChirurgie(double moyenne) {
-		StatsTempsMoyenDeChirurgie[0] = moyenne;
+		statsTempsMoyenDeChirurgie[0] = moyenne;
 	}
 
 	public void setICtempsMoyen(ArrayList<Double> IC95) {
-		StatsTempsMoyenDeChirurgie[1] = IC95.get(0);
-		StatsTempsMoyenDeChirurgie[2] = IC95.get(1);
+		statsTempsMoyenDeChirurgie[1] = IC95.get(0);
+		statsTempsMoyenDeChirurgie[2] = IC95.get(1);
 	}
 	
 	public void setTempsInteroperatoireMoyen(double moyenne) {
-		StatsTempsInteroperatoire[0] = moyenne;
+		statsTempsInteroperatoire[0] = moyenne;
 	}
 	
 	public void setICtempsInteroperatoire(ArrayList<Double> IC95) {
-		StatsTempsInteroperatoire[1] = IC95.get(0);
-		StatsTempsInteroperatoire[2] = IC95.get(1);
+		statsTempsInteroperatoire[1] = IC95.get(0);
+		statsTempsInteroperatoire[2] = IC95.get(1);
 	}
 	
 	
@@ -173,12 +201,12 @@ public class Chirurgien implements Comparable{
 
 
 	public void setTempsTravailMoyenParJour(double moyenne) {
-		StatsTempsDeTravail[0] = moyenne;
+		statsTempsDeTravail[0] = moyenne;
 	}
 	
 	public void setICtempsTravailParJour(ArrayList<Double> IC95) {
-		StatsTempsDeTravail[1] = IC95.get(0);
-		StatsTempsDeTravail[2] = IC95.get(1);
+		statsTempsDeTravail[1] = IC95.get(0);
+		statsTempsDeTravail[2] = IC95.get(1);
 	}
 
 
