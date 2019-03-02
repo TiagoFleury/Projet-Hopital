@@ -15,8 +15,8 @@ public class Interference extends Conflit {
     private ArrayList<Chirurgien> chirurgiens;
     
     
-    public Interference(Chirurgie ch1, Chirurgie ch2){
-        super(ch1, ch2);
+    public Interference(Chirurgie ch1, Chirurgie ch2, Journee j){
+        super(ch1, ch2, j);
         this.sallePb=ch1.getSalle();
         ArrayList<Chirurgien> chirurgiensPb = new ArrayList<Chirurgien>();
         chirurgiensPb.add(ch1.getChirurgien());
@@ -26,5 +26,13 @@ public class Interference extends Conflit {
     
     public Bloc getSallePb() {
     	return this.sallePb;
+    }
+    
+    private void essayerChangementDeSalleEvident() {
+    	//Conditions :
+    	//1. Gros chevauchement   2. 
+//    	if(pourcentageChevauchement(ch1, ch2)) {
+//    		
+//    	}
     }
 }

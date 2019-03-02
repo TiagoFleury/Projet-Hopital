@@ -260,7 +260,7 @@ public class Journee {
             }
             else { finConflit=y.getFin();}
             
-            c = new Interference(x,y);
+            c = new Interference(x,y, this);
         }
         
         else if ((uBool==true) && (iBool==true)) {
