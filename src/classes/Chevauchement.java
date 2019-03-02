@@ -14,8 +14,8 @@ public class Chevauchement extends Conflit {
     private Bloc sallePb;
     private Chirurgien chirurgienPb;
     
-    public Chevauchement(Chirurgie ch1, Chirurgie ch2){
-        super(ch1,ch2);
+    public Chevauchement(Chirurgie ch1, Chirurgie ch2, Journee j){
+        super(ch1,ch2,j);
         this.sallePb = ch1.getSalle();
         this.chirurgienPb=ch1.getChirurgien();
     }
