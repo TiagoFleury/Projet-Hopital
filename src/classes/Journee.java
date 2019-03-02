@@ -184,22 +184,26 @@ public class Journee {
     
     // 2. Detection des conflits d'une journee = on etudie si 2 chirurgies sont en conflit (selon les 3 definitions) puis on dresse la liste des conflits du jour
     
+    public boolean enMemeTempsOuPas(Chirurgie x, Chirurgie y) {
+    	boolean bool=false;
+    	if ((x.getDate().isEqual(y.getDate())) && ((x.getDebut().isBefore(y.getDebut())) || x.getDebut().equals(y.getDebut()))){
+    		if (x.getFin().isAfter(y.getDebut()) || x.getFin().equals(y.getDebut())){
+            	bool = true;
+            }
+    	}
+    	else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
+    		if (y.getFin().isAfter(x.getDebut()) || y.getFin().equals(x.getDebut())){
+            	bool = true;
+            }
+    	}
+        return bool; 
+    }
+    
     
     public boolean ubiquiteOuPas(Chirurgie x, Chirurgie y){
         boolean b=false;
-        if ((x.getDate().isEqual(y.getDate())) && ((x.getDebut().isBefore(y.getDebut())) || x.getDebut().equals(y.getDebut()))){
-            if (x.getFin().isAfter(y.getDebut()) || x.getFin().equals(y.getDebut())){
-                if (x.getChirurgien()==y.getChirurgien()){
-                    b=true;
-                }
-            }
-        }
-        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
-            if (y.getFin().isAfter(x.getDebut()) || y.getFin().equals(x.getDebut())){
-                if (x.getChirurgien()==y.getChirurgien()){
-                    b=true;
-                }
-        }
+        if (enMemeTempsOuPas(x,y)==true && x.getChirurgien().equals(y.getChirurgien())) {
+        	b=true;
         }
         return b;
     }
@@ -208,19 +212,8 @@ public class Journee {
 
     public boolean interferenceOuPas(Chirurgie x, Chirurgie y){
         boolean b=false;
-        if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isBefore(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
-            if (x.getFin().isAfter(y.getDebut()) || x.getFin().equals(y.getDebut())){
-                if (x.getSalle()==y.getSalle()){
-                    b=true;
-                }
-            }
-        }
-        else if ((x.getDate().isEqual(y.getDate())) && (x.getDebut().isAfter(y.getDebut()) || x.getDebut().equals(y.getDebut()))){
-            if (y.getFin().isAfter(x.getDebut()) || y.getFin().equals(x.getDebut())){
-                if (x.getSalle()==y.getSalle()){
-                    b=true;
-                }
-            }
+        if (enMemeTempsOuPas(x,y)==true && x.getSalle().equals(y.getSalle())) {
+        	b=true;
         }
         return b;
     }
@@ -361,8 +354,9 @@ public class Journee {
     
     
 
-    // Pour une chirurgie (en conflit) donnee, et pour un certain seuil, la chirurgie passe en anomalie si : 
-    //    il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci (selon un certain seuil de tolerance)
+    // Pour une chirurgie (en conflit) donnee, la chirurgie passe en anomalie si : 
+    //    Pour le chirurgien de la chirurgie : 
+    // 				il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci
     public boolean anomalieDureeChirurgieOuPas(Chirurgie x) {
     	boolean b = false;
     	double time = x.getDuree();
@@ -374,15 +368,17 @@ public class Journee {
     }
 
 
-	public boolean anomalieSurchageChirurgienOuPas(Chirurgie x, double seuilTemps, int seuilNb) {
+	public boolean anomalieSurchargeChirurgienOuPas(Chirurgien albert) {
     	boolean b = false;
     	double sum=0;
     	int nombreCh = 0;
-    	for (Chirurgie c : x.getChirurgien().getChirurgies()) {
-    		sum += x.getDuree();
-    		nombreCh ++ ;
+    	for (Chirurgie c : chirurgiesDuJour) {
+    		if (c.getChirurgien().equals(albert)) {
+        		sum += c.getDuree();
+        		nombreCh ++ ;
+    		}
     	}
-    	if ((sum > seuilTemps) || (nombreCh > seuilNb) ) {
+    	if ( sum > albert.getICtempsTravailParJour().get(2) ) {
     		b = true;
     	}
     	return b;
@@ -390,13 +386,46 @@ public class Journee {
     
 	
     
-    public boolean anomalieDureeInterOpeBlocOuPas(Chirurgie x, double seuil) {
-    	boolean b = false;
-    	return b;
+    public int anomalieChirurgienDureeInterOpeBlocOuPas(Chirurgie x) {
+    	int retour = 0;
+    	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
+    	Chirurgien albert = x.getChirurgien();
+    	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
+    	for (Chirurgie c : chirurgiesDuJour) {
+    		if (c.getChirurgien().equals(albert)) {
+    			sesChirurgiesAuj.add(c);
+    		}
+    	}
+    	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
+    	int i = sesChirurgiesAuj.indexOf(x);
+    	// On traite le cas de la chirurgie d'avant
+    	boolean b1 = false, b2 = false;
+    	if (i>0) {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < albert.getICtempsInteroperatoire().get(1) ) ||  enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
+        		b1=true;
+        	}
+    	}
+    	
+    	if (i<sesChirurgiesAuj.size()-1) {
+    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < albert.getICtempsInteroperatoire().get(1)  ||  enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
+    			b2=true;
+    		}
+    	}
+
+    	if (b1==true && b2==false) {
+    		retour=-1;
+    	}
+    	if (b1==false && b2==true) {
+    		retour = 1;
+    	}
+    	if (b1==true && b2==true) {
+    		retour = 2;
+    	}
+    	return retour;
     }
     
     
-    
+
     
     
     
@@ -603,7 +632,7 @@ public class Journee {
     	int nbConflitsGeneres = 0;
     	int nbConflitsJourChirurgien;
     	int nbChirurgies = 0;
-    	ArrayList<Chirurgien> chEtudies = new ArrayList<>();
+    	ArrayList<Chirurgien> chCandidats = new ArrayList<>();
     	while (compteur < lg) {
     		nbConflitsJourChirurgien = 0;
     		unChirurgien = database.getTousChirurgiens().get(compteur);
@@ -616,14 +645,35 @@ public class Journee {
     			}
     		}
     		if (nbConflitsJourChirurgien<=(nbChirurgies-1) &&  nbChirurgies>=2) {
-    			chEtudies.add(unChirurgien);
+    			chCandidats.add(unChirurgien);
     		}
     		
     		// checker si pas d'anomalie de surcharge de taff
     		// on prend le chirurgien tel que quand on lui rajoute la chirurgie, la durée de sa journée ressemble a sa durée moyenne de journée
     		// et aussi tel que la durée de chirurgie ressemble de ouf a ses durées habituelles de chirurgies
     		
+    		// et bien sur tel que ca ne génère pas de conflit
     	}
+    	boolean bool = false;
+    	Chirurgie chirugieTest = null;
+    	ArrayList<Chirurgien> chCandidats2 = new ArrayList<>();
+    	for (Chirurgien ch : chCandidats) {
+    		bool = anomalieSurchargeChirurgienOuPas(ch);
+    		chirurgieTest = u.getCh1();
+			chirurgieTest.setChirurgien(ch);
+    		if (bool==false) {
+    			bool = anomalieDureeChirurgieOuPas(chirurgieTest);
+    			if (bool = false ) {
+    				if (anomalieChirurgienDureeInterOpeBlocOuPas(chirurgieTest)!=0) {
+    					bool=true;
+    				}
+    			}
+    		}
+    		if (bool==false) {
+    			chCandidats2.add(ch);
+    		}
+    	}
+    	
     }
     
     

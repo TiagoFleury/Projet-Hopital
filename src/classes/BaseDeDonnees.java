@@ -562,14 +562,17 @@ public class BaseDeDonnees {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("Chirurgies_v2.csv");
 		data.organiserJournees();
-		
+		int nbUbiquite = 0;
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
-			int nbInterferences = 0;
+			
 			for(Conflit c : j.getConflits()) {
-				
+				if (c instanceof Ubiquite) {
+					nbUbiquite++ ;
+				}
 			}
 		}
+		System.out.println(nbUbiquite);
 		
 	}
 		

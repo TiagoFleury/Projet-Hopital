@@ -9,7 +9,6 @@ public class Chirurgien implements Comparable{
     private String nom;
     private ArrayList<Chirurgie> sesChirurgies;
     private ArrayList<Double> proportionsJoursTravail;
-    
     private ArrayList<LocalDate> joursDeTravail ;
     private double[] StatsTempsMoyenDeChirurgie; // [temps, borne1 IC, borne2 IC]
     private double[] StatsTempsDeTravail;        //  [temps, borne1 IC, borne2 IC]
