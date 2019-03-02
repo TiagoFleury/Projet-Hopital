@@ -15,8 +15,8 @@ public class Ubiquite extends Conflit {
     private ArrayList<Bloc> salles;
     
     
-    public Ubiquite(Chirurgie ch1, Chirurgie ch2){
-        super(ch1, ch2);
+    public Ubiquite(Chirurgie ch1, Chirurgie ch2, Journee j){
+        super(ch1, ch2, j);
         this.chirurgienPb=ch1.getChirurgien();
         ArrayList<Bloc> blocs = new ArrayList<Bloc>();
         blocs.add(ch1.getSalle());

@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.time.Period;
 
 public class Conflit {
-    protected LocalDate date;
+    protected Journee jour;
     protected LocalTime debut;
     protected LocalTime fin;
     protected Chirurgie chirurgie1;
@@ -18,13 +18,13 @@ public class Conflit {
     protected boolean resolu;
     
    
-    
-    public Conflit(Chirurgie ch1, Chirurgie ch2) {
+    public Conflit(Chirurgie ch1, Chirurgie ch2, Journee j) {
     	this.chirurgie1=ch1;
     	this.chirurgie2=ch2;
     	this.resolu=false;
     	
-    	this.date=ch1.getDate();
+    	
+    	this.jour=j;
     	if (ch1.getDebut().isBefore(ch2.getDebut())){
     		this.debut=ch2.getDebut();
     	}
@@ -69,7 +69,7 @@ public class Conflit {
     	return this.chirurgie2;
     }
     public LocalDate getDate() {
-    	return this.date;
+    	return jour.getDate();
     }
     public boolean getEtat() {
     	return this.resolu;

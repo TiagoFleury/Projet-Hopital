@@ -238,7 +238,7 @@ public class Journee {
             }
             else { finConflit=y.getFin();}
             
-            c = new Ubiquite(x,y);
+            c = new Ubiquite(x,y,this);
             
         }
         
@@ -253,7 +253,7 @@ public class Journee {
             }
             else { finConflit=y.getFin();}
             
-            c = new Interference(x,y);
+            c = new Interference(x,y, this);
         }
         
         else if ((uBool==true) && (iBool==true)) {
@@ -265,7 +265,7 @@ public class Journee {
                 finConflit=x.getFin();
             }
             else { finConflit=y.getFin();}
-            c = new Chevauchement(x,y);
+            c = new Chevauchement(x,y,this);
         }
         return c;
     }

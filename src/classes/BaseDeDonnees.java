@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeMap;
 import java.io.BufferedReader;
@@ -562,17 +561,29 @@ public class BaseDeDonnees {
 		BaseDeDonnees data = new BaseDeDonnees();
 		data.importBase("Chirurgies_v2.csv");
 		data.organiserJournees();
-		int nbUbiquite = 0;
+		int nbInterferences = 0;
+		int nbConflits=0;
+		int nbUbiquites=0;
+		int nbChevauchements=0;
+		
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
 			
 			for(Conflit c : j.getConflits()) {
-				if (c instanceof Ubiquite) {
-					nbUbiquite++ ;
+				if(c instanceof Interference) {
+					//Interference interf = (Interference) c;
+					j.planningJourneeParBloc();
+					nbInterferences++;
+				}
+				if(c instanceof Ubiquite) {
+					nbUbiquites++;
+				}
+				if(c instanceof Chevauchement) {
+					nbChevauchements++;
+		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
 				}
 			}
 		}
-		System.out.println(nbUbiquite);
 		
 	}
 		
