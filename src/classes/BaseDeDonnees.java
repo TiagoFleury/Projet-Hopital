@@ -580,10 +580,12 @@ public class BaseDeDonnees {
 				}
 				if(c instanceof Chevauchement) {
 					nbChevauchements++;
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
 				}
+				nbConflits++;
 			}
 		}
+		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
+		
 		
 	}
 		
