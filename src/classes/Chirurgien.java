@@ -59,22 +59,30 @@ public class Chirurgien implements Comparable{
     
 
     // Detection d'anomalies de Chirurgien
-	public boolean anomalieSurchargeChirurgienOuPas(BaseDeDonnees database) {
-		Journee j = database.getJournee(date);
-    	boolean b = false;
-    	double sum=0;
-    	int nombreCh = 0;
-    	for (Chirurgie c : j.getChirurgiesJour()) {
-    		if (c.getChirurgien().equals(this)) {
-        		sum += c.getDuree();
-        		nombreCh ++ ;
-    		}
-    	}
-    	if ( sum > this.getICtempsTravailParJour().get(2) ) {
-    		b = true;
-    	}
-    	return b;
-    }
+	public ArrayList<LocalDate> anomaliesSurchargeChirurgienOuPas(BaseDeDonnees database) {
+		double sum=0;
+		Journee j = null;
+		ArrayList<LocalDate> lesJSurcharges = new ArrayList<>();
+		for (int i = 0 ; i < database.listeJournees.size() ; i++) {
+			sum=0;
+			j=database.getJournee(i);
+			for (Chirurgie ch : j.getChirurgiesJour()) {
+				if (ch.estEnConflit()==false) {
+					if (ch.getChirurgien().equals(this)) {
+						sum+= ch.getDuree();
+					}
+				}
+			}
+			if ( sum > this.getICtempsTravailParJour().get(2) ) {
+				lesJSurcharges.add(j.getDate());
+			}
+		}
+		return lesJSurcharges;
+	}
+		
+	// Avec cette methode, quand je voudrai savoir si je peux lui refiler une chirurgie (via correction d'un conflit)
+	// alors je verifierai que ce chirurgien n'est pas deja en train d'etre surchagé de travail ce jour là (via contains).
+		
 	
     
     

@@ -1,6 +1,7 @@
 package classes;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.text.DateFormatSymbols;
 import java.util.Locale;
@@ -349,6 +350,27 @@ public class BaseDeDonnees {
 	
 	
 	
+	
+	public void calculPlagesHorairesHabituellesChirurgiens() {
+		ArrayList<Float> proportions = new ArrayList<>();
+		LocalTime huit = LocalTime.of(8,00);
+		LocalTime quatorze = LocalTime.of(14, 00);
+    	LocalTime vingt = LocalTime.of(20,00);
+    	LocalTime deux = LocalTime.of(2, 00);
+    	
+    	int i0814=0, i1420 = 0, i2002 = 0, i0208 = 0;
+		for (Chirurgien albert : chirurgiensExistants) {
+			for (Chirurgie c : albert.getChirurgies()) {
+				if (c.estEnConflit()==false) {
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	
 	public void envoieChirurgiesEtLesTempsChirurgien(Chirurgien albert) {
 		ArrayList<Chirurgie> lesChirurgies = null;
 		ArrayList<Double> lesTemps=null;
@@ -375,29 +397,32 @@ public class BaseDeDonnees {
 			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
 			envoieChirurgiesEtLesTempsChirurgien(c);
 			for (Chirurgie chi : c.getChirurgies()) {
-				leJour = chi.getDate().getDayOfWeek().toString();
+				if (chi.estEnConflit()==false) {
+					leJour = chi.getDate().getDayOfWeek().toString();
+					
+					if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
+						compteur1+=1; //Dimanche
+					}
+					if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
+						compteur2+=1; //Lundi
+					}
+					if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
+						compteur3+=1; //Mardi
+					}
+					if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
+						compteur4+=1; //Mercredi
+					}
+					if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
+						compteur5+=1; //Jeudi
+					}
+					if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
+						compteur6+=1; // Vendredi
+					}
+					if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
+						compteur7+=1; // Samedi
+					}
+				}
 				
-				if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
-					compteur1+=1; //Dimanche
-				}
-				if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
-					compteur2+=1; //Lundi
-				}
-				if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
-					compteur3+=1; //Mardi
-				}
-				if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
-					compteur4+=1; //Mercredi
-				}
-				if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
-					compteur5+=1; //Jeudi
-				}
-				if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
-					compteur6+=1; // Vendredi
-				}
-				if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
-					compteur7+=1; // Samedi
-				}
 			}
 			if (c.getChirurgies().size()!=0) { // ATTENTION : je crée ici une liste de taille 7 / donc position de 0 à 6
 				listeProportionsJours.add((double) compteur1/c.getChirurgies().size());
@@ -446,29 +471,32 @@ public class BaseDeDonnees {
 			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
 			envoieChirurgiesBloc(salle);
 			for (Chirurgie chi : salle.getChirurgies()) {
-				leJour = chi.getDate().getDayOfWeek().toString();
+				if (chi.estEnConflit()==false) {
+					leJour = chi.getDate().getDayOfWeek().toString();
+					
+					if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
+						compteur1+=1; //Dimanche
+					}
+					if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
+						compteur2+=1; //Lundi
+					}
+					if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
+						compteur3+=1; //Mardi
+					}
+					if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
+						compteur4+=1; //Mercredi
+					}
+					if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
+						compteur5+=1; //Jeudi
+					}
+					if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
+						compteur6+=1; //Vendredi
+					}
+					if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
+						compteur7+=1; //Samedi
+					}
+				}
 				
-				if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
-					compteur1+=1; //Dimanche
-				}
-				if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
-					compteur2+=1; //Lundi
-				}
-				if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
-					compteur3+=1; //Mardi
-				}
-				if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
-					compteur4+=1; //Mercredi
-				}
-				if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
-					compteur5+=1; //Jeudi
-				}
-				if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
-					compteur6+=1; //Vendredi
-				}
-				if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
-					compteur7+=1; //Samedi
-				}
 			}
 			if (salle.getChirurgies().size()!=0) {
 				listeProportionsJours.add((double) compteur1/salle.getChirurgies().size());

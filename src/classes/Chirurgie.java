@@ -189,36 +189,37 @@ public class Chirurgie {
     
     // Detection d'anomalies
     
-    public int anomalieDureeInterOpeBlocOuPasChirurgien(BaseDeDonnees database, Journee j) {
+    public int anomalieDureeInterOpeBlocOuPasChirurgien(BaseDeDonnees database) {
     	int retour = 0;
     	
     	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
-    	
-    	
+    	Chirurgien theC = this.chirurgien;
+    	Journee j = database.getJournee(this.date);
     	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
     	for (Chirurgie c : j.getChirurgiesJour()) {
-    		if (c.getChirurgien().equals(this)) {
+    		if (c.getChirurgien().equals(theC)) {
     			sesChirurgiesAuj.add(c);
     		}
     	}
     	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
     	int i = sesChirurgiesAuj.indexOf(this);
+    	
     	// On traite le cas de la chirurgie d'avant
     	boolean b1 = false, b2 = false;
     	if (i>0) {
-    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < this.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(),heureDebut) < theC.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
         		b1=true;
         	}
     	}
     	
     	if (i<sesChirurgiesAuj.size()-1) {
-    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < this.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
+    		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < theC.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
     			b2=true;
     		}
     	}
 
     	if (b1==true && b2==false) {
-    		retour=-1;
+    		retour= -1;
     	}
     	if (b1==false && b2==true) {
     		retour = 1;

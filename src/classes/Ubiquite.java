@@ -42,7 +42,9 @@ public class Ubiquite extends Conflit {
     //    une des deux chirurgies est anormalement longue, et dans ce cas je la raccourcir
     //    le cas où une chirurgie est apres le début ET avant la fin n'est pas pris en compte, et sera résolue d'une autre manière
     
-    public void resoudreUbiquite00() {
+    
+    
+    public void resoudreUbiquite0() {
     	boolean b1=false;
     	boolean b2=false;
     	Chirurgie copie1 = chirurgie1;
@@ -134,6 +136,7 @@ public class Ubiquite extends Conflit {
     
     
     
+    
 // DABORD ALLER CHERCHER LES CHIRURGIENS QUI ONT au moins 1 ch en non conflit, car les AUTRES ON EST SUR QU'ils ne sont pas la
     
     // Puis parmis ces memes chirurgiens qui ne sont pas en FULL conflits, il faut vérifier qu'en leurs ajoutant cette chirurgie,
@@ -145,7 +148,7 @@ public class Ubiquite extends Conflit {
     
     
     // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
-    public void resoudreUbiquite0(BaseDeDonnees database) {
+    public void resoudreUbiquite1(BaseDeDonnees database) {
     	Chirurgien chirurgienP = chirurgienPb;
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -180,13 +183,13 @@ public class Ubiquite extends Conflit {
     	Chirurgie chirugieTest = null;
     	ArrayList<Chirurgien> chCandidats2 = new ArrayList<>();
     	for (Chirurgien ch : chCandidats) {
-    		bool = ch.anomalieSurchargeChirurgienOuPas(database);
+    		bool = ch.anomaliesSurchargeChirurgienOuPas(database);
     		chirurgieTest = chirurgie1;
 			chirurgieTest.setChirurgien(ch);
     		if (bool==false) {
     			bool = chirurgieTest.anomalieDureeChirurgieOuPas();
     			if (bool = false ) {
-    				if (chirurgieTest.anomalieChirurgienDureeInterOpeBlocOuPas()!=0) {
+    				if (chirurgieTest.anomaliesChirurgienDureeInterOpeBlocOuPas()!=0) {
     					bool=true;
     				}
     			}
@@ -260,7 +263,7 @@ public class Ubiquite extends Conflit {
     // Si celle au dessus n'a pas marché, alors aller chercher parmis ceux qui bossent pas de la journée (ex : ceux qui bossent pas le mardi15)
     // lesquels ont la plus grosse probas de bosser un mardi
     
-    public void resoudreUbiquite1(BaseDeDonnees database, Ubiquite u) {
+    public void resoudreUbiquite2(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -326,7 +329,7 @@ public class Ubiquite extends Conflit {
     
     
     // Ubiquite classique + cas où le chirurgien travaille un jour ou il ne devrait pas
-    public void resoudreUbiquite2(BaseDeDonnees database, Ubiquite u) {
+    public void resoudreUbiquite3(BaseDeDonnees database, Ubiquite u) {
     	
     	// Cest une application classique de changement de chirurgien, il suffit d'appeller Ubiquite0 ????
     }
