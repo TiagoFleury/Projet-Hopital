@@ -1,11 +1,14 @@
 ﻿package classes;
 
+import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.Locale;
 
 
 public class Chirurgie {
@@ -92,6 +95,141 @@ public class Chirurgie {
     	
     	return str;
     }
+    
+    
+    
+    
+    public void raccourcirChirurgieDebut(Chirurgie ch, long nbMin) {
+    	ch.setDebut(ch.getDebut().plusMinutes(nbMin));
+    }
+    
+    public void raccourcirChirurgieFin(Chirurgie ch, long nbMin) {
+    	ch.setFin(ch.getFin().minusMinutes(nbMin));
+    }
+    
+    public void deplacerChirurgieAvant(Chirurgie ch, long nbMin) {
+    	ch.setDebut(ch.getDebut().minusMinutes(nbMin));
+    	ch.setFin(ch.getFin().minusMinutes(nbMin));
+    }
+    
+    public void deplacerChirurgieApres(Chirurgie ch, long nbMin) {
+    	ch.setDebut(ch.getDebut().plusMinutes(nbMin));
+    	ch.setFin(ch.getFin().plusMinutes(nbMin));
+    }
+    
+    
+    
+    
+    
+    
+    
+    // Detection d'anomalies
+    
+    
+    
+    // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 
+    //   pour un seuil fixé, la probas pour qu'il travaille ce jour, alors que la chirurgie est en conflit, est trop basse pour le seuil
+  
+    public boolean anomalieJourOuPas(double seuil) {
+    	boolean b = false;
+    	String leJour = null;
+    	leJour = date.getDayOfWeek().toString();
+    	DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
+		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday]
+		
+    	int numero = 0;
+    	
+    	if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
+			numero = 0; //Dimanche
+		}
+		if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
+			numero = 1; //Lundi
+		}
+		if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
+			numero = 2; //Mardi
+		}
+		if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
+			numero = 3; //Mercredi
+		}
+		if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
+			numero = 4; //Jeudi
+		}
+		if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
+			numero = 5; //Vendredi
+		}
+		if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
+			numero = 6; //Samedi
+		}
+		
+		if (chirurgien.getProportions().get(numero)<seuil) {
+			b=true;
+		}
+		return b;
+    }
+    
+    
+    
+    
+
+    // Pour une chirurgie (en conflit) donnee, la chirurgie passe en anomalie si : 
+    //    Pour le chirurgien de la chirurgie : 
+    // 				il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci
+    public boolean anomalieDureeChirurgieOuPas() {
+    	boolean b = false;
+    	double time = nbMinutes;
+    	ArrayList<Double> interv = chirurgien.getICtempsMoyen();
+    	if ( (time<interv.get(0)) || (time>interv.get(1))){
+    		b=true;
+    	}
+    	return b;
+    }
+    
+   
+    
+    
+    
+    
+    public int anomalieChirurgienDureeInterOpeBlocOuPas() {
+    	int retour = 0;
+    	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
+    	
+    	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
+    	for (Chirurgie c : this.chirurgiesDuJour) {
+    		if (c.getChirurgien().equals(albert)) {
+    			sesChirurgiesAuj.add(c);
+    		}
+    	}
+    	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
+    	int i = sesChirurgiesAuj.indexOf(x);
+    	// On traite le cas de la chirurgie d'avant
+    	boolean b1 = false, b2 = false;
+    	if (i>0) {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < albert.getICtempsInteroperatoire().get(1) ) ||  enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
+        		b1=true;
+        	}
+    	}
+    	
+    	if (i<sesChirurgiesAuj.size()-1) {
+    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < albert.getICtempsInteroperatoire().get(1)  ||  enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
+    			b2=true;
+    		}
+    	}
+
+    	if (b1==true && b2==false) {
+    		retour=-1;
+    	}
+    	if (b1==false && b2==true) {
+    		retour = 1;
+    	}
+    	if (b1==true && b2==true) {
+    		retour = 2;
+    	}
+    	return retour;
+    }
+    
+    
+    
+    
     
     
     

@@ -71,6 +71,9 @@ public class Conflit {
     public LocalDate getDate() {
     	return jour.getDate();
     }
+    public Journee getJournee() {
+    	return jour;
+    }
     public boolean getEtat() {
     	return this.resolu;
     }

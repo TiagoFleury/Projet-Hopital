@@ -49,15 +49,29 @@ public class Chirurgien implements Comparable{
     
     
     
-    
-    public float proportionTempsdeChirurgieEnDureeInterOpe() {
-    	float result = 0;
-    	for (Chirurgie c : sesChirurgies) {
-    		
+
+    // Detection d'anomalies
+	public boolean anomalieSurchargeChirurgienOuPas() {
+    	boolean b = false;
+    	double sum=0;
+    	int nombreCh = 0;
+    	for (Chirurgie c : chirurgiesDuJour) {
+    		if (c.getChirurgien().equals(albert)) {
+        		sum += c.getDuree();
+        		nombreCh ++ ;
+    		}
     	}
-    	return result;
+    	if ( sum > albert.getICtempsTravailParJour().get(2) ) {
+    		b = true;
+    	}
+    	return b;
     }
    
+    
+    
+    
+    
+    
     
 
 
