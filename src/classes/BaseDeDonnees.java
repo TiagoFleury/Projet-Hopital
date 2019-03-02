@@ -632,6 +632,21 @@ public class BaseDeDonnees {
 		
 	}
 	
+	public Journee getJournee(LocalDate date) {
+		if(date == null) {
+			System.out.println("La date est nulle");
+			return null;
+		}
+		if(!listeJournees.containsKey(date)) {
+			System.out.println("La journee "+date+" n'existe pas dans cette base de donnees");
+			return null;
+		}
+		else {
+			return listeJournees.get(date);
+		}
+	}
+	
+	
 	public ArrayList<Chirurgien> getTousChirurgiens(){
 		return this.chirurgiensExistants;
 	}
