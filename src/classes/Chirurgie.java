@@ -230,7 +230,26 @@ public class Chirurgie {
     
     
     
-    
+
+    // Detection d'anomalies
+	public boolean anomalieSurchargeChirurgienOuPas(BaseDeDonnees database) {
+    	boolean b = false;
+    	double sum=0;
+    	int nombreCh = 0;
+    	Journee jj = database.getJournee(date)
+    	for (Chirurgie c : chirurgiesDuJour) {
+    		if (c.getChirurgien().equals(albert)) {
+        		sum += c.getDuree();
+        		nombreCh ++ ;
+    		}
+    	}
+    	if ( sum > albert.getICtempsTravailParJour().get(2) ) {
+    		b = true;
+    	}
+    	return b;
+    }
+	
+	
     
     
     
