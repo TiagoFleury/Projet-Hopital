@@ -34,6 +34,25 @@ class BaseDeDonneesTEST {
 		
 	}
 	
+	@Test
+	void testTempsTravailParJour() {
+		BaseDeDonnees data = new BaseDeDonnees();
+		data.importBase("Chirurgies_v2.csv");
+		//data.importBase("Minibase.csv");
+		data.organiserJournees();
+		
+		
+		data.calculTempsDeTravailChirurgiens();
+		
+		
+		
+		
+		
+		System.out.println("Temps travail moyen par jour : ");
+		for(Chirurgien chir : data.chirurgiensExistants) {
+			System.out.println(chir.getName()+" : "+chir.getTempsTravailMoyenParJour()+", ["+chir.getICtempsTravailParJour().get(0)+","+chir.getICtempsTravailParJour().get(1)+"]");
+		}
+	}
 	
 	@Test
 	void testTpsMoyenEntre2Chirurgies() {
