@@ -145,7 +145,7 @@ public class Ubiquite extends Conflit {
     
     
     // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
-    public void resoudreUbiquite0() {
+    public void resoudreUbiquite0(BaseDeDonnees database) {
     	Chirurgien chirurgienP = chirurgienPb;
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -159,7 +159,7 @@ public class Ubiquite extends Conflit {
     		nbConflitsJourChirurgien = 0;
     		unChirurgien = database.getTousChirurgiens().get(compteur);
     		for (Chirurgie c : unChirurgien.getChirurgies()) {
-    			if (u.getCh2().getDate().equals(c.getDate())) {
+    			if (chirurgie2.getDate().equals(c.getDate())) {
     				if (c.estEnConflit()==true) {
     					nbConflitsJourChirurgien++;
     				}
@@ -180,7 +180,7 @@ public class Ubiquite extends Conflit {
     	Chirurgie chirugieTest = null;
     	ArrayList<Chirurgien> chCandidats2 = new ArrayList<>();
     	for (Chirurgien ch : chCandidats) {
-    		bool = ch.anomalieSurchargeChirurgienOuPas();
+    		bool = ch.anomalieSurchargeChirurgienOuPas(database);
     		chirurgieTest = chirurgie1;
 			chirurgieTest.setChirurgien(ch);
     		if (bool==false) {

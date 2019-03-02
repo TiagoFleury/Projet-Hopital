@@ -16,6 +16,7 @@ public class Conflit {
     protected Chirurgie chirurgie1;
     protected Chirurgie chirurgie2;
     protected boolean resolu;
+    protected double nbMinutes;
     
    
     public Conflit(Chirurgie ch1, Chirurgie ch2, Journee j) {
@@ -33,6 +34,11 @@ public class Conflit {
     		this.fin=ch1.getFin();
     	}
     	else {this.fin=ch2.getFin();}
+    	
+    	nbMinutes = ChronoUnit.MINUTES.between(debut,fin);
+		if(nbMinutes<0) { //C'est le cas ou une chirurgie est sur deux jours
+			nbMinutes = ChronoUnit.MINUTES.between(LocalDateTime.of(jour.getDate(), debut),LocalDateTime.of(jour.getDate(), fin).plusDays(1));
+		}
     	
     }
     
@@ -77,6 +83,13 @@ public class Conflit {
     public boolean getEtat() {
     	return this.resolu;
     }
+    
+    public double getDuree() {
+    	return this.nbMinutes;
+    }
+    
+    
+    
     
     // MUTATEURS //
     public void setEtat(boolean b) {

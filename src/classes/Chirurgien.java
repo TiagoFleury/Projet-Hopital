@@ -51,50 +51,31 @@ public class Chirurgien implements Comparable{
     
     
 
-     // Detection d'anomalies
-    
-    public int anomalieChirurgienDureeInterOpeBlocOuPas(BaseDeDonnees database, Journee j, Chirurgie x) {
-    	int retour = 0;
-    	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
-    	
-    	
-    	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
-    	for (Chirurgie c : j.getChirurgiesJour()) {
-    		if (c.getChirurgien().equals(this)) {
-    			sesChirurgiesAuj.add(c);
-    		}
-    	}
-    	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
-    	int i = sesChirurgiesAuj.indexOf(this);
-    	// On traite le cas de la chirurgie d'avant
-    	boolean b1 = false, b2 = false;
-    	if (i>0) {
-    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < this.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
-        		b1=true;
-        	}
-    	}
-    	
-    	if (i<sesChirurgiesAuj.size()-1) {
-    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < this.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
-    			b2=true;
-    		}
-    	}
-
-    	if (b1==true && b2==false) {
-    		retour=-1;
-    	}
-    	if (b1==false && b2==true) {
-    		retour = 1;
-    	}
-    	if (b1==true && b2==true) {
-    		retour = 2;
-    	}
-    	return retour;
-    }
     
     
     
    
+    
+    
+
+    // Detection d'anomalies de Chirurgien
+	public boolean anomalieSurchargeChirurgienOuPas(BaseDeDonnees database) {
+		Journee j = database.getJournee(date);
+    	boolean b = false;
+    	double sum=0;
+    	int nombreCh = 0;
+    	for (Chirurgie c : j.getChirurgiesJour()) {
+    		if (c.getChirurgien().equals(this)) {
+        		sum += c.getDuree();
+        		nombreCh ++ ;
+    		}
+    	}
+    	if ( sum > this.getICtempsTravailParJour().get(2) ) {
+    		b = true;
+    	}
+    	return b;
+    }
+	
     
     
     

@@ -99,22 +99,22 @@ public class Chirurgie {
     
     
     
-    public void raccourcirChirurgieDebut(Chirurgie ch, long nbMin) {
-    	ch.setDebut(ch.getDebut().plusMinutes(nbMin));
+    public void raccourcirChirurgieDebut(long nbMin) {
+    	this.heureDebut.plusMinutes(nbMin);
     }
     
     public void raccourcirChirurgieFin(Chirurgie ch, long nbMin) {
-    	ch.setFin(ch.getFin().minusMinutes(nbMin));
+    	this.heureFin.minusMinutes(nbMin);
     }
     
     public void deplacerChirurgieAvant(Chirurgie ch, long nbMin) {
-    	ch.setDebut(ch.getDebut().minusMinutes(nbMin));
-    	ch.setFin(ch.getFin().minusMinutes(nbMin));
+    	this.heureDebut.minusMinutes(nbMin);
+    	this.heureFin.minusMinutes(nbMin);
     }
     
     public void deplacerChirurgieApres(Chirurgie ch, long nbMin) {
-    	ch.setDebut(ch.getDebut().plusMinutes(nbMin));
-    	ch.setFin(ch.getFin().plusMinutes(nbMin));
+    	this.heureDebut.plusMinutes(nbMin);
+    	this.heureFin.plusMinutes(nbMin);
     }
     
     
@@ -124,7 +124,6 @@ public class Chirurgie {
     
     
     // Detection d'anomalies
-    
     
     
     // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 
@@ -170,6 +169,7 @@ public class Chirurgie {
     
     
     
+    
 
     // Pour une chirurgie (en conflit) donnee, la chirurgie passe en anomalie si : 
     //    Pour le chirurgien de la chirurgie : 
@@ -178,7 +178,7 @@ public class Chirurgie {
     	boolean b = false;
     	double time = nbMinutes;
     	ArrayList<Double> interv = chirurgien.getICtempsMoyen();
-    	if ( (time<interv.get(0)) || (time>interv.get(1))){
+    	if ( (time<chirurgien.getICtempsMoyen().get(1)) || (time>chirurgien.getICtempsMoyen().get(2))){
     		b=true;
     	}
     	return b;
@@ -187,16 +187,17 @@ public class Chirurgie {
    
     
     
+    // Detection d'anomalies
     
-    
-    public int anomalieChirurgienDureeInterOpeBlocOuPas(BaseDeDonnees database) {
+    public int anomalieDureeInterOpeBlocOuPasChirurgien(BaseDeDonnees database, Journee j) {
     	int retour = 0;
+    	
     	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
     	
-    	Journee j = database.getJournee(date);
+    	
     	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
     	for (Chirurgie c : j.getChirurgiesJour()) {
-    		if (c.getChirurgien().equals(this.chirurgien)) {
+    		if (c.getChirurgien().equals(this)) {
     			sesChirurgiesAuj.add(c);
     		}
     	}
@@ -205,13 +206,13 @@ public class Chirurgie {
     	// On traite le cas de la chirurgie d'avant
     	boolean b1 = false, b2 = false;
     	if (i>0) {
-    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), heureDebut) < chirurgien.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(), x.getDebut()) < this.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i-1)) )  {
         		b1=true;
         	}
     	}
     	
     	if (i<sesChirurgiesAuj.size()-1) {
-    		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < chirurgien.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
+    		if (ChronoUnit.MINUTES.between(x.getFin(), sesChirurgiesAuj.get(i+1).getDebut()) < this.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(x,sesChirurgiesAuj.get(i+1)) ) {
     			b2=true;
     		}
     	}
@@ -229,28 +230,7 @@ public class Chirurgie {
     }
     
     
-    
-    
 
-    // Detection d'anomalies
-	public boolean anomalieSurchargeChirurgienOuPas(BaseDeDonnees database) {
-		Chirurgien albert = this.chirurgien;
-		Journee j = database.getJournee(date);
-    	boolean b = false;
-    	double sum=0;
-    	int nombreCh = 0;
-    	for (Chirurgie c : j.getChirurgiesJour()) {
-    		if (c.getChirurgien().equals(albert)) {
-        		sum += c.getDuree();
-        		nombreCh ++ ;
-    		}
-    	}
-    	if ( sum > albert.getICtempsTravailParJour().get(2) ) {
-    		b = true;
-    	}
-    	return b;
-    }
-	
 	
     
     
