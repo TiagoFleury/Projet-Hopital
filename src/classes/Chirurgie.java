@@ -119,6 +119,9 @@ public class Chirurgie {
     
     
     
+
+    
+    
     
     
     
@@ -194,26 +197,22 @@ public class Chirurgie {
     	
     	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
     	Chirurgien theC = this.chirurgien;
-    	Journee j = database.getJournee(this.date);
-    	ArrayList<Chirurgie> sesChirurgiesAuj = new ArrayList<>();
-    	for (Chirurgie c : j.getChirurgiesJour()) {
-    		if (c.getChirurgien().equals(theC)) {
-    			sesChirurgiesAuj.add(c);
-    		}
-    	}
+    	ArrayList<Chirurgie> sesChirurgiesAuj = theC.recupChirurgiesDuJour(database.getJournee(date));
+
     	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
-    	int i = sesChirurgiesAuj.indexOf(this);
+    	
+    	int i = sesChirurgiesAuj.indexOf(this); // Avec cette ligne, je signifie que pr tester l'anomalie, il faut que la chirurgie soit dans la liste des ch du Chirurgien
     	
     	// On traite le cas de la chirurgie d'avant
     	boolean b1 = false, b2 = false;
     	if (i>0) {
-    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(),heureDebut) < theC.getICtempsInteroperatoire().get(1) ) ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
+    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(),heureDebut) < theC.getICtempsInteroperatoire().get(1) ) ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
         		b1=true;
         	}
     	}
     	
     	if (i<sesChirurgiesAuj.size()-1) {
-    		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < theC.getICtempsInteroperatoire().get(1)  ||  j.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
+    		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < theC.getICtempsInteroperatoire().get(1)  ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
     			b2=true;
     		}
     	}

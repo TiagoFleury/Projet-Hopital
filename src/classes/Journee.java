@@ -185,7 +185,7 @@ public class Journee {
     
     // 2. Detection des conflits d'une journee = on etudie si 2 chirurgies sont en conflit (selon les 3 definitions) puis on dresse la liste des conflits du jour
     
-    public boolean enMemeTempsOuPas(Chirurgie x, Chirurgie y) {
+    public static boolean enMemeTempsOuPas(Chirurgie x, Chirurgie y) {
     	boolean bool=false;
     	if ((x.getDate().isEqual(y.getDate())) && ((x.getDebut().isBefore(y.getDebut())) || x.getDebut().equals(y.getDebut()))){
     		if (x.getFin().isAfter(y.getDebut()) || x.getFin().equals(y.getDebut())){

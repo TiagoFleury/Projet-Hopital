@@ -148,7 +148,7 @@ public class Ubiquite extends Conflit {
     
     
     // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
-    public void resoudreUbiquite1(BaseDeDonnees database) {
+    public void resoudreUbiquite11(BaseDeDonnees database) {
     	Chirurgien chirurgienP = chirurgienPb;
     	Chirurgien unChirurgien = null;
     	
@@ -204,72 +204,95 @@ public class Ubiquite extends Conflit {
     
     
     
-    public void resoudreUbiquite1() {
-    	Chirurgien chirurgienTest = null;
-    	Chirurgie chTest = null;
+    
+    
+    public void resoudreUbiquite1(BaseDeDonnees database) {
     	LocalDate auj = this.chirurgie1.getDate();
-    	int nbNonConflitsJour = 0;
-    	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = new ArrayList<>();
-    	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = new ArrayList<>();
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = this.getChirurgiensLibres1();
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = this.getChirurgiensLibres2();
     	
-    	for (Chirurgien albert : this.jour.getChirurgiensMobilises()) {
-    		nbNonConflitsJour =0;
-    		for (Chirurgie x : albert.getChirurgies()) {
-    			if (x.getDate().equals(this.jour.getDate())){
-    				if (x.estEnConflit()==false) {
-    					nbNonConflitsJour++;
-    				}
-    			}
-    		}
-    		if (nbNonConflitsJour>0) {
-    			chirurgiensCandidatsCh1.add(albert);
-    			chirurgiensCandidatsCh2.add(albert);
-    		}
-    	}
     	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le ChProbleme de l'ubiquite
     	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie normalement
     	
     	
-    	
     	for (Chirurgien albert : chirurgiensCandidatsCh1) {
-    		chTest = this.chirurgie1;
-    		boolean boul = false;
+    		Chirurgie chTest = this.chirurgie1;
+    		Chirurgien chirurgienTest=albert;
+    		int nbNonConflitsJour =0;
     		
-    		
+    		for (Chirurgie x : albert.recupChirurgiesDuJour(jour)) {
+    			if (x.estEnConflit()==false) {
+    				nbNonConflitsJour++;
+    			}
     		}
-    		chTest.setChirurgien(albert);
-    		if (chTest.estEnConflit()) {  // ICI petit pb selon moi = on n'a pas pensé a faire une actualisation de l'état estEnConflit, il faudrait que lorsqu'on le questionne, alors il y re-est une détection de conflits
+    		if (nbNonConflitsJour==0) {
     			chirurgiensCandidatsCh1.remove(albert);
-    		} 
+    		}
     		
+    		// Si le C est deja surchargé de travail
     		if (albert.getLesJSurchages().contains(auj)) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
-    		// aller checker si l'ajouter a la liste des chirurgies d'albert respecte ICinteropé
     		
+    		// Si la chirurgie ne correspond pas a ses durées habituelles
     		if (chTest.anomalieDureeChirurgieOuPas()==true) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     		
+    		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
+    		
+    		
+    		
+    		
+    		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		chTest.setChirurgien(albert);
+    		chirurgienTest.recupChirurgiesDuJour(jour).add(chTest);
+    		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
     	}
+    	
     	
     	
     	
     	for (Chirurgien albert : chirurgiensCandidatsCh2) {
-    		chTest = this.chirurgie2;
-    		chTest.setChirurgien(albert);
-    		if (chTest.estEnConflit()) {
-    			chirurgiensCandidatsCh2.remove(albert);
-    		} 
+    		Chirurgie chTest = this.chirurgie2;
+    		Chirurgien chirurgienTest=albert;
+    		int nbNonConflitsJour =0;
     		
+    		for (Chirurgie x : albert.recupChirurgiesDuJour(jour)) {
+    			if (x.estEnConflit()==false) {
+    				nbNonConflitsJour++;
+    			}
+    		}
+    		if (nbNonConflitsJour==0) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// Si le C est deja surchargé de travail
     		if (albert.getLesJSurchages().contains(auj)) {
     			chirurgiensCandidatsCh2.remove(albert);
     		}
     		
-    		// faire exactement la meme boucle for avec les memes test, mais adapter a Ch2
+    		// Si la chirurgie ne correspond pas a ses durées habituelles
+    		if (chTest.anomalieDureeChirurgieOuPas()==true) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
     		
     		
+    		
+    		
+    		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		chTest.setChirurgien(albert);
+    		chirurgienTest.recupChirurgiesDuJour(jour).add(chTest);
+    		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
     	}
+    	
+    	
     	
     }
     

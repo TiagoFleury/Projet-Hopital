@@ -8,6 +8,7 @@ import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.Duration;
 import java.time.Period;
+import java.util.ArrayList;
 
 public class Conflit {
     protected Journee jour;
@@ -58,6 +59,55 @@ public class Conflit {
     		return true;
     	}
     	return false;
+    }
+    
+    
+    
+    
+    public ArrayList<Chirurgien> getChirurgiensLibres1(){ //Retourne les chirurgiens libres sur la chirurgie 1 (mais qui sont utilises dans la journee)
+    	ArrayList<Chirurgien> liste = new ArrayList<>();
+    	ArrayList<Chirurgie> listeChir;
+    	for(Chirurgien albert : jour.getChirurgiensMobilises()) { //Pour chaque chirurgiens du jour
+    		boolean ajout=true;
+    		//Il faut tester si la plage horaire est occupee par une chirurgie ou pas
+    		listeChir = albert.recupChirurgiesDuJour(jour);
+    		if(listeChir.size()==0)
+    			ajout=false;
+    		else {
+	    		for(Chirurgie x : listeChir) {
+	    			if(Journee.enMemeTempsOuPas(x,chirurgie1)) { //Si il y en a un qui est en meme temps, c'est que le chirurgien n'est pas libre sur l'horaire
+	    				ajout = false;
+	    			}
+	    		}
+    		}
+    		if(ajout)
+    			liste.add(albert);
+    	}
+    	
+    	return liste;
+    }
+    
+    public ArrayList<Chirurgien> getChirurgiensLibres2(){ //Retourne les chirurgiens libres sur la chirurgie 1 (mais qui sont utilises dans la journee)
+    	ArrayList<Chirurgien> liste = new ArrayList<>();
+    	ArrayList<Chirurgie> listeChir;
+    	for(Chirurgien albert : jour.getChirurgiensMobilises()) { //Pour chaque chirurgiens du jour
+    		boolean ajout=true;
+    		//Il faut tester si la plage horaire est occupee par une chirurgie ou pas
+    		listeChir = albert.recupChirurgiesDuJour(jour);
+    		if(listeChir.size()==0)
+    			ajout=false;
+    		else {
+	    		for(Chirurgie x : listeChir) {
+	    			if(Journee.enMemeTempsOuPas(x,chirurgie2)) { //Si il y en a un qui est en meme temps, c'est que le chirurgien n'est pas libre sur l'horaire
+	    				ajout = false;
+	    			}
+	    		}
+    		}
+    		if(ajout)
+    			liste.add(albert);
+    	}
+    	
+    	return liste;
     }
     
     
