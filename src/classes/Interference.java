@@ -33,8 +33,12 @@ public class Interference extends Conflit {
     public boolean essayerChangementDeSalleEvident(BaseDeDonnees data) {
 //    	Conditions :
 //    	1. Gros chevauchement   2. des blocs sont libres a cet horaire    3. un des chirurgiens est dans son bloc fort
+//		4. Les blocs E peuvent pas etre choisis en dehors de la journee
     	
     	//On fait toutes les conditions qui font qu'on laisse la main a une autre resolution plus laxe ou plus appropriee
+    	
+    	if(resolu)
+    		return false;
     	
     	if(getIndiceDeRecouvrement()<0.6) {
     		return false;
@@ -135,6 +139,113 @@ public class Interference extends Conflit {
     public boolean essayerRaccourcissementEvident(BaseDeDonnees data) {
     	//Conditions pour un raccourcissement evident : 
     	//1. petit indice de recouvrement   2. pas de superposition  3. Anomalie de longueur sur une des deux chirurgies
+    	
+    	if(resolu)
+    		return false;
+    	
+    	System.out.println("on est la");
+    	if(getIndiceDeRecouvrement()>0.2) { //En dessous de 0,2 on va dire qu'on traite le cas
+    		return false;
+    	}
+    	
+    	boolean anomalieDuree1=false;
+    	if(chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(1)) {
+    		anomalieDuree1 = true;
+    	}
+    	boolean anomalieDuree2=false;
+    	System.out.println("Borne : "+chirurgie2.getChirurgien().getICtempsMoyen().get(1)+"  duree ch"+chirurgie2.getID()+"  : "+chirurgie2.getDuree());
+    	if(chirurgie2.getDuree()>chirurgie2.getChirurgien().getICtempsMoyen().get(1)) {
+    		anomalieDuree2 = true;
+    	}
+    	
+    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour);
+    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour);
+    	
+    	
+    	if(!(anomalieDuree1 || anomalieDuree2)) { //Si il y a aucune anomalie on traite pas
+    		return false;
+    	}
+    	System.out.println("on est la");
+    	if(blocFort1!=null) {
+    		if(blocFort1.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)>4 && getBlocsLibres1().contains(blocFort1)) {
+	    		//si le blocFort est important et libre, on abandonne
+    			System.out.println("sorti ici");
+	    		return false;
+    		}
+    	}
+    	if(blocFort2!=null) {
+	    	if(blocFort2.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)>4 && getBlocsLibres2().contains(blocFort2)) {
+	    		System.out.println("sorti icioiu");
+	    		//si le blocFort est important et libre, on abandonne
+	    		return false;
+	    	}
+    	}
+    	
+    	//Ici on a donc forcement une anomalie de longueur et un "petit recouvrement" sur un des bouts des chirurgies
+    	//On va maintenant tronquer la chirurgie qui est le plus en anomalie de longueur
+    	if(anomalieDuree1 && !anomalieDuree2) {
+    		System.out.println("ANOMALIE DUREE 1");
+//    		On est dans ce cas :
+//    			#######################              <- on va racourcir celle la sur sa droite
+//    								###########
+    		LocalTime backupHeureFin = chirurgie1.getFin();
+    		
+    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+    			chirurgie1.raccourcirFin(1);
+    			if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+    				chirurgie1.setFin(backupHeureFin);
+    				System.out.println("ca a depasse la borne minimale");
+    				return false;
+    			}
+    		}
+    		
+    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+    		chirurgie1.raccourcirFin(data.getICtempsInteroperatoire().get(0).intValue());
+    		
+    		if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+				chirurgie1.setFin(backupHeureFin);
+				return false;
+			}
+    		this.resolu=true;
+    		return true;
+    	}
+    	
+    	if(!anomalieDuree1 && anomalieDuree2) {
+    		System.out.println("ANOMALIE DUREE 2");
+//    		On est dans ce cas :
+//    			#########              
+//    				  ##########################   <- on va racourcir celle la sur sa gauche
+    		LocalTime backupHeureDebut = chirurgie2.getDebut();
+    		
+    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+    			chirurgie2.raccourcirDebut(1);
+    			if(chirurgie2.getDuree()<chirurgie2.getChirurgien().getICtempsMoyen().get(0)) {
+    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+    				chirurgie2.setDebut(backupHeureDebut);
+    				return false;
+    			}
+    		}
+    		
+    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+    		chirurgie2.raccourcirDebut(data.getICtempsInteroperatoire().get(0).intValue());
+    		
+    		if(chirurgie2.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+				chirurgie2.setDebut(backupHeureDebut);
+				return false;
+			}
+
+    		this.resolu=true;
+    		return true;
+    	}
+    	if(anomalieDuree1 && anomalieDuree2) {
+    		//Si les deux sont en anomalie de temps, on coupe celui qui est le plus loin de sa borne maxd
+    		Chirurgie chirAcouper;
+    		System.out.println("les deux");
+    	}
+    	return false;
     	
     }
 }

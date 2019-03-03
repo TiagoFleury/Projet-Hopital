@@ -38,7 +38,7 @@ public class Ubiquite extends Conflit {
     
     
     
-    // Cette résolution va s'occuper d'un cas spécifique où : 
+    // Cette resolution va s'occuper d'un cas spécifique où : 
     //    une des deux chirurgies est anormalement longue, et dans ce cas on peut envisager de la/les raccourcir
     //    le cas où une chirurgie est apres le début ET avant la fin n'est pas pris en compte, et sera résolue d'une autre manière
     

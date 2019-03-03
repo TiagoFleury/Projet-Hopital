@@ -6,7 +6,6 @@ public class Bloc implements Comparable{
     private String nom;
     private int id;
     private ArrayList<Double> moyennesJours;
-    private ArrayList<Chirurgie> chirurgies;
     public static double tempsMoyenEntreDeuxChirurgies;
 
     public Bloc(String leNom) {
@@ -39,9 +38,6 @@ public class Bloc implements Comparable{
     	return id;
     }
 
-    public ArrayList<Chirurgie> getChirurgies(){
-    	return chirurgies;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -74,10 +70,6 @@ public class Bloc implements Comparable{
 	public void setMoyennesJours(ArrayList<Double> listemoyennes) {
 		moyennesJours=listemoyennes;
 	}
-	public void setChirurgies(ArrayList<Chirurgie> liste) {
-		chirurgies = liste;
-	}
-
 
 
 
