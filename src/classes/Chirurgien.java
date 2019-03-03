@@ -144,7 +144,7 @@ public class Chirurgien implements Comparable{
 		return tempsDesChirurgies;
 	}
 
-	public ArrayList<LocalDate> getLesJSurchages(){
+	public ArrayList<LocalDate> getLesJSurcharges(){
 		return this.joursSurchargesDeTravail;
 	}
 	

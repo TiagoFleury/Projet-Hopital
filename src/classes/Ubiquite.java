@@ -230,7 +230,7 @@ public class Ubiquite extends Conflit {
     		}
     		
     		// Si le C est deja surchargé de travail
-    		if (albert.getLesJSurchages().contains(auj)) {
+    		if (albert.getLesJSurcharges().contains(auj)) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     		
@@ -240,8 +240,9 @@ public class Ubiquite extends Conflit {
     		}
     		
     		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
-    		if ()
-    		
+    		if (albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.3) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
     		
     		
     		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
@@ -251,9 +252,6 @@ public class Ubiquite extends Conflit {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     	}
-    	
-    	
-    	
     	
     	for (Chirurgien albert : chirurgiensCandidatsCh2) {
     		Chirurgie chTest = this.chirurgie2;
@@ -280,8 +278,9 @@ public class Ubiquite extends Conflit {
     		}
     		
     		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
-    		
-    		
+    		if (albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.3) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
     		
     		
     		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
@@ -292,7 +291,15 @@ public class Ubiquite extends Conflit {
     		}
     	}
     	
-    	
+    	if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()==0) {
+    		
+    	}
+    	if (chirurgiensCandidatsCh1.size()==0 && chirurgiensCandidatsCh2.size()!=0) {
+    		
+    	}
+    	if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()!=0) {
+    		
+    	}
     	
     }
     
