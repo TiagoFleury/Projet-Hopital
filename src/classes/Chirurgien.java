@@ -69,7 +69,15 @@ public class Chirurgien implements Comparable{
     
 
 
-		
+	public int nombreDeChirurgiesDe(Bloc room, Journee jour) {
+		int compteur = 0;
+		for(Chirurgie c : recupChirurgiesDuJour(jour)) {
+			if(c.getSalle().equals(room)) {
+				compteur++;
+			}
+		}
+		return compteur;
+	}
 	
     
     

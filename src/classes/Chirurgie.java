@@ -248,9 +248,8 @@ public class Chirurgie {
     // 				il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci
     public boolean anomalieDureeChirurgieOuPas() {
     	boolean b = false;
-    	double time = nbMinutes;
-    	ArrayList<Double> interv = chirurgien.getICtempsMoyen();
-    	if ( (time<chirurgien.getICtempsMoyen().get(0)) || (time>chirurgien.getICtempsMoyen().get(1))){
+    	double time = this.getDuree();
+    	if ( (time<=chirurgien.getICtempsMoyen().get(0)) || (time>=chirurgien.getICtempsMoyen().get(1))){
     		b=true;
     	}
     	return b;

@@ -65,8 +65,8 @@ public class Ubiquite extends Conflit {
     	boolean retour = false;
     	boolean b1=false;
     	boolean b2=false;
-    	Chirurgie copie1 = chirurgie1;
-    	Chirurgie copie2 = chirurgie1;
+    	Chirurgie copie1 = new Chirurgie(chirurgie1);
+    	Chirurgie copie2 = new Chirurgie(chirurgie2);
     	b1=copie1.anomalieDureeChirurgieOuPas();
     	b2=copie2.anomalieDureeChirurgieOuPas();
     	
@@ -85,7 +85,6 @@ public class Ubiquite extends Conflit {
     			}
     		}
     	}
-    	
     	if (b1==false && b2==true) {
     		// Racourcir ch2 jusqu'a ce que ne soit plus un conflit
     		if (copie2.getDebut().isBefore(copie1.getDebut()) && !copie2.getFin().isAfter(copie1.getFin())) {
@@ -133,14 +132,32 @@ public class Ubiquite extends Conflit {
     	if (copie1.getDebut().isBefore(copie2.getDebut())) {
     		debEcart = copie1.getFin();
     		finEcart = copie2.getDebut();
+    		
+    		while (this.jour.conflitOuPas(copie1,copie2)!=null && (copie1.getDuree() > copie1.getChirurgien().getICtempsMoyen().get(0)) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(0))) {
+    			copie1.setFin(copie1.getFin().minusMinutes(1));
+    			debEcart = copie1.getFin();
+        	}
+    		while (this.jour.conflitOuPas(copie1,copie2)!=null && (copie2.getDuree() > copie2.getChirurgien().getICtempsMoyen().get(0)) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(0))) {
+    			copie2.setDebut(copie2.getDebut().plusMinutes(1));
+    			finEcart = copie2.getDebut();
+    		}
     	}
     	else {
     		debEcart = copie2.getFin();
     		finEcart = copie1.getDebut();
+
+    		while (this.jour.conflitOuPas(copie1,copie2)!=null && (copie2.getDuree() > copie2.getChirurgien().getICtempsMoyen().get(0)) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(0))) {
+    			copie2.setFin(copie2.getFin().minusMinutes(1));
+    			debEcart = copie2.getFin();
+        	}
+    		while (this.jour.conflitOuPas(copie1,copie2)!=null && (copie1.getDuree() > copie1.getChirurgien().getICtempsMoyen().get(0)) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(0))) {
+    			copie1.setDebut(copie1.getDebut().plusMinutes(1));
+    			finEcart = copie1.getDebut();
+    		}
+    		
     	}
     	
-    	
-    	if (this.jour.conflitOuPas(copie1,copie2)==null && ChronoUnit.MINUTES.between(debEcart, finEcart)>chirurgienPb.getICtempsInteroperatoire().get(1) && ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(2) ) {
+    	if (this.jour.conflitOuPas(copie1,copie2)==null && (ChronoUnit.MINUTES.between(debEcart, finEcart)>=chirurgienPb.getICtempsInteroperatoire().get(0)) ) {
     		// Alors on decide d'appliquer ce changement
     		chirurgie1.setDebut(copie1.getDebut());
     		chirurgie1.setFin(copie1.getFin());
@@ -155,7 +172,7 @@ public class Ubiquite extends Conflit {
  
     
     
-    public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data) {
+    public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data, double indiceRecouvrementDesire) {
 //    	Conditions :
 //    	1. Gros chevauchement   2. des chirurgiens sont libres a cet horaire    3. un des blocs est dans avec son chirurgien fort
 //		4. Les chirurgiens ne peuvent pas etre choisis en dehors de la journee
@@ -165,7 +182,7 @@ public class Ubiquite extends Conflit {
     	if(resolu)
     		return false;
     	
-    	if(getIndiceDeRecouvrement()<0.5) {
+    	if(getIndiceDeRecouvrement()<indiceRecouvrementDesire) {
     		return false;
     	}
     	ArrayList<Chirurgien> chirurgiensLibres2 = getChirurgiensLibres2();
@@ -208,9 +225,9 @@ public class Ubiquite extends Conflit {
     			int max=0;
     			Chirurgien cMax=chirurgiensLibres2.get(0);
     			for(Chirurgien chAevaluer : chirurgiensLibres2) {
-    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie2.getChirurgien(),jour)>max) {
+    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie2.getSalle(),jour)>max) {
     					 cMax=chAevaluer;
-    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie2.getChirurgien(), jour);
+    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie2.getSalle(), jour);
     				}
     			}
     			chirurgie2.setChirurgien(cMax);
@@ -230,12 +247,12 @@ public class Ubiquite extends Conflit {
     			int max=0;
     			Chirurgien cMax=chirurgiensLibres1.get(0);
     			for(Chirurgien chAevaluer : chirurgiensLibres1) {
-    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie1.getChirurgien(),jour)>max) {
+    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie1.getSalle(),jour)>max) {
     					 cMax=chAevaluer;
-    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour);
+    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie1.getSalle(), jour);
     				}
     			}
-    			chirurgie1.setSalle(cMax);
+    			chirurgie1.setChirurgien(cMax);
     			resolu = true;
     			return true;
     		}
@@ -243,7 +260,6 @@ public class Ubiquite extends Conflit {
     	//Si les deux sont dans leur bloc fort on laisse la main
     	return false;
     }
-    
     
     
     
@@ -257,7 +273,7 @@ public class Ubiquite extends Conflit {
     	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = new ArrayList<>(this.getChirurgiensLibres2());
     	ArrayList<Chirurgien> copie2 = new ArrayList<>(chirurgiensCandidatsCh2);
     	
-    	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le Chirurgien Probleme de l'ubiquite
+    	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le ChirurgienProbleme de l'ubiquite
     	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie
     	
     	
@@ -269,34 +285,31 @@ public class Ubiquite extends Conflit {
     		
     		for (Chirurgie x : albert.recupChirurgiesDuJour(jour)) {
     			if (x.estEnConflit()==false) {
-    				nbNonConflitsJour++;
+    				nbNonConflitsJour++; 
     			}
     		}
-    		if (nbNonConflitsJour==0) {
-    			chirurgiensCandidatsCh1.remove(albert);
+    		if (nbNonConflitsJour==0) { 
+    			chirurgiensCandidatsCh1.remove(albert);  // je ne garde ce chirurgien dans ma liste, que s'il a au moins une chirurgie lambda qui n'est pas en conflit
     			System.out.println("ici que tu l'as perdu 1");
     		}
     		
+    		//Puis je procède aux éliminations, j'enleve le chirurgien  : 
     		// Si le chirurgien est deja surchargé de travail
     		if (albert.getLesJSurcharges().contains(auj) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
-    			System.out.println("ici que tu l'as perdu 2");
     		}
     		
     		// Si la chirurgie ne correspond pas a ses durées habituelles
     		if (chTest.anomalieDureeChirurgieOuPas()==true && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
-    			System.out.println("ici que tu l'as perdu 3");
     		}
     		
     		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
-    		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.3) && chirurgiensCandidatsCh1.contains(albert)) {
+    		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.2) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
-    			System.out.println("ici que tu l'as perdu 4");
     		}
     		
-    		
-    		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		// Si, en donnant cette chirurgie au chirurgien, on ne vérifie pas les contraintes de durées interopératoires nécessaires
     		chTest.setChirurgien(albert);
     		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
     			chirurgiensCandidatsCh1.remove(albert);
@@ -305,7 +318,6 @@ public class Ubiquite extends Conflit {
     	
     	for (Chirurgien albert : copie2) {
     		Chirurgie chTest = new Chirurgie(chirurgie2);
-    		Chirurgien chirurgienTest=albert;
     		int nbNonConflitsJour =0;
     		
     		for (Chirurgie x : albert.recupChirurgiesDuJour(jour)) {
@@ -332,8 +344,7 @@ public class Ubiquite extends Conflit {
     			chirurgiensCandidatsCh2.remove(albert);
     		}
     		
-    		
-    		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		// Si, en donnant cette chirurgie au chirurgien, on ne vérifie pas les contraintes de durées interopératoires nécessaires
     		chTest.setChirurgien(albert);
     		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
     			chirurgiensCandidatsCh2.remove(albert);
@@ -347,16 +358,15 @@ public class Ubiquite extends Conflit {
     	Chirurgien chFort1 = this.chirurgie1.getSalle().getChirurgienFort(jour);
     	Chirurgien chFort2 = this.chirurgie2.getSalle().getChirurgienFort(jour);
     	
+    	
     	if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()==0) {
     		if (chirurgiensCandidatsCh1.contains(chFort1) && !chFort1.equals(chirurgienPb)) {
     			chirurgie1.setChirurgien(chFort1);
     			chFort1.getChirurgies().add(chirurgie1);
-    			System.out.println("ca a changé 1");
     		}
     		else {
     			chirurgie1.setChirurgien(chirurgiensCandidatsCh1.get(0));
     			chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
-    			System.out.println("ca a changé 2");
     		}
     		this.setEtat(true);
 			this.chirurgie1.setEnConflit(false);
@@ -368,12 +378,10 @@ public class Ubiquite extends Conflit {
     		if (chirurgiensCandidatsCh2.contains(chFort2) && !chFort2.equals(chirurgienPb)) {
     			chirurgie2.setChirurgien(chFort2);
     			chFort2.getChirurgies().add(chirurgie2);
-    			System.out.println("ca a changé 3");
     		}
     		else {
     			chirurgie2.setChirurgien(chirurgiensCandidatsCh2.get(0));
     			chirurgiensCandidatsCh2.get(0).getChirurgies().add(chirurgie2);
-    			System.out.println("ca a changé 4");
     		}
     		this.setEtat(true);
 			this.chirurgie1.setEnConflit(false);
@@ -383,23 +391,25 @@ public class Ubiquite extends Conflit {
     	
     	
     	else if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()!=0) {
-    		if (chirurgiensCandidatsCh1.contains(chFort1) && !chFort1.equals(chirurgienPb)) {
+    		
+    		if (chirurgiensCandidatsCh1.contains(chFort1) && !chirurgiensCandidatsCh2.contains(chFort2) && !chFort1.equals(chirurgienPb)) {
     			chirurgie1.setChirurgien(chFort1);
     			chFort1.getChirurgies().add(chirurgie1);
-    			System.out.println("ca a changé 5");
     		}
+    		else if (!chirurgiensCandidatsCh2.contains(chFort1) && chirurgiensCandidatsCh2.contains(chFort2) && !chFort2.equals(chirurgienPb)) {
+    			chirurgie2.setChirurgien(chFort2);
+    			chFort2.getChirurgies().add(chirurgie2);
+    		}
+    		else if (chirurgiensCandidatsCh1.contains(chFort1) && chirurgiensCandidatsCh2.contains(chFort2)) {
+    			chirurgie1.setChirurgien(chFort1);
+    			chFort1.getChirurgies().add(chirurgie1);
+    		}
+    		
     		else {
-    			if (chirurgiensCandidatsCh2.contains(chFort2) && !chFort2.equals(chirurgienPb)) {
-    				this.chirurgie2.setChirurgien(chFort2);
-    				chFort2.getChirurgies().add(chirurgie2);
-    				System.out.println("ca a changé 6");
-    			}
-    			else {
-    				chirurgie1.setChirurgien(chirurgiensCandidatsCh1.get(0));
-    				chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
-    				System.out.println("ca a changé 7");
-    				}
-    			}
+    			chirurgie1.setChirurgien(chirurgiensCandidatsCh1.get(0));
+    			chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
+    		}
+    	
     		this.setEtat(true);
 			this.chirurgie1.setEnConflit(false);
 			this.chirurgie2.setEnConflit(false);
@@ -410,8 +420,6 @@ public class Ubiquite extends Conflit {
     }
     
     
-    
-
     
     
     

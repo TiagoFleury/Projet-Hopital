@@ -740,7 +740,7 @@ public class BaseDeDonnees {
 		
 		
 		int nbUbi = 0;
-		int nbResolv = 0;
+		int nbResolv = 0, nbTiag=0, nbContraintes=0, nbRaccour=0;
 		
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
@@ -757,24 +757,34 @@ public class BaseDeDonnees {
 					System.out.println("Chirurgiens libres pour ch2"+c.getCh2().getID()+" : "+c.getChirurgiensLibres2());
 					
 					nbUbi++;
+					if (ub.essayerChangementEvidentDeChirurgien(data, 0.25)) {
+						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
+						j.planningJourneeParChirurgien();
+						System.out.println("\n resolv tiag");
+						nbResolv++;
+						nbTiag++;
+					}
+					
 					if(ub.essayerChangementChirurgienPresentSousContraintes(data)) {
 						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
 						j.planningJourneeParChirurgien();
-						System.out.println("resolv contraintes");
+						System.out.println("\n resolv contraintes");
 						nbResolv++;
+						nbContraintes++;
 					}
 					else if (ub.essayerRacourcirPourResoudre()) {
 						nbResolv++;
 						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
-						System.out.println("Resolv Raccour");
+						System.out.println("\n Resolv Raccour");
 						j.planningJourneeParChirurgien();
+						nbRaccour++;
 					}
 				}
 
 				nbConflits++;
 			}
 		}
-		System.out.println(nbResolv);
+		System.out.println("Resolues : " + nbResolv + "\n methode ch fort : "+ nbTiag + "\n methode ch spécifique : "+nbContraintes + "\n methode raccourcir : "+nbRaccour);
 	}
 		
 	
