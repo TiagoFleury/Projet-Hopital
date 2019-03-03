@@ -45,6 +45,9 @@ public class Bloc implements Comparable{
 
     @Override
     public boolean equals(Object o) {
+    	if(o==null) {
+    		return false;
+    	}
     	if(this == o) {
     		return true;
     	}
@@ -73,5 +76,28 @@ public class Bloc implements Comparable{
 	}
 	public void setChirurgies(ArrayList<Chirurgie> liste) {
 		chirurgies = liste;
+	}
+
+
+
+
+	public ArrayList<Chirurgie> recupererChirurgies(Journee jour) { //retourne une liste vide si il y a 0 chirurgies dans ce bloc dans cette journee
+		ArrayList<Chirurgie> liste = new ArrayList<Chirurgie>();
+		for(Chirurgie c : jour.getChirurgiesJour()) {
+			if(c.getSalle().equals(this)) {
+				liste.add(c);
+			}
+		}
+		return liste;
+	}
+	
+	public int nombreDeChirurgiesDe(Chirurgien albert, Journee jour) {
+		int compteur = 0;
+		for(Chirurgie c : recupererChirurgies(jour)) {
+			if(c.getChirurgien().equals(albert)) {
+				compteur++;
+			}
+		}
+		return compteur;
 	}
 }

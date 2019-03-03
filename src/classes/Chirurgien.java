@@ -149,7 +149,7 @@ public class Chirurgien implements Comparable{
 	}
 	
 	public ArrayList<Float> getPlagesHorairesPref(){
-		return this.plagesHorairesPref;
+		return this.plagesHorairesHabituelles;
 	}
 	
 	
@@ -205,4 +205,54 @@ public class Chirurgien implements Comparable{
 	public void setJSurchargeTravail(ArrayList<LocalDate> lesj) {
 		this.joursSurchargesDeTravail=lesj;
 	}
+
+	public Bloc getBlocFort(Journee jour) { //Si il n'y a pas de bloc particulierement fort, retourne null
+		
+		Bloc bMax=null;
+		int max=0;
+		int compte;
+		int tempsMax=0;
+		ArrayList<Chirurgie> liste = new ArrayList<>();
+		for(Bloc b : jour.getBlocs()) {
+			compte=0;
+			for(Chirurgie c : jour.getChirurgiesJour()) {
+				if(c.getChirurgien().equals(this) && c.getSalle().equals(b)) {
+					compte++;
+					liste.add(c);
+				}
+				
+			}
+			if(compte>max) {
+				bMax=b;
+				max = compte;
+				tempsMax=0; //On reset le temps max
+				for(Chirurgie c : liste) {
+					tempsMax+=c.getDuree();
+				}
+				
+			}
+			else if(compte==max & max>0) {//Si c'est le meme nombre, on compare le temps
+				int somme=0;
+				for(Chirurgie c : liste) {
+					somme+=c.getDuree();
+				}
+				if(somme>tempsMax) {
+					bMax=b;
+					tempsMax=somme;
+				}
+			}
+			liste.clear();
+			
+			
+		}
+		
+
+		if(max >= 3) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
+			return bMax;
+		}
+		return null;
+	}
+
+
+
 }

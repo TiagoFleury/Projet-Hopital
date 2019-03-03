@@ -117,6 +117,37 @@ public class Chirurgie {
     	this.heureFin.plusMinutes(nbMin);
     }
     
+    public static boolean superposition(Chirurgie ch1, Chirurgie ch2) { //Faut passer en LocalDateTime sinon c'est la demer
+    	LocalDateTime heureDebut1;
+    	LocalDateTime heureFin1;
+    	LocalDateTime heureDebut2;
+    	LocalDateTime heureFin2;
+    	
+    	if(ch1.sur2jours()) {
+    		heureDebut1 = LocalDateTime.of(ch1.getDate(), ch1.getDebut());
+    		heureFin1 = LocalDateTime.of(ch1.getDate().plusDays(1), ch1.getFin());
+    	}
+    	else {
+    		heureDebut1 = LocalDateTime.of(ch1.getDate(), ch1.getDebut());
+    		heureFin1 = LocalDateTime.of(ch1.getDate(), ch1.getFin());
+    	}
+    	if(ch2.sur2jours()) {
+    		heureDebut2 = LocalDateTime.of(ch2.getDate(), ch2.getDebut());
+    		heureFin2 = LocalDateTime.of(ch2.getDate().plusDays(1), ch2.getFin());
+    	}
+    	else {
+    		heureDebut2 = LocalDateTime.of(ch2.getDate(), ch2.getDebut());
+    		heureFin2 = LocalDateTime.of(ch2.getDate(), ch2.getFin());
+    	}
+    	
+    	
+    	if( (heureDebut1.isBefore(heureDebut2)||heureDebut1.equals(heureDebut2)) && (heureFin1.isAfter(heureFin2)||heureFin1.equals(heureFin2))) {
+    		return true;
+    	}
+    	else if((heureDebut2.isBefore(heureDebut1)||heureDebut1.equals(heureDebut2)) && (heureFin2.isAfter(heureFin1)||heureFin1.equals(heureFin2)))
+    		return true;
+    	return false;
+    }
     
     
 
@@ -146,8 +177,13 @@ public class Chirurgie {
     
     
     
-    
-    // Detection d'anomalies
+    public boolean sur2jours() {
+    	if(heureDebut.isAfter(heureFin))
+    		return true;
+		return false;
+	}
+
+	// Detection d'anomalies
     
     
     // Ici, pour un chirurgien donné, la chirurgie devient une anomalie si : 

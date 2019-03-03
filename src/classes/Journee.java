@@ -272,7 +272,13 @@ public class Journee {
     }
     
    
-    
+    public void purgerConflit() {
+    	for(Conflit c : conflitsDuJour) {
+    		if(!c.getEtat()) {//si le conflit est en resolu, on l'enleve de la liste
+    			conflitsDuJour.remove(c);
+    		}
+    	}
+    }
     
     
     
