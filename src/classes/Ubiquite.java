@@ -61,7 +61,8 @@ public class Ubiquite extends Conflit {
     
     // integrer un temps inter opératoire
     
-    public void essayerRacourcirPourResoudre() {
+    public boolean essayerRacourcirPourResoudre() {
+    	boolean retour = false;
     	boolean b1=false;
     	boolean b2=false;
     	Chirurgie copie1 = chirurgie1;
@@ -145,19 +146,104 @@ public class Ubiquite extends Conflit {
     		chirurgie1.setFin(copie1.getFin());
     		chirurgie2.setDebut(copie2.getDebut());
     		chirurgie2.setFin(copie2.getFin());
+    		retour = true;
+    		this.setEtat(true);
+    	}
+    	return retour;
+    }
+    
+ 
+    
+    
+    public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data) {
+//    	Conditions :
+//    	1. Gros chevauchement   2. des chirurgiens sont libres a cet horaire    3. un des blocs est dans avec son chirurgien fort
+//		4. Les chirurgiens ne peuvent pas etre choisis en dehors de la journee
+    	
+    	//On fait toutes les conditions qui font qu'on laisse la main a une autre resolution plus laxe ou plus appropriee
+    	
+    	if(resolu)
+    		return false;
+    	
+    	if(getIndiceDeRecouvrement()<0.5) {
+    		return false;
+    	}
+    	ArrayList<Chirurgien> chirurgiensLibres2 = getChirurgiensLibres2();
+    	ArrayList<Chirurgien> chirurgiensLibres1 = getChirurgiensLibres1();
+    	if(chirurgiensLibres1.size()==0 && chirurgiensLibres2.size()==0) { 
+    		return false;
     	}
     	
-    }
-    
-    
-    
-    
-    public void essayerChangementEvidentDeChirurgien() {
-    	// faire la même qu'au dessus, mais via indice de recouvrement, alors direct on part sur un changement de truc
+    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour);
+    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour);
     	
-    	// partir du meme principe de candidats (ie les mecs présents), faire des le début ChirurgienFort, voir s'il est là et qu'en plus
-    	// il y a un fort indice de recouvrement alors go changement.
+    	//Si le chirurgien fort d'un des deux blocs est libre, on le bouge sans trop se poser de question
+    	
+    	
+    	if(chirurgiensLibres1.contains(chFort1) && !chirurgiensLibres2.contains(chFort2)) {
+    		chirurgie1.setChirurgien(chFort1);
+    		resolu = true;
+    		
+    	}
+    	if(!chirurgiensLibres1.contains(chFort1) && chirurgiensLibres2.contains(chFort2)) {
+    		chirurgie2.setChirurgien(chFort2);
+    		resolu = true;
+    	}
+    	
+    	
+    	if(!(chirurgienPb.equals(chFort1) || chirurgienPb.equals(chFort2))) { //Si aucun de blocs  n'est avec son bloc fort
+    		return false;
+    	}
+    	//Ici il y a donc forcement un des deux blocs qui est dans avec Ch fort et il faudra bouger l'autre
+    	
+    	
+    	if(chirurgienPb.equals(chFort1) && !chirurgienPb.equals(chFort2)) {//Si c'est le 1, on essaie de bouger la 2
+    		
+    		if(chirurgiensLibres2.size()==0) {
+    			return false; //Si pas de blocs libres, on laisse la main
+    		}
+    		else {
+    			//Sinon, il va falloir choisir un chirurgien parmis tous les blocs libres
+    			// => on va arbitrairement prendre celui ou il y a le plus de chirurgie du mec
+    			int max=0;
+    			Chirurgien cMax=chirurgiensLibres2.get(0);
+    			for(Chirurgien chAevaluer : chirurgiensLibres2) {
+    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie2.getChirurgien(),jour)>max) {
+    					 cMax=chAevaluer;
+    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie2.getChirurgien(), jour);
+    				}
+    			}
+    			chirurgie2.setChirurgien(cMax);
+    			resolu = true;
+    			return true;
+    		}
+    	}
+    	
+    	if(chirurgienPb.equals(chFort2) && !chirurgienPb.equals(chFort1)) {//Si c'est le 2, on essaie de bouger la 1
+    		
+    		if(chirurgiensLibres1.size()==0) {
+    			return false; //Si pas de blocs libres, on laisse la main
+    		}
+    		else {
+    			//Sinon, il va falloir choisir un bloc parmis tous les blocs libres
+    			// => on va arbitrairement prendre celui ou il y a le plus de chirurgie du mec
+    			int max=0;
+    			Chirurgien cMax=chirurgiensLibres1.get(0);
+    			for(Chirurgien chAevaluer : chirurgiensLibres1) {
+    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie1.getChirurgien(),jour)>max) {
+    					 cMax=chAevaluer;
+    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour);
+    				}
+    			}
+    			chirurgie1.setSalle(cMax);
+    			resolu = true;
+    			return true;
+    		}
+    	}
+    	//Si les deux sont dans leur bloc fort on laisse la main
+    	return false;
     }
+    
     
     
     

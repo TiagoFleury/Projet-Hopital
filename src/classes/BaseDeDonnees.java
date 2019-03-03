@@ -740,6 +740,7 @@ public class BaseDeDonnees {
 		
 		
 		int nbUbi = 0;
+		int nbResolv = 0;
 		
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
@@ -757,7 +758,15 @@ public class BaseDeDonnees {
 					
 					nbUbi++;
 					if(ub.essayerChangementChirurgienPresentSousContraintes(data)) {
-						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ---------------------------------");
+						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
+						j.planningJourneeParChirurgien();
+						System.out.println("resolv contraintes");
+						nbResolv++;
+					}
+					else if (ub.essayerRacourcirPourResoudre()) {
+						nbResolv++;
+						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
+						System.out.println("Resolv Raccour");
 						j.planningJourneeParChirurgien();
 					}
 				}
@@ -765,6 +774,7 @@ public class BaseDeDonnees {
 				nbConflits++;
 			}
 		}
+		System.out.println(nbResolv);
 	}
 		
 	
