@@ -214,7 +214,7 @@ public class Chirurgien implements Comparable{
 		this.joursSurchargesDeTravail=lesj;
 	}
 
-	public Bloc getBlocFort(Journee jour) { //Si il n'y a pas de bloc particulierement fort, retourne null
+	public Bloc getBlocFort(Journee jour, int seuil) { //Si il n'y a pas de bloc particulierement fort, retourne null
 		
 		Bloc bMax=null;
 		int max=0;
@@ -255,7 +255,7 @@ public class Chirurgien implements Comparable{
 		}
 		
 
-		if(max >= 3) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
+		if(max >= seuil) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
 			return bMax;
 		}
 		return null;

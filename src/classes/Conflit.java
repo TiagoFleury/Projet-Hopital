@@ -200,8 +200,19 @@ public class Conflit {
     	return liste;
     }
     
-    
+    public int coteAcouper() { //Retourne -1 pour a gauche et +1 pour a droite
+    	int aCouperAdroite = (int) ChronoUnit.MINUTES.between(chirurgie2.getDebut(), chirurgie1.getFin());
+    	int aCouperAgauche = (int) ChronoUnit.MINUTES.between(chirurgie1.getDebut(), chirurgie2.getFin());
+    	if(aCouperAdroite>aCouperAgauche) {
+    		return -1;
+    	}
+    	else
+    		return 1;
+    }
 
+    
+    
+    
 	// MUTATEURS //
     public void setEtat(boolean b) {
     	this.resolu=b;

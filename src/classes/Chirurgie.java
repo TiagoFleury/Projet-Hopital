@@ -20,7 +20,6 @@ public class Chirurgie {
     private Bloc salle;
     private Chirurgien chirurgien;
     private boolean estEnConflit;
-    private double nbMinutes ;
     
     
     
@@ -54,10 +53,7 @@ public class Chirurgie {
 		salle = null;
 		chirurgien = null;
 		
-		nbMinutes = ChronoUnit.MINUTES.between(heureDebut,heureFin);
-		if(nbMinutes<0) { //C'est le cas ou une chirurgie est sur deux jours
-			nbMinutes = ChronoUnit.MINUTES.between(LocalDateTime.of(date, heureDebut),LocalDateTime.of(date, heureFin).plusDays(1));
-		}
+		
 	}
     
     public Chirurgie(Chirurgie ch) {
@@ -68,7 +64,6 @@ public class Chirurgie {
     	salle = ch.getSalle();
     	chirurgien = ch.getChirurgien();
     	estEnConflit = ch.estEnConflit();
-    	nbMinutes = ch.getDuree();
     	
     }
     
@@ -111,12 +106,12 @@ public class Chirurgie {
     
     
     
-    public void raccourcirChirurgieDebut(long nbMin) {
-    	this.heureDebut.plusMinutes(nbMin);
+    public void raccourcirDebut(long nbMin) {
+    	this.heureDebut = heureDebut.plusMinutes(nbMin);
     }
     
-    public void raccourcirChirurgieFin(Chirurgie ch, long nbMin) {
-    	this.heureFin.minusMinutes(nbMin);
+    public void raccourcirFin(long nbMin) {
+    	this.heureFin = heureFin.minusMinutes(nbMin);
     }
     
     public void deplacerChirurgieAvant(Chirurgie ch, long nbMin) {
@@ -129,6 +124,7 @@ public class Chirurgie {
     	this.heureFin.plusMinutes(nbMin);
     }
     
+    //Teste si une chirurgie recouvre entierement une autre
     public static boolean superposition(Chirurgie ch1, Chirurgie ch2) { //Faut passer en LocalDateTime sinon c'est la demer
     	LocalDateTime heureDebut1;
     	LocalDateTime heureFin1;
@@ -188,7 +184,7 @@ public class Chirurgie {
     
     
     
-    
+    //Teste si la chirurgie est sur 2 jours
     public boolean sur2jours() {
     	if(heureDebut.isAfter(heureFin))
     		return true;
@@ -248,8 +244,9 @@ public class Chirurgie {
     // 				il y a une trop grande difference entre ses temps de chirurgies habituels et celui ci
     public boolean anomalieDureeChirurgieOuPas() {
     	boolean b = false;
-    	double time = this.getDuree();
-    	if ( (time<=chirurgien.getICtempsMoyen().get(0)) || (time>=chirurgien.getICtempsMoyen().get(1))){
+    	double time = getDuree();
+    	ArrayList<Double> interv = chirurgien.getICtempsMoyen();
+    	if ( (time<interv.get(0)) || (time>interv.get(1))){
     		b=true;
     	}
     	return b;
@@ -368,8 +365,13 @@ public class Chirurgie {
     public boolean estEnConflit() {
 		return estEnConflit;
 	}
-    public double getDuree() {
-    	return nbMinutes;
+    public int getDuree() {
+    	double nbMinutes;
+    	nbMinutes = ChronoUnit.MINUTES.between(heureDebut,heureFin);
+		if(nbMinutes<0) { //C'est le cas ou une chirurgie est sur deux jours
+			nbMinutes = ChronoUnit.MINUTES.between(LocalDateTime.of(date, heureDebut),LocalDateTime.of(date, heureFin).plusDays(1));
+		}
+		return (int) nbMinutes;
     }
     
     
@@ -392,6 +394,13 @@ public class Chirurgie {
 	}
 	public void setFin(LocalTime fin) {
 		heureFin=fin;
+	}
+
+	public boolean estLaNuit() {
+		if(heureFin.isAfter(LocalTime.of(20, 0)) || heureDebut.isBefore(LocalTime.of(8,0)) || heureFin.isBefore(LocalTime.of(8, 0)) || heureDebut.isAfter(LocalTime.of(20, 0)) )
+			return true;
+			
+		return false;
 	}
 
 	

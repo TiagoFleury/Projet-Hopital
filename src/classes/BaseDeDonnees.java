@@ -56,6 +56,10 @@ public class BaseDeDonnees {
 		for(int i=0;i<listeJournees.size();i++) { //On initialise aussi tous les conflits
 			getJournee(i).detectionConflit();
 		}
+		calculTempsDeTravailChirurgiens();
+		calculTempsEntreDeuxChirurgiesMemeBloc();
+		calculTempsEntreDeuxChirurgiesMemeChirurgien();
+		calculTempsMoyensChirurgien();
 		
 	}
 	
@@ -195,7 +199,7 @@ public class BaseDeDonnees {
 						//ALORS on la compte dans les stats
 						compteur++;
 						somme += chir.getDuree();
-						donnees.add(chir.getDuree());
+						donnees.add((double)chir.getDuree());
 					}
 				}
 			}
@@ -237,10 +241,13 @@ public class BaseDeDonnees {
 				for(int j=0;j<liste.size()-1;j++) {
 					if(!(liste.get(j).estEnConflit()) && !(liste.get(j+1).estEnConflit())) { //Si aucune des deux chirurgies n'est en conflit,
 						//On compte leur ecart
-						compte++;
+						
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
-						somme += ecart;
-						donnees.add((double)ecart);
+						if(ecart<=80) { //On prend pas les trop grosses sinon ca va fausser les donnees
+							compte++;
+							somme += ecart;
+							donnees.add((double)ecart);
+						}
 						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 					}
 					
@@ -281,12 +288,13 @@ public class BaseDeDonnees {
 				for(int j=0;j<liste.size()-1;j++) {
 					if(!(liste.get(j).estEnConflit()) && !(liste.get(j+1).estEnConflit())) { //Si aucune des deux chirurgies n'est en conflit,
 						//On compte leur ecart
-						compte++;
+						
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
-						if(chirurgien.getName().equals("GREGORY HOUSE"))
-							System.out.println(ecart+"min entre ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
-						somme += ecart;
-						donnees.add((double) ecart);
+						if(ecart<=80) { //On prend pas les trop gros ecarts sinon ca va fausser les donnees
+							compte++;
+							somme += ecart;
+							donnees.add((double) ecart);
+						}
 						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 					}
 					
@@ -408,7 +416,7 @@ public class BaseDeDonnees {
 	
 	public void envoieChirurgiesEtLesTempsChirurgien(Chirurgien albert) {
 		ArrayList<Chirurgie> lesChirurgies = new ArrayList<>();
-		ArrayList<Double> lesTemps=new ArrayList<>();
+		ArrayList<Integer> lesTemps=new ArrayList<>();
 		for (Chirurgie c : listeChirurgies) {
 			if (c.getChirurgien().equals(albert)) {
 				lesChirurgies.add(c);
@@ -485,16 +493,6 @@ public class BaseDeDonnees {
 	
 	
 	
-	public void envoieChirurgiesBloc(Bloc cantine) {
-		ArrayList<Chirurgie> lesChirurgies=null;
-		for (Chirurgie c : listeChirurgies) {
-			if (c.getSalle().equals(cantine)) {
-				lesChirurgies.add(c);
-			}
-		}
-		cantine.setChirurgies(lesChirurgies);
-		
-	}
 	
 	public void calculJoursRecurrentsDeTravailBlocs() {
 		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
@@ -507,33 +505,34 @@ public class BaseDeDonnees {
 			listeProportionsJours = null;
 			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
 			int compteur=0;
-			envoieChirurgiesBloc(salle);
-			for (Chirurgie chi : salle.getChirurgies()) {
-				if (chi.estEnConflit()==false) {
-					leJour = chi.getDate().getDayOfWeek().toString();
-					
-					if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
-						compteur1+=1; //Dimanche
+			for (Chirurgie chi : listeChirurgies) {
+				chi.getSalle().equals(salle);{
+					if (chi.estEnConflit()==false) {
+						leJour = chi.getDate().getDayOfWeek().toString();
+						
+						if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
+							compteur1+=1; //Dimanche
+						}
+						if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
+							compteur2+=1; //Lundi
+						}
+						if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
+							compteur3+=1; //Mardi
+						}
+						if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
+							compteur4+=1; //Mercredi
+						}
+						if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
+							compteur5+=1; //Jeudi
+						}
+						if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
+							compteur6+=1; //Vendredi
+						}
+						if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
+							compteur7+=1; //Samedi
+						}
+						compteur++;
 					}
-					if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
-						compteur2+=1; //Lundi
-					}
-					if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
-						compteur3+=1; //Mardi
-					}
-					if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
-						compteur4+=1; //Mercredi
-					}
-					if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
-						compteur5+=1; //Jeudi
-					}
-					if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
-						compteur6+=1; //Vendredi
-					}
-					if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
-						compteur7+=1; //Samedi
-					}
-					compteur++;
 				}
 				
 			}
@@ -665,6 +664,7 @@ public class BaseDeDonnees {
 		data.importBase("Chirurgies_v2.csv");
 		data.organiserJournees();
 		int nbInterferences = 0;
+		int interferencesResolues=0;
 		int nbConflits=0;
 		int nbUbiquites=0;
 		int nbChevauchements=0;
@@ -673,22 +673,24 @@ public class BaseDeDonnees {
 			Journee j = data.getJournee(i);
 			
 			for(Conflit c : j.getConflits()) {
-//				if(c instanceof Interference) {
-//					Interference interf = (Interference) c;
-//					j.planningJourneeParBloc();
-//					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-//					System.out.println("Bloc fort de "+c.getCh1().getChirurgien()+" : "+c.getCh1().getChirurgien().getBlocFort(j));
-//					System.out.println("Bloc fort de "+c.getCh2().getChirurgien()+" : "+c.getCh2().getChirurgien().getBlocFort(j));
-//					System.out.println("Blocs libres pour ch"+c.getCh1().getID()+" : "+c.getBlocsLibres1());
-//					nbInterferences++;
-//					if(interf.essayerChangementDeSalleEvident(data)) {
-//						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
-//						j.planningJourneeParBloc();
-//					}
-//				}
+				if(c instanceof Interference) {
+					Interference interf = (Interference) c;
+					j.planningJourneeParBloc();
+					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
+					nbInterferences++;
+					if(interf.essayerChangementDeSalleEvident()) {
+						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
+						j.planningJourneeParBloc();
+						interferencesResolues++;
+					}
+					if(interf.essayerRaccourcissementEvident(data)) {
+						System.out.println("RACCOURCISSEMENT FAIT -------------------------------------");
+						j.planningJourneeParBloc();
+						interferencesResolues++;
+					}
+				}
 				if(c instanceof Ubiquite) {
 					nbUbiquites++;
-					j.planningJourneeParChirurgien();
 				}
 				if(c instanceof Chevauchement) {
 					nbChevauchements++;
@@ -737,6 +739,10 @@ public class BaseDeDonnees {
 //			System.out.println("Proportions jours de taff" + c.getProportions().toString());
 //			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
 //		}
+		System.out.println("Nombre d'Interferences : "+nbInterferences);
+		System.out.println("Nombre de resolues : "+interferencesResolues);
+		
+		
 		
 		
 		int nbUbi = 0;
