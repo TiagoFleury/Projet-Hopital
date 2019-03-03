@@ -673,21 +673,22 @@ public class BaseDeDonnees {
 			Journee j = data.getJournee(i);
 			
 			for(Conflit c : j.getConflits()) {
-				if(c instanceof Interference) {
-					Interference interf = (Interference) c;
-					j.planningJourneeParBloc();
-					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					System.out.println("Bloc fort de "+c.getCh1().getChirurgien()+" : "+c.getCh1().getChirurgien().getBlocFort(j));
-					System.out.println("Bloc fort de "+c.getCh2().getChirurgien()+" : "+c.getCh2().getChirurgien().getBlocFort(j));
-					System.out.println("Blocs libres pour ch"+c.getCh1().getID()+" : "+c.getBlocsLibres1());
-					nbInterferences++;
-					if(interf.essayerChangementDeSalleEvident(data)) {
-						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
-						j.planningJourneeParBloc();
-					}
-				}
+//				if(c instanceof Interference) {
+//					Interference interf = (Interference) c;
+//					j.planningJourneeParBloc();
+//					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
+//					System.out.println("Bloc fort de "+c.getCh1().getChirurgien()+" : "+c.getCh1().getChirurgien().getBlocFort(j));
+//					System.out.println("Bloc fort de "+c.getCh2().getChirurgien()+" : "+c.getCh2().getChirurgien().getBlocFort(j));
+//					System.out.println("Blocs libres pour ch"+c.getCh1().getID()+" : "+c.getBlocsLibres1());
+//					nbInterferences++;
+//					if(interf.essayerChangementDeSalleEvident(data)) {
+//						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
+//						j.planningJourneeParBloc();
+//					}
+//				}
 				if(c instanceof Ubiquite) {
 					nbUbiquites++;
+					j.planningJourneeParChirurgien();
 				}
 				if(c instanceof Chevauchement) {
 					nbChevauchements++;
@@ -695,26 +696,26 @@ public class BaseDeDonnees {
 				nbConflits++;
 			}
 		}
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements + "\n \n \n TestHugo");
-		
-		data.calculJoursRecurrentsDeTravailChirurgiens();
-		data.calculTempsMoyensChirurgien();
-		data.calculTempsEntreDeuxChirurgiesMemeBloc();
-		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
-		data.calculTempsDeTravailChirurgiens();
-		data.calculPlagesHorairesHabituellesChirurgiens();
-		data.anomaliesSurchargeChirurgiens();
-		
-		
-		
-		for (Chirurgien c : data.chirurgiensExistants) {
-			System.out.println(c.getName());
-			System.out.println("Jours surcharges" + c.getLesJSurchages().toString());
-			System.out.println("Temps travail / jour moyen = " + c.getTempsTravailMoyenParJour());
-			System.out.println("Temps travail / jour moyen = (en heure) :  " + c.getTempsTravailMoyenParJour()/60);
-			System.out.println("Proportions jours de taff" + c.getProportions().toString());
-			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
-		}
+//		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements + "\n \n \n TestHugo");
+//		
+//		data.calculJoursRecurrentsDeTravailChirurgiens();
+//		data.calculTempsMoyensChirurgien();
+//		data.calculTempsEntreDeuxChirurgiesMemeBloc();
+//		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
+//		data.calculTempsDeTravailChirurgiens();
+//		data.calculPlagesHorairesHabituellesChirurgiens();
+//		data.anomaliesSurchargeChirurgiens();
+//		
+//		
+//		
+//		for (Chirurgien c : data.chirurgiensExistants) {
+//			System.out.println(c.getName());
+//			System.out.println("Jours surcharges" + c.getLesJSurchages().toString());
+//			System.out.println("Temps travail / jour moyen = " + c.getTempsTravailMoyenParJour());
+//			System.out.println("Temps travail / jour moyen = (en heure) :  " + c.getTempsTravailMoyenParJour()/60);
+//			System.out.println("Proportions jours de taff" + c.getProportions().toString());
+//			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
+//		}
 		
 	}
 		
