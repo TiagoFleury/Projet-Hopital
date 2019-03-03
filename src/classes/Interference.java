@@ -30,7 +30,7 @@ public class Interference extends Conflit {
     
     
     
-    public boolean essayerChangementDeSalleEvident(BaseDeDonnees data) {
+    public boolean essayerChangementDeSalleEvident() {
 //    	Conditions :
 //    	1. Gros chevauchement   2. des blocs sont libres a cet horaire    3. un des chirurgiens est dans son bloc fort
 //		4. Les blocs E peuvent pas etre choisis en dehors de la journee
@@ -49,25 +49,23 @@ public class Interference extends Conflit {
     		return false;
     	}
     	
-    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour);
-    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour);
+    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour, 4);
+    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour, 4);
     	
-    	//Si le bloc fort d'un des deux blocs est libre, on le bouge sans trop se poser de question
+    	//Si le bloc fort d'un des deux chirurgiens est libre, on le bouge sans trop se poser de question
     	
     	
     	if(blocsLibres1.contains(blocFort1) && !blocsLibres2.contains(blocFort2)) {
-    		chirurgie1.setSalle(blocFort1);
-    		chirurgie1.setEnConflit(false);
-    		chirurgie2.setEnConflit(false);
-    		resolu = true;
-    		
+    		if(!(blocFort1.getID()<=3 && chirurgie1.estLaNuit())) {
+	    		chirurgie1.setSalle(blocFort1);
+	    		resolu = true;
+    		}
     	}
     	if(!blocsLibres1.contains(blocFort1) && blocsLibres2.contains(blocFort2)) {
-    		chirurgie2.setSalle(blocFort2);
-    		chirurgie1.setEnConflit(false);
-    		chirurgie2.setEnConflit(false);
-    		resolu = true;
-    		
+    		if(!(blocFort2.getID()<=3 && chirurgie2.estLaNuit())) {	
+    			chirurgie2.setSalle(blocFort2);
+	    		resolu = true;
+    		}
     		
     	}
     	
@@ -98,11 +96,11 @@ public class Interference extends Conflit {
     					 max=blocAevaluer.nombreDeChirurgiesDe(chirurgie2.getChirurgien(), jour);
     				}
     			}
-    			chirurgie2.setSalle(bMax);
-    			chirurgie2.setEnConflit(false);
-    			chirurgie1.setEnConflit(false);
-    			resolu = true;
-    			return true;
+    			if(!(bMax.getID()<=3 && chirurgie2.estLaNuit())) {
+	    			chirurgie2.setSalle(bMax);
+	    			resolu = true;
+	    			return true;
+    			}
     		}
     	}
     	
@@ -122,11 +120,12 @@ public class Interference extends Conflit {
     					 max=blocAevaluer.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour);
     				}
     			}
-    			chirurgie1.setSalle(bMax);
-    			chirurgie1.setEnConflit(false);
-    			chirurgie2.setEnConflit(false);
-    			resolu = true;
-    			return true;
+    			if(!(bMax.getID()<=3 && chirurgie1.estLaNuit())) {
+	    			chirurgie1.setSalle(bMax);
+	    			resolu = true;
+	    			return true;
+    			}
+    			
     		}
     	}
     	//Si les deux sont dans leur bloc fort on laisse la main
@@ -134,6 +133,8 @@ public class Interference extends Conflit {
     	
     	
     }
+    
+    
 
     
     public boolean essayerRaccourcissementEvident(BaseDeDonnees data) {
@@ -143,8 +144,7 @@ public class Interference extends Conflit {
     	if(resolu)
     		return false;
     	
-    	System.out.println("on est la");
-    	if(getIndiceDeRecouvrement()>0.2) { //En dessous de 0,2 on va dire qu'on traite le cas
+    	if(getIndiceDeRecouvrement()>0.25) { //En dessous de 0,25 on va dire qu'on traite le cas
     		return false;
     	}
     	
@@ -158,24 +158,27 @@ public class Interference extends Conflit {
     		anomalieDuree2 = true;
     	}
     	
-    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour);
-    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour);
+    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour, 4);
+    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour, 4);
+    	
+    	
+    	
     	
     	
     	if(!(anomalieDuree1 || anomalieDuree2)) { //Si il y a aucune anomalie on traite pas
     		return false;
     	}
-    	System.out.println("on est la");
     	if(blocFort1!=null) {
     		if(blocFort1.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)>4 && getBlocsLibres1().contains(blocFort1)) {
 	    		//si le blocFort est important et libre, on abandonne
-    			System.out.println("sorti ici");
 	    		return false;
     		}
     	}
+    	
+    	
+    	
     	if(blocFort2!=null) {
 	    	if(blocFort2.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)>4 && getBlocsLibres2().contains(blocFort2)) {
-	    		System.out.println("sorti icioiu");
 	    		//si le blocFort est important et libre, on abandonne
 	    		return false;
 	    	}
@@ -183,37 +186,71 @@ public class Interference extends Conflit {
     	
     	//Ici on a donc forcement une anomalie de longueur et un "petit recouvrement" sur un des bouts des chirurgies
     	//On va maintenant tronquer la chirurgie qui est le plus en anomalie de longueur
+    	
+    	
+    	
     	if(anomalieDuree1 && !anomalieDuree2) {
-    		System.out.println("ANOMALIE DUREE 1");
 //    		On est dans ce cas :
 //    			#######################              <- on va racourcir celle la sur sa droite
 //    								###########
-    		LocalTime backupHeureFin = chirurgie1.getFin();
     		
-    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
-    			chirurgie1.raccourcirFin(1);
-    			if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
-    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
-    				chirurgie1.setFin(backupHeureFin);
-    				System.out.println("ca a depasse la borne minimale");
-    				return false;
-    			}
+    		
+    		int cote=1; //de base le cote a couper est le droit
+    		if(Chirurgie.superposition(chirurgie1, chirurgie2)) {
+        		//Dans ce cas il faut decider de quel cote raccourcir
+        		cote = coteAcouper();
+        	}
+    		
+    		if(cote == 1) { //Si c'est le cote droit
+    			LocalTime backupHeureFin = chirurgie1.getFin(); //C'est la fin de la chirurgie qu'on va amputer
+	    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+	    			chirurgie1.raccourcirFin(1);
+	    			if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+	    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+	    				chirurgie1.setFin(backupHeureFin);
+	    				return false;
+	    			}
+	    		}
+    		
+	    		
+	    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+	    		chirurgie1.raccourcirFin(data.getICtempsInteroperatoire().get(0).intValue());
+	    		
+	    		if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+					//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+					chirurgie1.setFin(backupHeureFin);
+					return false;
+				}
+	    		this.resolu=true;
+	    		return true;
     		}
+    		if(cote == -1) {
+    			LocalTime backupHeureDebut = chirurgie1.getDebut(); //c'est le debut qu'on va amputer
+    			while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+	    			chirurgie1.raccourcirDebut(1);
+	    			if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+	    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+	    				chirurgie1.setDebut(backupHeureDebut);
+	    				return false;
+	    			}
+	    		}
     		
-    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
-    		chirurgie1.raccourcirFin(data.getICtempsInteroperatoire().get(0).intValue());
-    		
-    		if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
-				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
-				chirurgie1.setFin(backupHeureFin);
-				return false;
-			}
-    		this.resolu=true;
-    		return true;
+	    		
+	    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+	    		chirurgie1.raccourcirDebut(data.getICtempsInteroperatoire().get(0).intValue());
+	    		
+	    		if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+					//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+					chirurgie1.setDebut(backupHeureDebut);
+					return false;
+				}
+	    		this.resolu=true;
+	    		return true;
+    		}
     	}
     	
     	if(!anomalieDuree1 && anomalieDuree2) {
-    		System.out.println("ANOMALIE DUREE 2");
+    		//Dans ce cas la logiquement elles peuvent pas être superposees
 //    		On est dans ce cas :
 //    			#########              
 //    				  ##########################   <- on va racourcir celle la sur sa gauche
@@ -240,12 +277,85 @@ public class Interference extends Conflit {
     		this.resolu=true;
     		return true;
     	}
-    	if(anomalieDuree1 && anomalieDuree2) {
-    		//Si les deux sont en anomalie de temps, on coupe celui qui est le plus loin de sa borne maxd
-    		Chirurgie chirAcouper;
-    		System.out.println("les deux");
+    	if(anomalieDuree1 && anomalieDuree2 && !Chirurgie.superposition(chirurgie1, chirurgie2)) {
+    		//Si les deux sont en anomalie de temps, on coupe les deux
+    		LocalTime backupHeureDebut = chirurgie2.getDebut();
+    		LocalTime backupHeureFin = chirurgie1.getFin();
+    		
+    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit chacun leurs tours les deux
+    			chirurgie2.raccourcirDebut(1);
+    			if(chirurgie2.getDuree()<chirurgie2.getChirurgien().getICtempsMoyen().get(0)) {
+    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+    				chirurgie2.setDebut(backupHeureDebut);
+    				return false;
+    			}
+    		}
+    		
+    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+    		chirurgie2.raccourcirDebut(data.getICtempsInteroperatoire().get(0).intValue());
+    		
+    		if(chirurgie2.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+				chirurgie2.setDebut(backupHeureDebut);
+				return false;
+			}
+
+    		this.resolu=true;
+    		return true;
+    		
     	}
     	return false;
     	
     }
+    
+    
+    public boolean essayerDeplacementDeForce(BaseDeDonnees data) {
+    	//Dans cet essai, on va devenir un peu plus laxe au niveau des conditions et on va essayer de forcer un peu le deplacement. Si ca bloque un peu
+    	// et que c'est pertinent de raccourcir on le fait
+    	
+    	if(getIndiceDeRecouvrement()<0.4) {
+    		return false;
+    	}
+    	ArrayList<Bloc> blocsLibres2 = getBlocsLibres2();
+    	ArrayList<Bloc> blocsLibres1 = getBlocsLibres1();
+    	
+    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour, 1);
+    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour, 1);
+    	
+    	if(sallePb.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)>sallePb.nombreDeChirurgiesDe(chirurgie2.getChirurgien(), jour)) {
+    		//La on va plutot essayer de bouger chirurgie2 parce que son chirurgien est moins dans cette salle
+    		
+    		if(blocsLibres2.contains(blocFort2)) {
+        		//Si son bloc fort est libre on la met direct
+    			if(!(blocFort2.getID()<=3 && chirurgie2.estLaNuit())) {
+	    			chirurgie2.setSalle(blocFort2);
+	    			resolu = true;
+	    			return true;
+    			}
+        	}
+    	}
+    	else if(sallePb.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)<sallePb.nombreDeChirurgiesDe(chirurgie2.getChirurgien(), jour)) {
+    		//La on va essayer de bouger la chirurgie1
+    		if(blocsLibres1.contains(blocFort1)) {
+        		//Si son bloc fort est libre on la met direct
+    			if(!(blocFort1.getID()<=3 && chirurgie1.estLaNuit())) {
+	    			chirurgie1.setSalle(blocFort1);
+	    			resolu = true;
+	    			return true;
+    			}
+        	}
+    	}
+    	else {
+    		//si les deux sont egaux, on bouge celui qu'on peut comme on peut
+    		if(blocsLibres1.size() > blocsLibres2.size()) {
+    			
+    		}
+    		
+    	}
+    	
+    	
+    	return false;
+    }
+    
+    
 }

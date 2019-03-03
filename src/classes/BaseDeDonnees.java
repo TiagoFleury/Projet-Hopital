@@ -677,17 +677,14 @@ public class BaseDeDonnees {
 					Interference interf = (Interference) c;
 					j.planningJourneeParBloc();
 					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					System.out.println("Bloc fort de "+c.getCh1().getChirurgien()+" : "+c.getCh1().getChirurgien().getBlocFort(j));
-					System.out.println("Bloc fort de "+c.getCh2().getChirurgien()+" : "+c.getCh2().getChirurgien().getBlocFort(j));
-					System.out.println("Blocs libres pour ch"+c.getCh1().getID()+" : "+c.getBlocsLibres1());
 					nbInterferences++;
-					if(interf.essayerChangementDeSalleEvident(data)) {
+					if(interf.essayerChangementDeSalleEvident()) {
 						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
 						j.planningJourneeParBloc();
 						interferencesResolues++;
 					}
 					if(interf.essayerRaccourcissementEvident(data)) {
-						System.out.println("RACCOURCISSEMENT FAT -------------------------------------");
+						System.out.println("RACCOURCISSEMENT FAIT -------------------------------------");
 						j.planningJourneeParBloc();
 						interferencesResolues++;
 					}

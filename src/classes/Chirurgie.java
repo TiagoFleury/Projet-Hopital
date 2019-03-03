@@ -342,5 +342,12 @@ public class Chirurgie {
 		heureFin=fin;
 	}
 
+	public boolean estLaNuit() {
+		if(heureFin.isAfter(LocalTime.of(20, 0)) || heureDebut.isBefore(LocalTime.of(8,0)) || heureFin.isBefore(LocalTime.of(8, 0)) || heureDebut.isAfter(LocalTime.of(20, 0)) )
+			return true;
+			
+		return false;
+	}
+
 	
 }
