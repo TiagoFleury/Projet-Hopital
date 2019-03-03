@@ -225,13 +225,9 @@ public class BaseDeDonnees {
 			Journee journee = getJournee(i);
 			
 			for(Bloc bloc : journee.getBlocs()) { //Pour chaque blocs de chaque journees
-				for(Chirurgie chir : journee.getChirurgiesJour()) { //On va recuperer toutes les chirurgies de ce bloc
-					
-					if(chir.getSalle().equals(bloc)) {//Si c'est une chirurgie de ce bloc
-						liste.add(chir); //On l'ajoute a la liste
-						
-					}
-				}
+				
+				liste=bloc.recupererChirurgies(journee); //On va recuperer toutes les chirurgies de ce bloc
+				
 				
 				
 				Collections.sort(liste,Chirurgie.CHRONOLOGIQUE);
@@ -286,6 +282,8 @@ public class BaseDeDonnees {
 						//On compte leur ecart
 						compte++;
 						long ecart = ChronoUnit.MINUTES.between(liste.get(j).getFin(), liste.get(j+1).getDebut());
+						if(chirurgien.getName().equals("GREGORY HOUSE"))
+							System.out.println(ecart+"min entre ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
 						somme += ecart;
 						donnees.add((double) ecart);
 						//System.out.println("+"+ecart+"min de comptees pour ch"+liste.get(j).getID()+" et ch"+liste.get(j+1).getID());
@@ -571,13 +569,17 @@ public class BaseDeDonnees {
 			
 			for(Conflit c : j.getConflits()) {
 				if(c instanceof Interference) {
-					//Interference interf = (Interference) c;
+					Interference interf = (Interference) c;
 					j.planningJourneeParBloc();
 					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
 					System.out.println("Bloc fort de "+c.getCh1().getChirurgien()+" : "+c.getCh1().getChirurgien().getBlocFort(j));
 					System.out.println("Bloc fort de "+c.getCh2().getChirurgien()+" : "+c.getCh2().getChirurgien().getBlocFort(j));
 					System.out.println("Blocs libres pour ch"+c.getCh1().getID()+" : "+c.getBlocsLibres1());
 					nbInterferences++;
+					if(interf.essayerChangementDeSalleEvident(data)) {
+						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
+						j.planningJourneeParBloc();
+					}
 				}
 				if(c instanceof Ubiquite) {
 					nbUbiquites++;
@@ -665,6 +667,12 @@ public class BaseDeDonnees {
 
 	public double getTempsMoyenInteroperatoireBloc() {
 		return tempsInterOperatoireBloc[0];
+	}
+	public ArrayList<Double> getICtempsInteroperatoire(){
+		ArrayList<Double> liste = new ArrayList<Double>();
+		liste.add(tempsInterOperatoireBloc[1]);
+		liste.add(tempsInterOperatoireBloc[2]);
+		return liste;
 	}
 
 	
