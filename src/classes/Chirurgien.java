@@ -28,7 +28,7 @@ public class Chirurgien implements Comparable{
 		this.statsTempsInteroperatoire = new double[3];
 		this.statsTempsDeTravail = new double[3];
 	}
-    
+
     
     
     @Override

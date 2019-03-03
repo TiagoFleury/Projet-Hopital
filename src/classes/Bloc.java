@@ -27,6 +27,52 @@ public class Bloc implements Comparable{
     
     
     
+	public Chirurgien getChirurgienFort(Journee jour) { //Si il n'y a pas de chirurgien particulierement fort, retourne null
+		
+		Chirurgien cMax=null;
+		int max=0;
+		int compte;
+		int tempsMax=0;
+		ArrayList<Chirurgie> liste = new ArrayList<>();
+		for(Chirurgien albert : jour.getChirurgiensMobilises()) {
+			compte=0;
+			for(Chirurgie c : jour.getChirurgiesJour()) {
+				if(c.getSalle().equals(this) && c.getChirurgien().equals(albert)) {
+					compte++;
+					liste.add(c);
+				}
+				
+			}
+			if(compte>max) {
+				cMax=albert;
+				max = compte;
+				tempsMax=0; //On reset le temps max
+				for(Chirurgie c : liste) {
+					tempsMax+=c.getDuree();
+				}
+				
+			}
+			else if(compte==max & max>0) {//Si c'est le meme nombre, on compare le temps
+				int somme=0;
+				for(Chirurgie c : liste) {
+					somme+=c.getDuree();
+				}
+				if(somme>tempsMax) {
+					cMax=albert;
+					tempsMax=somme;
+				}
+			}
+			liste.clear();
+		}
+		
+
+		if(max >= 3) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
+			return cMax;
+		}
+		return null;
+	}
+    
+    
     
     
     

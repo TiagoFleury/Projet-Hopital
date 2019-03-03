@@ -30,11 +30,28 @@ public class Ubiquite extends Conflit {
     
     
     
-    // Resolution
+    // Resolution ///////////////////////////////
     
     public void resolutionUbiquite() {
-    	// METHODE FINALE DE RESOLV D'u, qui appellera toutes les eventuelles résolutions
+    	// appeler resolution evidente = essayerChangementTrèsEvidentChirurgien()
+    	
+    	// appeler essayerChangementPresqueEvidentChirurgien()
+    	
+    	// appeler resolution un peu moins évidente, mais précise car spécifique
+    	//       essayerChangementChirurgienPresentSousContraintes()
+    	
+    	// appeler essayerRacourcirPourResoudre()
+    	
+    	
+    	// appeler essayerChangementChirurgienPresentPeuPrecis()
+    	
+    	// appeler essayerChangementChirurgienAbsentSousContraintes()
+    	
+    	// appeler essayerChangementChirurgienExterieur()
+    	
+    	
     }
+    
     
     
     
@@ -42,9 +59,9 @@ public class Ubiquite extends Conflit {
     //    une des deux chirurgies est anormalement longue, et dans ce cas on peut envisager de la/les raccourcir
     //    le cas où une chirurgie est apres le début ET avant la fin n'est pas pris en compte, et sera résolue d'une autre manière
     
+    // integrer un temps inter opératoire
     
-    
-    public void resoudreUbiquite0() {
+    public void essayerRacourcirPourResoudre() {
     	boolean b1=false;
     	boolean b2=false;
     	Chirurgie copie1 = chirurgie1;
@@ -135,89 +152,33 @@ public class Ubiquite extends Conflit {
     
     
     
-    
-    
-// DABORD ALLER CHERCHER LES CHIRURGIENS QUI ONT au moins 1 ch en non conflit, car les AUTRES ON EST SUR QU'ils ne sont pas la
-    
-    // Puis parmis ces memes chirurgiens qui ne sont pas en FULL conflits, il faut vérifier qu'en leurs ajoutant cette chirurgie,
-    // cela reste dans IC95 de leurs temps de chirurgies moyens par jour.
-    // ie -- qu'on ne provoque pas une anomalieSurchageTravail()
-    
-    // du coup avant, faire une methode qui envoie dans Chirurgien son IC95 de temps de travail par jour, et redefinir bien anomalie
-    
-    
-    
-    // Si dans la journée, parmi ceux qui travaillent, est ce qu'il y en a un qui bosse pas a ce moment là, et qui provoque 0 conflit
-    public void resoudreUbiquite11(BaseDeDonnees database) {
-    	Chirurgien chirurgienP = chirurgienPb;
-    	Chirurgien unChirurgien = null;
+    public void essayerChangementEvidentDeChirurgien() {
+    	// faire la même qu'au dessus, mais via indice de recouvrement, alors direct on part sur un changement de truc
     	
-    	Chirurgie chirurgieTest = null;
-    	
-    	int compteur = 0, lg = database.getTousChirurgiens().size();
-    	int nbConflitsGeneres = 0;
-    	int nbConflitsJourChirurgien;
-    	int nbChirurgies = 0;
-    	ArrayList<Chirurgien> chCandidats = new ArrayList<>();
-    	while (compteur < lg) {
-    		nbConflitsJourChirurgien = 0;
-    		unChirurgien = database.getTousChirurgiens().get(compteur);
-    		for (Chirurgie c : unChirurgien.getChirurgies()) {
-    			if (chirurgie2.getDate().equals(c.getDate())) {
-    				if (c.estEnConflit()==true) {
-    					nbConflitsJourChirurgien++;
-    				}
-    				nbChirurgies ++ ;
-    			}
-    		}
-    		if (nbConflitsJourChirurgien<=(nbChirurgies-1) &&  nbChirurgies>=2) {
-    			chCandidats.add(unChirurgien);
-    		}
-    		
-    		// checker si pas d'anomalie de surcharge de taff
-    		// on prend le chirurgien tel que quand on lui rajoute la chirurgie, la durée de sa journée ressemble a sa durée moyenne de journée
-    		// et aussi tel que la durée de chirurgie ressemble de ouf a ses durées habituelles de chirurgies
-    		
-    		// et bien sur tel que ca ne génère pas de conflit
-    	}
-    	boolean bool = false;
-    	Chirurgie chirugieTest = null;
-    	ArrayList<Chirurgien> chCandidats2 = new ArrayList<>();
-    	for (Chirurgien ch : chCandidats) {
-    		bool = ch.anomaliesSurchargeChirurgienOuPas(database);
-    		chirurgieTest = chirurgie1;
-			chirurgieTest.setChirurgien(ch);
-    		if (bool==false) {
-    			bool = chirurgieTest.anomalieDureeChirurgieOuPas();
-    			if (bool = false ) {
-    				if (chirurgieTest.anomaliesChirurgienDureeInterOpeBlocOuPas()!=0) {
-    					bool=true;
-    				}
-    			}
-    		}
-    		if (bool==false) {
-    			chCandidats2.add(ch);
-    		}
-    	}
-    	
+    	// partir du meme principe de candidats (ie les mecs présents), faire des le début ChirurgienFort, voir s'il est là et qu'en plus
+    	// il y a un fort indice de recouvrement alors go changement.
     }
     
     
     
     
     
-    public void resoudreUbiquite1(BaseDeDonnees database) {
+    public boolean essayerChangementChirurgienPresentSousContraintes(BaseDeDonnees database) {
+    	boolean result = false;
     	LocalDate auj = this.chirurgie1.getDate();
-    	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = this.getChirurgiensLibres1();
-    	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = this.getChirurgiensLibres2();
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = new ArrayList<>(this.getChirurgiensLibres1());
+    	ArrayList<Chirurgien> copie1 = new ArrayList<>(chirurgiensCandidatsCh1);
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = new ArrayList<>(this.getChirurgiensLibres2());
+    	ArrayList<Chirurgien> copie2 = new ArrayList<>(chirurgiensCandidatsCh2);
     	
-    	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le ChProbleme de l'ubiquite
-    	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie normalement
+    	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le Chirurgien Probleme de l'ubiquite
+    	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie
     	
     	
-    	for (Chirurgien albert : chirurgiensCandidatsCh1) {
-    		Chirurgie chTest = this.chirurgie1;
-    		Chirurgien chirurgienTest=albert;
+    	// ie on va chercher un chirurgien présent, dont la réalisation de cette chirurgie serait dans ses habitudes de travail.
+    	 
+    	for (Chirurgien albert : copie1) {
+    		Chirurgie chTest = new Chirurgie(chirurgie1);
     		int nbNonConflitsJour =0;
     		
     		for (Chirurgie x : albert.recupChirurgiesDuJour(jour)) {
@@ -227,34 +188,37 @@ public class Ubiquite extends Conflit {
     		}
     		if (nbNonConflitsJour==0) {
     			chirurgiensCandidatsCh1.remove(albert);
+    			System.out.println("ici que tu l'as perdu 1");
     		}
     		
-    		// Si le C est deja surchargé de travail
-    		if (albert.getLesJSurcharges().contains(auj)) {
+    		// Si le chirurgien est deja surchargé de travail
+    		if (albert.getLesJSurcharges().contains(auj) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
+    			System.out.println("ici que tu l'as perdu 2");
     		}
     		
     		// Si la chirurgie ne correspond pas a ses durées habituelles
-    		if (chTest.anomalieDureeChirurgieOuPas()==true) {
+    		if (chTest.anomalieDureeChirurgieOuPas()==true && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
+    			System.out.println("ici que tu l'as perdu 3");
     		}
     		
     		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
-    		if (albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.3) {
+    		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.3) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
+    			System.out.println("ici que tu l'as perdu 4");
     		}
     		
     		
     		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
     		chTest.setChirurgien(albert);
-    		chirurgienTest.recupChirurgiesDuJour(jour).add(chTest);
     		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     	}
     	
-    	for (Chirurgien albert : chirurgiensCandidatsCh2) {
-    		Chirurgie chTest = this.chirurgie2;
+    	for (Chirurgien albert : copie2) {
+    		Chirurgie chTest = new Chirurgie(chirurgie2);
     		Chirurgien chirurgienTest=albert;
     		int nbNonConflitsJour =0;
     		
@@ -268,46 +232,104 @@ public class Ubiquite extends Conflit {
     		}
     		
     		// Si le C est deja surchargé de travail
-    		if (albert.getLesJSurchages().contains(auj)) {
+    		if (albert.getLesJSurcharges().contains(auj) && chirurgiensCandidatsCh2.contains(albert)) {
     			chirurgiensCandidatsCh2.remove(albert);
     		}
     		
     		// Si la chirurgie ne correspond pas a ses durées habituelles
-    		if (chTest.anomalieDureeChirurgieOuPas()==true) {
+    		if (chTest.anomalieDureeChirurgieOuPas()==true && chirurgiensCandidatsCh2.contains(albert)) {
     			chirurgiensCandidatsCh2.remove(albert);
     		}
     		
     		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
-    		if (albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.3) {
+    		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.2) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh2.remove(albert);
     		}
     		
     		
     		// Si la chirurgie ne vérifie pas les contraintes de durées interopératoires nécessaires
     		chTest.setChirurgien(albert);
-    		chirurgienTest.recupChirurgiesDuJour(jour).add(chTest);
     		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
     			chirurgiensCandidatsCh2.remove(albert);
     		}
     	}
+    	
+    	// On rajoute ici (également) l'idée de chirurgien fort, dans l'hypothese ou il serait le chirurgien qui vérifie toutes les contraintes
+    	// alors il serait le résultat évident 
+    	// (bien que logiquement, il aurait deja été selectionné lors d'une premiere resolution évidente)
+    	
+    	Chirurgien chFort1 = this.chirurgie1.getSalle().getChirurgienFort(jour);
+    	Chirurgien chFort2 = this.chirurgie2.getSalle().getChirurgienFort(jour);
     	
     	if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()==0) {
-    		
+    		if (chirurgiensCandidatsCh1.contains(chFort1) && !chFort1.equals(chirurgienPb)) {
+    			chirurgie1.setChirurgien(chFort1);
+    			chFort1.getChirurgies().add(chirurgie1);
+    			System.out.println("ca a changé 1");
+    		}
+    		else {
+    			chirurgie1.setChirurgien(chirurgiensCandidatsCh1.get(0));
+    			chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
+    			System.out.println("ca a changé 2");
+    		}
+    		this.setEtat(true);
+			this.chirurgie1.setEnConflit(false);
+			this.chirurgie2.setEnConflit(false);
+			result = true;
     	}
-    	if (chirurgiensCandidatsCh1.size()==0 && chirurgiensCandidatsCh2.size()!=0) {
-    		
+    	
+    	else if (chirurgiensCandidatsCh1.size()==0 && chirurgiensCandidatsCh2.size()!=0) {
+    		if (chirurgiensCandidatsCh2.contains(chFort2) && !chFort2.equals(chirurgienPb)) {
+    			chirurgie2.setChirurgien(chFort2);
+    			chFort2.getChirurgies().add(chirurgie2);
+    			System.out.println("ca a changé 3");
+    		}
+    		else {
+    			chirurgie2.setChirurgien(chirurgiensCandidatsCh2.get(0));
+    			chirurgiensCandidatsCh2.get(0).getChirurgies().add(chirurgie2);
+    			System.out.println("ca a changé 4");
+    		}
+    		this.setEtat(true);
+			this.chirurgie1.setEnConflit(false);
+			this.chirurgie2.setEnConflit(false);
+			result = true;
     	}
-    	if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()!=0) {
-    		
+    	
+    	
+    	else if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()!=0) {
+    		if (chirurgiensCandidatsCh1.contains(chFort1) && !chFort1.equals(chirurgienPb)) {
+    			chirurgie1.setChirurgien(chFort1);
+    			chFort1.getChirurgies().add(chirurgie1);
+    			System.out.println("ca a changé 5");
+    		}
+    		else {
+    			if (chirurgiensCandidatsCh2.contains(chFort2) && !chFort2.equals(chirurgienPb)) {
+    				this.chirurgie2.setChirurgien(chFort2);
+    				chFort2.getChirurgies().add(chirurgie2);
+    				System.out.println("ca a changé 6");
+    			}
+    			else {
+    				chirurgie1.setChirurgien(chirurgiensCandidatsCh1.get(0));
+    				chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
+    				System.out.println("ca a changé 7");
+    				}
+    			}
+    		this.setEtat(true);
+			this.chirurgie1.setEnConflit(false);
+			this.chirurgie2.setEnConflit(false);
+			result = true;
     	}
+    	return result;
     	
     }
     
     
     
+
     
     
-    public void resoudreUbiquiteee0(BaseDeDonnees database) {
+    
+    public void essayerChangementChirurgienPresentPeuPrecis(BaseDeDonnees database) {
     	Chirurgien chirurgienP = chirurgienPb;
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -362,10 +384,11 @@ public class Ubiquite extends Conflit {
     
     
     
+    
     // Si celle au dessus n'a pas marché, alors aller chercher parmis ceux qui bossent pas de la journée (ex : ceux qui bossent pas le mardi15)
     // lesquels ont la plus grosse probas de bosser un mardi
     
-    public void resoudreUbiquite2(BaseDeDonnees database, Ubiquite u) {
+    public void essayerChangementChirurgienAbsentSousContraintes(BaseDeDonnees database, Ubiquite u) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -427,17 +450,7 @@ public class Ubiquite extends Conflit {
     }
     
     
-    
-    
-    
-    // Ubiquite classique + cas où le chirurgien travaille un jour ou il ne devrait pas
-    public void resoudreUbiquite3(BaseDeDonnees database, Ubiquite u) {
-    	
-    	// Cest une application classique de changement de chirurgien, il suffit d'appeller Ubiquite0 ????
-    }
-    
-    
-    
+    /////////////////////////////////////
     
     
     

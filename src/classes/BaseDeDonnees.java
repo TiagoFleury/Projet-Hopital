@@ -695,6 +695,8 @@ public class BaseDeDonnees {
 				nbConflits++;
 			}
 		}
+		
+		
 		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements + "\n \n \n TestHugo");
 		
 		data.calculJoursRecurrentsDeTravailChirurgiens();
@@ -705,8 +707,6 @@ public class BaseDeDonnees {
 		data.calculPlagesHorairesHabituellesChirurgiens();
 		data.anomaliesSurchargeChirurgiens();
 		
-		
-		
 		for (Chirurgien c : data.chirurgiensExistants) {
 			System.out.println(c.getName());
 			System.out.println("Jours surcharges" + c.getLesJSurcharges().toString());
@@ -716,6 +716,34 @@ public class BaseDeDonnees {
 			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
 		}
 		
+		
+		
+		int nbUbi = 0;
+		
+		for(int i=0;i<data.listeJournees.size();i++) {
+			Journee j = data.getJournee(i);
+			
+			for(Conflit c : j.getConflits()) {
+				if(c instanceof Ubiquite) {
+					Ubiquite ub = (Ubiquite) c;
+					j.planningJourneeParChirurgien();
+					System.out.println("\n \n \n "+ ub.toString());
+					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
+					System.out.println("Chirurgien fort de "+c.getCh1().getSalle()+" : "+c.getCh1().getSalle().getChirurgienFort(j));
+					System.out.println("Chirurgien fort de "+c.getCh2().getSalle()+" : "+c.getCh2().getSalle().getChirurgienFort(j));
+					System.out.println("Chirurgiens libres pour ch1"+c.getCh1().getID()+" : "+c.getChirurgiensLibres1());
+					System.out.println("Chirurgiens libres pour ch2"+c.getCh2().getID()+" : "+c.getChirurgiensLibres2());
+					
+					nbUbi++;
+					if(ub.essayerChangementChirurgienPresentSousContraintes(data)) {
+						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ---------------------------------");
+						j.planningJourneeParChirurgien();
+					}
+				}
+
+				nbConflits++;
+			}
+		}
 	}
 		
 	

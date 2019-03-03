@@ -60,6 +60,18 @@ public class Chirurgie {
 		}
 	}
     
+    public Chirurgie(Chirurgie ch) {
+    	id = ch.getID();
+    	date = ch.getDate();
+    	heureDebut = ch.getDebut();
+    	heureFin = ch.getFin();
+    	salle = ch.getSalle();
+    	chirurgien = ch.getChirurgien();
+    	estEnConflit = ch.estEnConflit();
+    	nbMinutes = ch.getDuree();
+    	
+    }
+    
     @Override
     //Deux chirurgies sont egales si elles ont les m�mes valeurs dans tous leurs attributs sauf ID
     public boolean equals(Object o) {
@@ -238,7 +250,7 @@ public class Chirurgie {
     	boolean b = false;
     	double time = nbMinutes;
     	ArrayList<Double> interv = chirurgien.getICtempsMoyen();
-    	if ( (time<chirurgien.getICtempsMoyen().get(1)) || (time>chirurgien.getICtempsMoyen().get(2))){
+    	if ( (time<chirurgien.getICtempsMoyen().get(0)) || (time>chirurgien.getICtempsMoyen().get(1))){
     		b=true;
     	}
     	return b;
@@ -249,41 +261,84 @@ public class Chirurgie {
     
     // Detection d'anomalies
     
+    // C'est en quelque sorte une detection en deux temps
+    // Ici j'essaye de savoir si 
+    //    - en ajoutant la chirurgie this, cela provoque une anomalie de durée interopératoire.
+    //    - si jamais elle appartient deja a la liste des chirurgies du jour, alors on verifie si elle est initialement en anomalie
+    
     public int anomalieDureeInterOpeBlocOuPasChirurgien(BaseDeDonnees database) {
     	int retour = 0;
     	
     	// On va retourner 0 s'il n'y pas d'anomalie, -1 sil y en a une avec la chirurgie juste avant, et 1 si cest avec celle d'apres, 2 si en anomalie avec celle d'avant et apres
     	Chirurgien theC = this.chirurgien;
     	ArrayList<Chirurgie> sesChirurgiesAuj = theC.recupChirurgiesDuJour(database.getJournee(date));
-
-    	Collections.sort(sesChirurgiesAuj, Chirurgie.CHRONOLOGIQUE);
     	
-    	int i = sesChirurgiesAuj.indexOf(this); // Avec cette ligne, je signifie que pr tester l'anomalie, il faut que la chirurgie soit dans la liste des ch du Chirurgien
     	
-    	// On traite le cas de la chirurgie d'avant
-    	boolean b1 = false, b2 = false;
-    	if (i>0) {
-    		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(),heureDebut) < theC.getICtempsInteroperatoire().get(1) ) ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
-        		b1=true;
+    	if (!sesChirurgiesAuj.contains(this)) {
+    		ArrayList<Chirurgie> copie = new ArrayList<Chirurgie>(sesChirurgiesAuj);
+    		copie.add(this);
+    		Collections.sort(copie, Chirurgie.CHRONOLOGIQUE);
+    		int i = copie.indexOf(this); // Avec cette ligne, je signifie que pr tester l'anomalie, il faut que la chirurgie soit dans la liste des ch du Chirurgien
+        	
+    		
+        	// On traite le cas de la chirurgie d'avant
+        	boolean b1 = false, b2 = false;
+        	if (i>0) {
+        		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(),heureDebut) < theC.getICtempsInteroperatoire().get(1) ) ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
+            		b1=true;
+            	}
         	}
+        	
+        	if (i<sesChirurgiesAuj.size()-1) {
+        		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < theC.getICtempsInteroperatoire().get(1)  ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
+        			b2=true;
+        		}
+        	}
+
+        	if (b1==true && b2==false) {
+        		retour= -1;
+        	}
+        	if (b1==false && b2==true) {
+        		retour = 1;
+        	}
+        	if (b1==true && b2==true) {
+        		retour = 2;
+        	}
+        	return retour;
     	}
     	
-    	if (i<sesChirurgiesAuj.size()-1) {
-    		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < theC.getICtempsInteroperatoire().get(1)  ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
-    			b2=true;
-    		}
-    	}
+    	
+    	else { // Cas ou la chirurgie est deja dans la liste des chirurgies du jour
+    		int i = sesChirurgiesAuj.indexOf(this); 
+        	
+        	// On traite le cas de la chirurgie d'avant
+        	boolean b1 = false, b2 = false;
+        	if (i>0) {
+        		if ( ( ChronoUnit.MINUTES.between(sesChirurgiesAuj.get(i-1).getFin(),heureDebut) < theC.getICtempsInteroperatoire().get(1) ) ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i-1)) )  {
+            		b1=true;
+            	}
+        	}
+        	
+        	// cas de la chirurgie d'apres
+        	if (i<sesChirurgiesAuj.size()-1) {
+        		if (ChronoUnit.MINUTES.between(heureFin, sesChirurgiesAuj.get(i+1).getDebut()) < theC.getICtempsInteroperatoire().get(1)  ||  Journee.enMemeTempsOuPas(this,sesChirurgiesAuj.get(i+1)) ) {
+        			b2=true;
+        		}
+        	}
 
-    	if (b1==true && b2==false) {
-    		retour= -1;
+        	
+        	if (b1==true && b2==false) {
+        		retour= -1;
+        	}
+        	if (b1==false && b2==true) {
+        		retour = 1;
+        	}
+        	if (b1==true && b2==true) {
+        		retour = 2;
+        	}
+        	return retour;
     	}
-    	if (b1==false && b2==true) {
-    		retour = 1;
-    	}
-    	if (b1==true && b2==true) {
-    		retour = 2;
-    	}
-    	return retour;
+    	
     }
     
     
