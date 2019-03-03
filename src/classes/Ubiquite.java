@@ -240,7 +240,7 @@ public class Ubiquite extends Conflit {
     		}
     		
     		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
-    		
+    		if ()
     		
     		
     		

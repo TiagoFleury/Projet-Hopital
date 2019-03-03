@@ -121,6 +121,27 @@ public class Chirurgie {
     
 
     
+    public int indicePlageHoraire() {
+    	LocalTime huit = LocalTime.of(8,00);
+		LocalTime quatorze = LocalTime.of(14, 00);
+    	LocalTime vingt = LocalTime.of(20,00);
+    	LocalTime deux = LocalTime.of(2,00);
+    	int a =0;
+    	
+    	if ( (heureDebut.isAfter(huit) || (heureDebut.equals(huit))) && (heureDebut.isBefore(quatorze) ) ) {
+    		a=0;
+		}
+		if ( (heureDebut.isAfter(quatorze) || (heureDebut.equals(quatorze))) && (heureDebut.isBefore(vingt) )) {
+			a=1;
+		}
+		if ( (heureDebut.isAfter(vingt) || (heureDebut.equals(vingt))) && (heureDebut.isBefore(deux) )) {
+			a=2;
+		}
+		if ( (heureDebut.isAfter(deux) || (heureDebut.equals(deux))) && (heureDebut.isBefore(huit) )) {
+			a=3;
+		}
+		return a;
+    }
     
     
     

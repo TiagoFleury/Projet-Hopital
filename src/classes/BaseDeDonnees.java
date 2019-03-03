@@ -356,29 +356,34 @@ public class BaseDeDonnees {
 		LocalTime huit = LocalTime.of(8,00);
 		LocalTime quatorze = LocalTime.of(14, 00);
     	LocalTime vingt = LocalTime.of(20,00);
-    	LocalTime deux = LocalTime.of(2, 00);
+    	LocalTime deux = LocalTime.of(2,00);
     	
     	int i_8_14=0, i_14_20 = 0, i_20_2 = 0, i_2_8 = 0;
     	int nbChNonConflit = 0;
 		for (Chirurgien albert : chirurgiensExistants) {
-			proportions = null;
+			proportions = new ArrayList<>();
 			i_8_14=0 ; i_14_20 = 0 ; i_20_2 = 0 ; i_2_8 = 0;
+			nbChNonConflit = 0;
 			
 			for (Chirurgie c : albert.getChirurgies()) {
 				if (c.estEnConflit()==false) {
-					if (c.getDebut().isAfter(huit) && c.getDebut().isBefore(quatorze)) {
+					if ( (c.getDebut().isAfter(huit) || (c.getDebut().equals(huit))) && (c.getDebut().isBefore(quatorze) )) {
 						i_8_14++;
+						nbChNonConflit ++;
 					}
-					if (c.getDebut().isAfter(quatorze) && c.getDebut().isBefore(vingt)) {
+					if ((c.getDebut().isAfter(quatorze) || (c.getDebut().equals(quatorze))) && (c.getDebut().isBefore(vingt) )) {
 						i_14_20++;
+						nbChNonConflit ++;
 					}
-					if (c.getDebut().isAfter(vingt) && c.getDebut().isBefore(deux)) {
+					if ((c.getDebut().isAfter(vingt) || (c.getDebut().equals(vingt))) && (c.getDebut().isBefore(deux) )) {
 						i_20_2++;
+						nbChNonConflit ++;
 					}
-					if (c.getDebut().isAfter(deux) && c.getDebut().isBefore(huit)) {
+					if ((c.getDebut().isAfter(deux) || (c.getDebut().equals(deux))) && (c.getDebut().isBefore(huit) )) {
 						i_2_8++;
+						nbChNonConflit ++;
 					}
-					nbChNonConflit ++;
+					
 				}
 			}
 			if (nbChNonConflit>0) {
@@ -404,8 +409,8 @@ public class BaseDeDonnees {
 	
 	
 	public void envoieChirurgiesEtLesTempsChirurgien(Chirurgien albert) {
-		ArrayList<Chirurgie> lesChirurgies = null;
-		ArrayList<Double> lesTemps=null;
+		ArrayList<Chirurgie> lesChirurgies = new ArrayList<>();
+		ArrayList<Double> lesTemps=new ArrayList<>();
 		for (Chirurgie c : listeChirurgies) {
 			if (c.getChirurgien().equals(albert)) {
 				lesChirurgies.add(c);
@@ -420,11 +425,12 @@ public class BaseDeDonnees {
 		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
 		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday], pour les comparer avec les dates
 		
-		ArrayList<Double> listeProportionsJours = null ;
+		ArrayList<Double> listeProportionsJours = new ArrayList<>() ;
 		int compteur1 = 0, compteur2=0, compteur3=0, compteur4=0, compteur5=0, compteur6=0, compteur7=0;
 		String leJour = null ; 
 		for (Chirurgien c : chirurgiensExistants) {
-			listeProportionsJours = null;
+			listeProportionsJours = new ArrayList<>();
+			int compteur = 0;
 			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
 			envoieChirurgiesEtLesTempsChirurgien(c);
 			for (Chirurgie chi : c.getChirurgies()) {
@@ -452,17 +458,18 @@ public class BaseDeDonnees {
 					if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
 						compteur7+=1; // Samedi
 					}
+					compteur ++;
 				}
 				
 			}
-			if (c.getChirurgies().size()!=0) { // ATTENTION : je crée ici une liste de taille 7 / donc position de 0 à 6
-				listeProportionsJours.add((double) compteur1/c.getChirurgies().size());
-				listeProportionsJours.add((double) compteur2/c.getChirurgies().size());
-				listeProportionsJours.add((double) compteur3/c.getChirurgies().size());
-				listeProportionsJours.add((double) compteur4/c.getChirurgies().size());
-				listeProportionsJours.add((double) compteur5/c.getChirurgies().size());
-				listeProportionsJours.add((double) compteur6/c.getChirurgies().size());
-				listeProportionsJours.add((double) compteur7/c.getChirurgies().size());
+			if (compteur!=0) { // ATTENTION : je crée ici une liste de taille 7 / donc position de 0 à 6
+				listeProportionsJours.add((double) compteur1/compteur);
+				listeProportionsJours.add((double) compteur2/compteur);
+				listeProportionsJours.add((double) compteur3/compteur);
+				listeProportionsJours.add((double) compteur4/compteur);
+				listeProportionsJours.add((double) compteur5/compteur);
+				listeProportionsJours.add((double) compteur6/compteur);
+				listeProportionsJours.add((double) compteur7/compteur);
 			}
 			else {
 				listeProportionsJours.add((double) 0);
@@ -501,6 +508,7 @@ public class BaseDeDonnees {
 		for (Bloc salle : blocsExistants) {
 			listeProportionsJours = null;
 			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
+			int compteur=0;
 			envoieChirurgiesBloc(salle);
 			for (Chirurgie chi : salle.getChirurgies()) {
 				if (chi.estEnConflit()==false) {
@@ -527,17 +535,18 @@ public class BaseDeDonnees {
 					if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
 						compteur7+=1; //Samedi
 					}
+					compteur++;
 				}
 				
 			}
-			if (salle.getChirurgies().size()!=0) {
-				listeProportionsJours.add((double) compteur1/salle.getChirurgies().size());
-				listeProportionsJours.add((double) compteur2/salle.getChirurgies().size());
-				listeProportionsJours.add((double) compteur3/salle.getChirurgies().size());
-				listeProportionsJours.add((double) compteur4/salle.getChirurgies().size());
-				listeProportionsJours.add((double) compteur5/salle.getChirurgies().size());
-				listeProportionsJours.add((double) compteur6/salle.getChirurgies().size());
-				listeProportionsJours.add((double) compteur7/salle.getChirurgies().size());
+			if (compteur>0) {
+				listeProportionsJours.add((double) compteur1/compteur);
+				listeProportionsJours.add((double) compteur2/compteur);
+				listeProportionsJours.add((double) compteur3/compteur);
+				listeProportionsJours.add((double) compteur4/compteur);
+				listeProportionsJours.add((double) compteur5/compteur);
+				listeProportionsJours.add((double) compteur6/compteur);
+				listeProportionsJours.add((double) compteur7/compteur);
 			}
 			else {
 				listeProportionsJours.add((double) 0);
@@ -556,35 +565,38 @@ public class BaseDeDonnees {
 	
 	
     // Detection d'anomalies de Chirurgien
-	public void anomaliesSurchargeChirurgiens() {
-		double sum=0;
-		Journee j = null;
-		ArrayList<LocalDate> lesJSurcharges = new ArrayList<>();
-		
-		for (Chirurgien albert : chirurgiensExistants) {
-			
-			for (int i = 0 ; i < this.listeJournees.size() ; i++) {
-				sum=0;
-				j=this.getJournee(i);
-				for (Chirurgie ch : j.getChirurgiesJour()) {
-					
-					if (ch.estEnConflit()==false) {
-						if (ch.getChirurgien().equals(albert)) {
-							sum+= ch.getDuree();
-						}
-					}
-				}
-				if ( sum > albert.getICtempsTravailParJour().get(2) ) {
-					lesJSurcharges.add(j.getDate());
-				}
-			}
-			albert.setJSurchargeTravail(lesJSurcharges);
-		}
-	}
 		
 	// Avec cette methode, quand je voudrai savoir si je peux lui refiler une chirurgie (via correction d'un conflit)
 	// alors je verifierai que ce chirurgien n'est pas deja en train d'etre surchagé de travail ce jour là (via contains).
 
+	
+	
+	public void anomaliesSurchargeChirurgiens(){
+		ArrayList<LocalDate> lesJ = new ArrayList<>();
+		double sommeTempsJour = 0;
+		
+		for (Chirurgien albert : this.chirurgiensExistants) {
+			lesJ = new ArrayList<>();
+			for (int i=0; i<this.listeJournees.size() ; i++) {
+				sommeTempsJour = 0;
+				Journee j = this.getJournee(i);
+				ArrayList<Chirurgie> lesCh = albert.recupChirurgiesDuJour(j);
+				
+				
+				for (Chirurgie ch : lesCh) {
+					if (ch.estEnConflit()==false) {
+						sommeTempsJour+=ch.getDuree();
+					}
+				}
+				if (sommeTempsJour>albert.getICtempsTravailParJour().get(1)) {
+					lesJ.add(j.getDate());
+				}
+			}
+			albert.setJSurchargeTravail(lesJ);
+		}
+	}
+	
+	
 	
 	
 	
@@ -677,8 +689,26 @@ public class BaseDeDonnees {
 				nbConflits++;
 			}
 		}
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
+		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements + "\n \n \n TestHugo");
 		
+		data.calculJoursRecurrentsDeTravailChirurgiens();
+		data.calculTempsMoyensChirurgien();
+		data.calculTempsEntreDeuxChirurgiesMemeBloc();
+		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
+		data.calculTempsDeTravailChirurgiens();
+		data.calculPlagesHorairesHabituellesChirurgiens();
+		data.anomaliesSurchargeChirurgiens();
+		
+		
+		
+		for (Chirurgien c : data.chirurgiensExistants) {
+			System.out.println(c.getName());
+			System.out.println("Jours surcharges" + c.getLesJSurchages().toString());
+			System.out.println("Temps travail / jour moyen = " + c.getTempsTravailMoyenParJour());
+			System.out.println("Temps travail / jour moyen = (en heure) :  " + c.getTempsTravailMoyenParJour()/60);
+			System.out.println("Proportions jours de taff" + c.getProportions().toString());
+			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
+		}
 		
 	}
 		

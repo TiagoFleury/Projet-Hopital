@@ -16,7 +16,7 @@ public class Chirurgien implements Comparable{
     public double[] statsTempsInteroperatoire;  // [temps, borne1 IC, borne2 IC]
     public int nbChirurgies;
     private ArrayList<Double> tempsDesChirurgies;
-    private ArrayList<Float> plagesHorairesPref;
+    private ArrayList<Float> plagesHorairesHabituelles;
     private ArrayList<LocalDate> joursSurchargesDeTravail;
     
     
@@ -148,6 +148,9 @@ public class Chirurgien implements Comparable{
 		return this.joursSurchargesDeTravail;
 	}
 	
+	public ArrayList<Float> getPlagesHorairesPref(){
+		return this.plagesHorairesPref;
+	}
 	
 	
 	
@@ -195,7 +198,7 @@ public class Chirurgien implements Comparable{
 	}
 	
 	public void setPlagesHorairesHabituelles(ArrayList<Float> prop) {
-		this.plagesHorairesPref=prop;
+		this.plagesHorairesHabituelles=prop;
 	}
 
 
