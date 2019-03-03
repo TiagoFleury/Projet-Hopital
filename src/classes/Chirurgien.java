@@ -144,12 +144,12 @@ public class Chirurgien implements Comparable{
 		return tempsDesChirurgies;
 	}
 
-	public ArrayList<LocalDate> getLesJSurchages(){
+	public ArrayList<LocalDate> getLesJSurcharges(){
 		return this.joursSurchargesDeTravail;
 	}
 	
 	public ArrayList<Float> getPlagesHorairesPref(){
-		return this.plagesHorairesPref;
+		return this.plagesHorairesHabituelles;
 	}
 	
 	

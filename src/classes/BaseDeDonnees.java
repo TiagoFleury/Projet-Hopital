@@ -703,7 +703,7 @@ public class BaseDeDonnees {
 		
 		for (Chirurgien c : data.chirurgiensExistants) {
 			System.out.println(c.getName());
-			System.out.println("Jours surcharges" + c.getLesJSurchages().toString());
+			System.out.println("Jours surcharges" + c.getLesJSurcharges().toString());
 			System.out.println("Temps travail / jour moyen = " + c.getTempsTravailMoyenParJour());
 			System.out.println("Temps travail / jour moyen = (en heure) :  " + c.getTempsTravailMoyenParJour()/60);
 			System.out.println("Proportions jours de taff" + c.getProportions().toString());
