@@ -67,9 +67,9 @@ class BaseDeDonneesTEST {
 
 		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
 		for(Chirurgien c : data.getTousChirurgiens()) {
-			System.out.println("Temps moyen "+c.getName()+" : "+c.getTempsInteroperatoireMoyen()+"min");
+			System.out.println("Temps moyen interop de "+c.getName()+" : "+c.getTempsInteroperatoireMoyen()+"min  "+c.getICtempsInteroperatoire());
 		}
-		System.out.println("temps moyen meme bloc (minutes) : "+data.getTempsMoyenInteroperatoireBloc());
+		System.out.println("temps moyen meme bloc (minutes) : "+data.getTempsMoyenInteroperatoireBloc()+"min  "+data.getICtempsInteroperatoire());
 
 //		for(int i=0;i<data.listeJournees.size();i++)
 //			data.getJournee(i).planningJourneeParChirurgien();//Journee ou il y a un gros 400 minutes d'ecart
