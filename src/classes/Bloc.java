@@ -74,4 +74,17 @@ public class Bloc implements Comparable{
 	public void setChirurgies(ArrayList<Chirurgie> liste) {
 		chirurgies = liste;
 	}
+
+
+
+
+	public ArrayList<Chirurgie> recupererChirurgies(Journee jour) { //retourne une liste vide si il y a 0 chirurgies dans ce bloc dans cette journee
+		ArrayList<Chirurgie> liste = new ArrayList<Chirurgie>();
+		for(Chirurgie c : jour.getChirurgiesJour()) {
+			if(c.getSalle().equals(this)) {
+				liste.add(c);
+			}
+		}
+		return liste;
+	}
 }

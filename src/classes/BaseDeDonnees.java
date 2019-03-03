@@ -35,7 +35,7 @@ public class BaseDeDonnees {
 		listeJournees = new TreeMap<LocalDate,Journee>();
 		tempsInterOperatoireBloc = new double[3];
 	}
-	
+	 
 	// ORGANISATION DES DONNEES
 	//Methode pour remplir la liste des journees.
 	public void organiserJournees() {
@@ -573,6 +573,10 @@ public class BaseDeDonnees {
 				if(c instanceof Interference) {
 					//Interference interf = (Interference) c;
 					j.planningJourneeParBloc();
+					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
+					System.out.println("Bloc fort de "+c.getCh1().getChirurgien()+" : "+c.getCh1().getChirurgien().getBlocFort(j));
+					System.out.println("Bloc fort de "+c.getCh2().getChirurgien()+" : "+c.getCh2().getChirurgien().getBlocFort(j));
+					System.out.println("Blocs libres pour ch"+c.getCh1().getID()+" : "+c.getBlocsLibres1());
 					nbInterferences++;
 				}
 				if(c instanceof Ubiquite) {
