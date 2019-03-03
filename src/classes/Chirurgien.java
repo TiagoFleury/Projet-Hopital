@@ -16,6 +16,8 @@ public class Chirurgien implements Comparable{
     public double[] statsTempsInteroperatoire;  // [temps, borne1 IC, borne2 IC]
     public int nbChirurgies;
     private ArrayList<Double> tempsDesChirurgies;
+    private ArrayList<Float> plagesHorairesPref;
+    private ArrayList<LocalDate> joursSurchargesDeTravail;
     
     
   
@@ -55,33 +57,18 @@ public class Chirurgien implements Comparable{
     
     
    
-    
+    public ArrayList<Chirurgie> recupChirurgiesDuJour(Journee j){
+    	ArrayList<Chirurgie> chDuJ = new ArrayList<>();
+    	for (Chirurgie c : j.getChirurgiesJour()) {
+    			if (c.getChirurgien().equals(this)) {
+    				chDuJ.add(c);
+    			}
+    	}
+    	return chDuJ;
+    }
     
 
-    // Detection d'anomalies de Chirurgien
-	public ArrayList<LocalDate> anomaliesSurchargeChirurgienOuPas(BaseDeDonnees database) {
-		double sum=0;
-		Journee j = null;
-		ArrayList<LocalDate> lesJSurcharges = new ArrayList<>();
-		for (int i = 0 ; i < database.listeJournees.size() ; i++) {
-			sum=0;
-			j=database.getJournee(i);
-			for (Chirurgie ch : j.getChirurgiesJour()) {
-				if (ch.estEnConflit()==false) {
-					if (ch.getChirurgien().equals(this)) {
-						sum+= ch.getDuree();
-					}
-				}
-			}
-			if ( sum > this.getICtempsTravailParJour().get(2) ) {
-				lesJSurcharges.add(j.getDate());
-			}
-		}
-		return lesJSurcharges;
-	}
-		
-	// Avec cette methode, quand je voudrai savoir si je peux lui refiler une chirurgie (via correction d'un conflit)
-	// alors je verifierai que ce chirurgien n'est pas deja en train d'etre surchagé de travail ce jour là (via contains).
+
 		
 	
     
@@ -157,6 +144,15 @@ public class Chirurgien implements Comparable{
 		return tempsDesChirurgies;
 	}
 
+	public ArrayList<LocalDate> getLesJSurchages(){
+		return this.joursSurchargesDeTravail;
+	}
+	
+	
+	
+	
+	
+	
 	
 	//MUTATEURS
 	public void setTempsMoyenChirurgie(double moyenne) {
@@ -197,7 +193,13 @@ public class Chirurgien implements Comparable{
 		statsTempsDeTravail[1] = IC95.get(0);
 		statsTempsDeTravail[2] = IC95.get(1);
 	}
+	
+	public void setPlagesHorairesHabituelles(ArrayList<Float> prop) {
+		this.plagesHorairesPref=prop;
+	}
 
 
-
+	public void setJSurchargeTravail(ArrayList<LocalDate> lesj) {
+		this.joursSurchargesDeTravail=lesj;
+	}
 }

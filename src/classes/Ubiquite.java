@@ -39,7 +39,7 @@ public class Ubiquite extends Conflit {
     
     
     // Cette résolution va s'occuper d'un cas spécifique où : 
-    //    une des deux chirurgies est anormalement longue, et dans ce cas je la raccourcir
+    //    une des deux chirurgies est anormalement longue, et dans ce cas on peut envisager de la/les raccourcir
     //    le cas où une chirurgie est apres le début ET avant la fin n'est pas pris en compte, et sera résolue d'une autre manière
     
     
@@ -122,7 +122,7 @@ public class Ubiquite extends Conflit {
     	}
     	
     	
-    	if (this.jour.conflitOuPas(copie1,copie2)==null && ChronoUnit.MINUTES.between(debEcart, finEcart)>chirurgienPb.getICtempsInteroperatoire().get(0) && ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(1) ) {
+    	if (this.jour.conflitOuPas(copie1,copie2)==null && ChronoUnit.MINUTES.between(debEcart, finEcart)>chirurgienPb.getICtempsInteroperatoire().get(1) && ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgienPb.getICtempsInteroperatoire().get(2) ) {
     		// Alors on decide d'appliquer ce changement
     		chirurgie1.setDebut(copie1.getDebut());
     		chirurgie1.setFin(copie1.getFin());
@@ -151,6 +151,7 @@ public class Ubiquite extends Conflit {
     public void resoudreUbiquite1(BaseDeDonnees database) {
     	Chirurgien chirurgienP = chirurgienPb;
     	Chirurgien unChirurgien = null;
+    	
     	Chirurgie chirurgieTest = null;
     	
     	int compteur = 0, lg = database.getTousChirurgiens().size();
@@ -197,6 +198,77 @@ public class Ubiquite extends Conflit {
     		if (bool==false) {
     			chCandidats2.add(ch);
     		}
+    	}
+    	
+    }
+    
+    
+    
+    public void resoudreUbiquite1() {
+    	Chirurgien chirurgienTest = null;
+    	Chirurgie chTest = null;
+    	LocalDate auj = this.chirurgie1.getDate();
+    	int nbNonConflitsJour = 0;
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = new ArrayList<>();
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = new ArrayList<>();
+    	
+    	for (Chirurgien albert : this.jour.getChirurgiensMobilises()) {
+    		nbNonConflitsJour =0;
+    		for (Chirurgie x : albert.getChirurgies()) {
+    			if (x.getDate().equals(this.jour.getDate())){
+    				if (x.estEnConflit()==false) {
+    					nbNonConflitsJour++;
+    				}
+    			}
+    		}
+    		if (nbNonConflitsJour>0) {
+    			chirurgiensCandidatsCh1.add(albert);
+    			chirurgiensCandidatsCh2.add(albert);
+    		}
+    	}
+    	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le ChProbleme de l'ubiquite
+    	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie normalement
+    	
+    	
+    	
+    	for (Chirurgien albert : chirurgiensCandidatsCh1) {
+    		chTest = this.chirurgie1;
+    		boolean boul = false;
+    		
+    		
+    		}
+    		chTest.setChirurgien(albert);
+    		if (chTest.estEnConflit()) {  // ICI petit pb selon moi = on n'a pas pensé a faire une actualisation de l'état estEnConflit, il faudrait que lorsqu'on le questionne, alors il y re-est une détection de conflits
+    			chirurgiensCandidatsCh1.remove(albert);
+    		} 
+    		
+    		if (albert.getLesJSurchages().contains(auj)) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    		// aller checker si l'ajouter a la liste des chirurgies d'albert respecte ICinteropé
+    		
+    		if (chTest.anomalieDureeChirurgieOuPas()==true) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    		
+    	}
+    	
+    	
+    	
+    	for (Chirurgien albert : chirurgiensCandidatsCh2) {
+    		chTest = this.chirurgie2;
+    		chTest.setChirurgien(albert);
+    		if (chTest.estEnConflit()) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		} 
+    		
+    		if (albert.getLesJSurchages().contains(auj)) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// faire exactement la meme boucle for avec les memes test, mais adapter a Ch2
+    		
+    		
     	}
     	
     }

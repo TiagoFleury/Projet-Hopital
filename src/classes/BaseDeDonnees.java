@@ -358,17 +358,49 @@ public class BaseDeDonnees {
     	LocalTime vingt = LocalTime.of(20,00);
     	LocalTime deux = LocalTime.of(2, 00);
     	
-    	int i0814=0, i1420 = 0, i2002 = 0, i0208 = 0;
+    	int i_8_14=0, i_14_20 = 0, i_20_2 = 0, i_2_8 = 0;
+    	int nbChNonConflit = 0;
 		for (Chirurgien albert : chirurgiensExistants) {
+			proportions = null;
+			i_8_14=0 ; i_14_20 = 0 ; i_20_2 = 0 ; i_2_8 = 0;
+			
 			for (Chirurgie c : albert.getChirurgies()) {
 				if (c.estEnConflit()==false) {
+					if (c.getDebut().isAfter(huit) && c.getDebut().isBefore(quatorze)) {
+						i_8_14++;
+					}
+					if (c.getDebut().isAfter(quatorze) && c.getDebut().isBefore(vingt)) {
+						i_14_20++;
+					}
+					if (c.getDebut().isAfter(vingt) && c.getDebut().isBefore(deux)) {
+						i_20_2++;
+					}
+					if (c.getDebut().isAfter(deux) && c.getDebut().isBefore(huit)) {
+						i_2_8++;
+					}
+					nbChNonConflit ++;
 				}
 			}
+			if (nbChNonConflit>0) {
+				proportions.add( (float) i_8_14 / nbChNonConflit);
+				proportions.add( (float) i_14_20 / nbChNonConflit);
+				proportions.add( (float) i_20_2 / nbChNonConflit);
+				proportions.add( (float) i_2_8 / nbChNonConflit);
+				
+			}
+			else {
+				proportions.add( (float) 0);
+				proportions.add( (float) 0);
+				proportions.add( (float) 0);
+				proportions.add( (float) 0);
+			}
+			albert.setPlagesHorairesHabituelles(proportions);
 		}
 		
 	}
 	
 	
+	///////////
 	
 	
 	public void envoieChirurgiesEtLesTempsChirurgien(Chirurgien albert) {
@@ -382,7 +414,6 @@ public class BaseDeDonnees {
 		}
 		albert.setChirurgies(lesChirurgies);
 	}
-	
 	
 	
 	public void calculJoursRecurrentsDeTravailChirurgiens() {
@@ -445,6 +476,7 @@ public class BaseDeDonnees {
 			c.setMoyenneJours(listeProportionsJours);
 		}
 	}
+	
 	
 	
 	
@@ -519,8 +551,41 @@ public class BaseDeDonnees {
 			salle.setMoyennesJours(listeProportionsJours);
 		}
 	}
+	////////////////
 	
+	
+	
+    // Detection d'anomalies de Chirurgien
+	public void anomaliesSurchargeChirurgiens() {
+		double sum=0;
+		Journee j = null;
+		ArrayList<LocalDate> lesJSurcharges = new ArrayList<>();
+		
+		for (Chirurgien albert : chirurgiensExistants) {
+			
+			for (int i = 0 ; i < this.listeJournees.size() ; i++) {
+				sum=0;
+				j=this.getJournee(i);
+				for (Chirurgie ch : j.getChirurgiesJour()) {
+					
+					if (ch.estEnConflit()==false) {
+						if (ch.getChirurgien().equals(albert)) {
+							sum+= ch.getDuree();
+						}
+					}
+				}
+				if ( sum > albert.getICtempsTravailParJour().get(2) ) {
+					lesJSurcharges.add(j.getDate());
+				}
+			}
+			albert.setJSurchargeTravail(lesJSurcharges);
+		}
+	}
+		
+	// Avec cette methode, quand je voudrai savoir si je peux lui refiler une chirurgie (via correction d'un conflit)
+	// alors je verifierai que ce chirurgien n'est pas deja en train d'etre surchagé de travail ce jour là (via contains).
 
+	
 	
 	
 	// Methodes Statistiques generales pour un certain ensemble de donnees
