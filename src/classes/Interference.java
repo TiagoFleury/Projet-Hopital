@@ -282,23 +282,38 @@ public class Interference extends Conflit {
     		LocalTime backupHeureDebut = chirurgie2.getDebut();
     		LocalTime backupHeureFin = chirurgie1.getFin();
     		
-    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit chacun leurs tours les deux
-    			chirurgie2.raccourcirDebut(1);
-    			if(chirurgie2.getDuree()<chirurgie2.getChirurgien().getICtempsMoyen().get(0)) {
-    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
-    				chirurgie2.setDebut(backupHeureDebut);
-    				return false;
+    		LocalTime debEcart = LocalTime.from(chirurgie1.getFin());
+			LocalTime finEcart = LocalTime.from(chirurgie2.getDebut());
+    		
+    		while (Journee.enMemeTempsOuPas(chirurgie1, chirurgie2) && (chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(0)) &&  (chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(0)) ) {
+    			if (chirurgie1.getDebut().isBefore(chirurgie2.getDebut()) && !chirurgie1.getFin().isAfter(chirurgie2.getFin())) {
+    				chirurgie1.raccourcirFin(1);
+    				chirurgie2.raccourcirDebut(1);
+    			}
+    		}
+    		if ( (chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) || (chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) ) {
+    			chirurgie1.setFin(backupHeureFin);
+    			chirurgie2.setDebut(backupHeureDebut);
+    			return false;
+    		}
+    		else {
+    			debEcart = LocalTime.from(chirurgie1.getFin());
+    			finEcart = LocalTime.from(chirurgie2.getDebut());
+    			while (chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(0) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<data.getICtempsInteroperatoire().get(0)) ) {
+    				chirurgie1.raccourcirFin(1);
+    				debEcart = LocalTime.from(chirurgie1.getFin());
+        		}
+    			while ( chirurgie2.getDuree()>chirurgie2.getChirurgien().getICtempsMoyen().get(0) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<data.getICtempsInteroperatoire().get(0))) {
+    				chirurgie2.raccourcirDebut(1);
+    				finEcart = LocalTime.from(chirurgie2.getDebut());
     			}
     		}
     		
-    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
-    		chirurgie2.raccourcirDebut(data.getICtempsInteroperatoire().get(0).intValue());
-    		
-    		if(chirurgie2.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
-				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
-				chirurgie2.setDebut(backupHeureDebut);
-				return false;
-			}
+    		if ( (chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) || (chirurgie2.getDuree()<chirurgie2.getChirurgien().getICtempsMoyen().get(0)) ||  (ChronoUnit.MINUTES.between(debEcart, finEcart)<data.getICtempsInteroperatoire().get(0)) ) {
+    			chirurgie1.setFin(backupHeureFin);
+    			chirurgie2.setDebut(backupHeureDebut);
+    			return false;
+    		}
 
     		this.resolu=true;
     		return true;
@@ -310,8 +325,7 @@ public class Interference extends Conflit {
     
     
     public boolean essayerDeplacementDeForce(BaseDeDonnees data) {
-    	//Dans cet essai, on va devenir un peu plus laxe au niveau des conditions et on va essayer de forcer un peu le deplacement. Si ca bloque un peu
-    	// et que c'est pertinent de raccourcir on le fait
+    	
     	if(resolu)
     		return false;
     	ArrayList<Bloc> blocsLibres2 = getBlocsLibres2();
@@ -358,11 +372,100 @@ public class Interference extends Conflit {
     			return true;
 			}
 		}
-		
+    	return false;
     	
+    }
+    public boolean vendreSonAmeAuShetan(BaseDeDonnees data) {
+    	//Ici on va resoudre le conflit dans tous les cas par un deplacement de bloc
+    	//on va privilegier quand meme de bouger la chirurgie qui est le moins a sa place et essayer de la mettre dans un bloc existant
+    	if(resolu)
+    		return false;
+    	ArrayList<Bloc> blocsLibres2 = getBlocsLibres2();
+    	ArrayList<Bloc> blocsLibres1 = getBlocsLibres1();
+    	
+    	Bloc blocFort1 = chirurgie1.getChirurgien().getBlocFort(jour, 1);
+    	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour, 1);
+    	
+    	if(sallePb.equals(blocFort1)) {
+    		//On tej la 2
+    		if(blocsLibres2.size()>0) {
+    			for(Bloc b : blocsLibres2) {
+    				if(!(b.getID()<=3 && chirurgie2.estLaNuit())) {
+    					chirurgie2.setSalle(b);
+    					this.resolu=true;
+    					return true;
+    				}
+    			}
+    		}
+    		else {
+    			//ajouter un nouveau bloc
+    			for(Bloc b : data.blocsExistants) {
+    				if(!jour.getBlocs().contains(b) && !(b.getID()<=3 && chirurgie2.estLaNuit())) {
+    					chirurgie2.setSalle(b);
+    					this.resolu=true;
+    					return true;
+    				}
+    			}
+    		}
+    	}
+    	
+
+    	if(sallePb.equals(blocFort2)) {
+    		//On tej la 2
+    		if(blocsLibres1.size()>0) {
+    			for(Bloc b : blocsLibres1) {
+    				if(!(b.getID()<=3 && chirurgie1.estLaNuit())) {
+    					chirurgie1.setSalle(b);
+    					this.resolu=true;
+    					return true;
+    				}
+    			}
+    		}
+    		else {
+    			//ajouter un nouveau bloc
+    			for(Bloc b : data.blocsExistants) {
+    				if(!jour.getBlocs().contains(b) && !(b.getID()<=3 && chirurgie1.estLaNuit())) {
+    					chirurgie1.setSalle(b);
+    					this.resolu=true;
+    					return true;
+    				}
+    			}
+    		}
+    	}
+    	
+    	if(blocsLibres2.size()>0) {
+			for(Bloc b : blocsLibres2) {
+				if(!(b.getID()<=3 && chirurgie2.estLaNuit())) {
+					chirurgie2.setSalle(b);
+					this.resolu=true;
+					return true;
+				}
+			}
+		}
+    	else if(blocsLibres1.size()>0) {
+			for(Bloc b : blocsLibres1) {
+				if(!(b.getID()<=3 && chirurgie1.estLaNuit())) {
+					chirurgie1.setSalle(b);
+					this.resolu=true;
+					return true;
+				}
+			}
+		}
+		else {
+			//ajouter un nouveau bloc
+			for(Bloc b : data.blocsExistants) {
+				if(!jour.getBlocs().contains(b) && !(b.getID()<=3 && chirurgie2.estLaNuit())) {
+					chirurgie2.setSalle(b);
+					this.resolu=true;
+					return true;
+				}
+			}
+		}
     	
     	
     	return false;
+    	
+    	
     }
     
     

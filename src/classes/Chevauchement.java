@@ -1,6 +1,7 @@
 package classes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,48 +29,139 @@ public class Chevauchement extends Conflit {
     // RESOLUTION CHEVAUCHEMENT 
     ///////////////////////////////////////////////
     
-    public void resoudreChevauchementCout0(BaseDeDonnees database, Chevauchement c) {
-    	Chirurgien chirugienPb = c.getChirurgienPb();
-    	Chirurgien unChirurgien = null ;
-    	Bloc sallePb = c.getSallePb();
-    	Bloc uneSalle = null;
-    	boolean a=false, b=false;
-    	
-    	// Resolution de l'ubiquité
-    	int compteur = 0, lg = database.getTousChirurgiens().size();
-    	
-    	while (compteur < lg) {
-    		unChirurgien = database.getTousChirurgiens().get(compteur);
-    		if (!this.sallesOccupeesduJour.contains(unChirurgien)) {
-				c.getCh1().setChirurgien(unChirurgien);
-				a = true;
-				compteur = lg;
-			}
-    		compteur ++ ;
+    
+    public boolean essayerDecalageEvident() {
+    	if(resolu)
+    		return false;
+    	if(getIndiceDeRecouvrement()>0.9) {
+    		return false;
     	}
+    	ArrayList<Chirurgie> chirurgiesDuBloc = sallePb.recupererChirurgies(jour);
     	
-    	// Resolution de l'interference
-    	compteur = 0;
-    	lg = database.getTousBlocs().size();
-    	while (compteur < lg) {
-    		uneSalle = database.getTousBlocs().get(compteur);
-    		if (!this.sallesOccupeesduJour.contains(uneSalle)) {
-				c.getCh1().setSalle(uneSalle);
-				b = true;
-				compteur = lg;
-			}
-    		compteur ++ ;
+    	Collections.sort(chirurgiesDuBloc,Chirurgie.CHRONOLOGIQUE);
+    	
+    	//Maintenant qu'elles sont dans l'ordre chronologique, on va tester si il y a la place entre ch1 et la prochaine du meme chirurgien.
+    	Chirurgie prochaineDuMemeChirurgien = null;
+    	Chirurgie precedenteDuMemeChirurgien = null;
+    	for(int i = chirurgiesDuBloc.indexOf(chirurgie2)+1;i<chirurgiesDuBloc.size();i++) {
+    		if(chirurgiesDuBloc.get(i).getChirurgien().equals(chirurgienPb)) {
+    			prochaineDuMemeChirurgien = chirurgiesDuBloc.get(i);
+    			break;
+    		}
+    		
     	}
-    	
-    	
-    	if (a==true && b==true) {
-    		c.setEtat(true);
-			System.out.println("Chevauchement resolu");
+    	for(int i = chirurgiesDuBloc.indexOf(chirurgie1)-1;i>=0;i--) {
+    		if(chirurgiesDuBloc.get(i).getChirurgien().equals(chirurgienPb)) {
+    			precedenteDuMemeChirurgien = chirurgiesDuBloc.get(i);
+    			break;
+    		}
+    		
+    	}
+    	//Si il n'y en a pas de suivantes, ca va juste rester a null
+    	if(prochaineDuMemeChirurgien==null) {
+    		Chirurgie prochaineDuBloc;
+    		try {
+    			prochaineDuBloc = chirurgiesDuBloc.get(chirurgiesDuBloc.indexOf(chirurgie2)+1);
+    		}
+    		catch(IndexOutOfBoundsException e) {
+    			prochaineDuBloc=null;
+    		}
+    		Chirurgie chirurgieAdecaler;
+			Chirurgie chirurgieQuiReste;
+			if(chirurgie1.getFin().isAfter(chirurgie2.getFin())) {
+				chirurgieAdecaler=chirurgie1;
+				chirurgieQuiReste=chirurgie2;
+			}
+			else {
+				chirurgieAdecaler=chirurgie2;
+				chirurgieQuiReste=chirurgie1;
+			}
+			
+    		if(prochaineDuBloc==null) {//Si derniere chirurgie de la journee, on la decale
+    			 
+    			
+    			chirurgieAdecaler.decalerVersDroite(ChronoUnit.MINUTES.between(chirurgieAdecaler.getDebut(), chirurgieQuiReste.getFin())+15);
+    			resolu=true;
+    			return true;
+    		}
+    		else {//Si il y a une autre chirurgie apres mais d'un autre chirurgien, on essaie de le caler entre
+    			LocalTime backupHeureDebut = chirurgieAdecaler.getDebut();
+    			LocalTime backupHeureFin = chirurgieAdecaler.getFin();
+    			chirurgieAdecaler.decalerVersDroite(ChronoUnit.MINUTES.between(chirurgieAdecaler.getDebut(), chirurgieQuiReste.getFin())+10);
+    			
+				if(Journee.enMemeTempsOuPas(chirurgieAdecaler, prochaineDuBloc)) { //Si ca se chevauche on remet tout
+					chirurgieAdecaler.setDebut(backupHeureDebut);
+					chirurgieAdecaler.setFin(backupHeureFin);
 				}
-    	else { 
-    		c.setEtat(false);
-    		System.out.println("Chevauchement non resolu");}
+				else {
+					resolu=true;
+					return true;
+				}
+    		}
+    		
+    		
+    	}
+    	if(precedenteDuMemeChirurgien==null){
+    		Chirurgie precedenteDuBloc;
+    		try {
+    			precedenteDuBloc = chirurgiesDuBloc.get(chirurgiesDuBloc.indexOf(chirurgie1)-1);
+    		}
+    		catch(IndexOutOfBoundsException e) {
+    			precedenteDuBloc=null;
+    		}
+    		Chirurgie chirurgieAdecaler;
+			Chirurgie chirurgieQuiReste;
+			if(chirurgie1.getDebut().isBefore(chirurgie2.getFin())) {
+				chirurgieAdecaler=chirurgie1;
+				chirurgieQuiReste=chirurgie2;
+			}
+			else {
+				chirurgieAdecaler=chirurgie2;
+				chirurgieQuiReste=chirurgie1;
+			}
+			
+    		if(precedenteDuBloc==null) {//Si premiere chirurgie de la journee, on la decale
+    			 
+    			
+    			chirurgieAdecaler.decalerVersGauche(ChronoUnit.MINUTES.between(chirurgieQuiReste.getDebut(), chirurgieAdecaler.getFin())+15);
+    			resolu=true;
+    			return true;
+    		}
+    		else {//Si il y a une autre chirurgie avant mais d'un autre chirurgien, on essaie de le caler entre
+    			LocalTime backupHeureDebut = chirurgieAdecaler.getDebut();
+    			LocalTime backupHeureFin = chirurgieAdecaler.getFin();
+    			chirurgieAdecaler.decalerVersGauche(ChronoUnit.MINUTES.between(chirurgieQuiReste.getDebut(), chirurgieAdecaler.getFin())+10);
+    			
+				if(Journee.enMemeTempsOuPas(chirurgieAdecaler, precedenteDuBloc)) { //Si ca se chevauche on remet tout
+					chirurgieAdecaler.setDebut(backupHeureDebut);
+					chirurgieAdecaler.setFin(backupHeureFin);
+				}
+				else {
+					resolu=true;
+					return true;
+				}
+    		}
+    		
+    	}
+    	
+    	
+    	
+    	if(prochaineDuMemeChirurgien!=null) {
+	    	if(chirurgie2.rentrePileEntre(chirurgie1,prochaineDuMemeChirurgien)) {
+	    		chirurgie2.deplacerEntre(chirurgie1,prochaineDuMemeChirurgien);
+	    		return true;
+	    	}
+    	}
+    	
+    	if(precedenteDuMemeChirurgien!=null) {
+	    	if(chirurgie1.rentrePileEntre(precedenteDuMemeChirurgien, chirurgie2)) {
+	    		chirurgie1.deplacerEntre(precedenteDuMemeChirurgien, chirurgie2);
+	    		return true;
+	    	}
+    	}
+    	return false;
     }
+    
     
     // ACCESSEURS // 
     

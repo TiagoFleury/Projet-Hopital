@@ -469,7 +469,7 @@ public class BaseDeDonnees {
 				}
 				
 			}
-			if (compteur!=0) { // ATTENTION : je crée ici une liste de taille 7 / donc position de 0 à 6
+			if (compteur!=0) { // ATTENTION : je cree ici une liste de taille 7 / donc position de 0 à 6
 				listeProportionsJours.add((double) compteur1/compteur);
 				listeProportionsJours.add((double) compteur2/compteur);
 				listeProportionsJours.add((double) compteur3/compteur);
@@ -658,6 +658,7 @@ public class BaseDeDonnees {
 	
 	
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] Args) {
 		
 		
@@ -670,11 +671,12 @@ public class BaseDeDonnees {
 		int nbUbiquites=0;
 		int nbChevauchements=0;
 		
+		int chevauchResolus=0;
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
 			
 			for(Conflit c : j.getConflits()) {
-				if(c instanceof Interference) {
+				if(false) {
 					Interference interf = (Interference) c;
 					j.planningJourneeParBloc();
 					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
@@ -694,107 +696,36 @@ public class BaseDeDonnees {
 						j.planningJourneeParBloc();
 						interferencesResolues++;
 					}
+					if(interf.vendreSonAmeAuShetan(data)) {
+						System.out.println("SHETAN ----------------------------------------");
+						j.planningJourneeParBloc();
+						interferencesResolues++;
+					}
+						
+					
 				}
 				if(c instanceof Ubiquite) {
 					nbUbiquites++;
 				}
 				if(c instanceof Chevauchement) {
 					nbChevauchements++;
-				}
-				nbConflits++;
-			}
-			
-			
-		}
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
-		
-		nbConflits=0;
-		nbInterferences=0;
-		System.out.println("\n\n\n\n\n\n\n----------------------\n\n\n");
-		
-		for(int i=0;i<data.listeJournees.size();i++) {
-			
-			Journee j = data.getJournee(i);
-			j.detectionConflit();
-			
-			for(Conflit c : j.getConflits()) {
-				if(c instanceof Ubiquite) {
-					Ubiquite ub = (Ubiquite) c;
-					j.planningJourneeParChirurgien();
-					System.out.println("\n \n \n "+ ub.toString());
-					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					System.out.println("Chirurgien fort de "+c.getCh1().getSalle()+" : "+c.getCh1().getSalle().getChirurgienFort(j,2));
-					System.out.println("Chirurgien fort de "+c.getCh2().getSalle()+" : "+c.getCh2().getSalle().getChirurgienFort(j,2));
-					System.out.println("Chirurgiens libres pour ch1"+c.getCh1().getID()+" : "+c.getChirurgiensLibres1());
-					System.out.println("Chirurgiens libres pour ch2"+c.getCh2().getID()+" : "+c.getChirurgiensLibres2());
-
-				if(c instanceof Interference) {
-					Interference interf = (Interference) c;
 					j.planningJourneeParBloc();
-					
-					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					System.out.println("Bloc fort j cud : "+c.getCh1().getChirurgien().getBlocFort(j, 2));
-					nbInterferences++;
-					if(interf.essayerChangementDeSalleEvident()) {
-						System.out.println("CHANGEMENT DE BLOC FAIT -----------------------------------");
+					Chevauchement cheval = (Chevauchement) c;
+					if(cheval.essayerDecalageEvident()) {
+						chevauchResolus++;
+						System.out.println("FAIT ------------------------------------------------------");
 						j.planningJourneeParBloc();
-						interferencesResolues++;
-					}
-					if(interf.essayerRaccourcissementEvident(data)) {
-						System.out.println("RACCOURCISSEMENT FAIT -------------------------------------");
-						j.planningJourneeParBloc();
-						interferencesResolues++;
-					}
-					else if (ub.essayerRaccourcissementEvident(data)) {
-						nbResolv++;
-						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
-						System.out.println("\n Resolv Raccour");
-						j.planningJourneeParChirurgien();
-						nbRaccour++;
-
-					if(interf.essayerDeplacementDeForce(data)) {
-						System.out.println("DEPLACEMENT FORCE -----------------------------------------");
-						j.planningJourneeParBloc();
-						interferencesResolues++;
-
+						
 					}
 				}
 				nbConflits++;
 			}
-		}
-		
-		Journee j = data.getJournee("28/07/15");
-		j.detectionConflit();
-		
-		for(Conflit c : j.getConflits()) {
-			if(c instanceof Interference) {
-				Interference interf = (Interference) c;
-				j.planningJourneeParBloc();
-				
-				System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-				System.out.println("Bloc fort j cud : "+c.getCh1().getChirurgien().getBlocFort(j, 2));
-				nbInterferences++;
-				if(interf.essayerChangementDeSalleEvident()) {
-					System.out.println("CHANGEMENT DE BLOC FAIT -----------------------------------");
-					j.planningJourneeParBloc();
-					interferencesResolues++;
-				}
-				if(interf.essayerRaccourcissementEvident(data)) {
-					System.out.println("RACCOURCISSEMENT FAIT -------------------------------------");
-					j.planningJourneeParBloc();
-					interferencesResolues++;
-				}
-				if(interf.essayerDeplacementDeForce(data)) {
-					System.out.println("DEPLACEMENT FORCE -----------------------------------------");
-					j.planningJourneeParBloc();
-					interferencesResolues++;
-				}
-			}
-			nbConflits++;
+			
+			
 		}
 		
 		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
-		System.out.println("Nombre de resolues : "+interferencesResolues);
+		System.out.println("Nombre de resolues : "+chevauchResolus);
 		
 		
 		

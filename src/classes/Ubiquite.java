@@ -277,7 +277,7 @@ public class Ubiquite extends Conflit {
     	}
     	
     	if(!anomalieDuree1 && anomalieDuree2) {
-    		//Dans ce cas la logiquement elles peuvent pas �tre superposees
+    		//Dans ce cas la logiquement elles peuvent pas etre superposees
 //    		On est dans ce cas :
 //    			#########              
 //    				  ##########################   <- on va racourcir celle la sur sa gauche

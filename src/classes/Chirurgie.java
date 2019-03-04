@@ -114,14 +114,14 @@ public class Chirurgie {
     	this.heureFin = heureFin.minusMinutes(nbMin);
     }
     
-    public void deplacerChirurgieAvant(Chirurgie ch, long nbMin) {
-    	this.heureDebut.minusMinutes(nbMin);
-    	this.heureFin.minusMinutes(nbMin);
+    public void decalerVersGauche(long nbMin) {
+    	heureDebut=this.heureDebut.minusMinutes(nbMin);
+    	heureFin=this.heureFin.minusMinutes(nbMin);
     }
     
-    public void deplacerChirurgieApres(Chirurgie ch, long nbMin) {
-    	this.heureDebut.plusMinutes(nbMin);
-    	this.heureFin.plusMinutes(nbMin);
+    public void decalerVersDroite(long nbMin) {
+    	heureDebut=this.heureDebut.plusMinutes(nbMin);
+    	heureFin=this.heureFin.plusMinutes(nbMin);
     }
     
     //Teste si une chirurgie recouvre entierement une autre
@@ -401,6 +401,27 @@ public class Chirurgie {
 			return true;
 			
 		return false;
+	}
+
+	public boolean rentrePileEntre(Chirurgie ch1, Chirurgie ch2) {
+		//Retourne true si on peut mettre la chirurgie entre les deux en comptant la duree interoperatoire de 25 min 
+		if(this.getDuree()<ChronoUnit.MINUTES.between(ch1.getFin(), ch2.getDebut())-10   &&    ChronoUnit.MINUTES.between(ch1.getFin(), ch2.getDebut())-this.getDuree()<100) {
+			return true;
+		}
+		return false;
+	}
+
+	public void deplacerEntre(Chirurgie chirurgie1, Chirurgie chirurgie2) {
+		//Utiliser cette methode que quand on sait que ca rentre
+		double duree = (double) this.getDuree();
+		
+		double espaceDispo = ChronoUnit.MINUTES.between(chirurgie1.getFin(), chirurgie2.getDebut());
+		
+		System.out.println("espace Dispo : "+espaceDispo+"min");
+		double x = (espaceDispo-duree)/2;
+		System.out.println("x vaut "+x);
+		this.heureDebut=chirurgie1.getFin().plusMinutes((int)x);
+		this.heureFin=this.heureDebut.plusMinutes((int)duree);
 	}
 
 	
