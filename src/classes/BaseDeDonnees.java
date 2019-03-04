@@ -671,6 +671,72 @@ public class BaseDeDonnees {
 		int nbUbiquites=0;
 		int nbChevauchements=0;
 		
+		data.calculTempsMoyensChirurgien();
+		data.calculTempsDeTravailChirurgiens();
+		data.calculTempsEntreDeuxChirurgiesMemeBloc();
+		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
+		data.anomaliesSurchargeChirurgiens();
+		data.calculJoursRecurrentsDeTravailChirurgiens();
+		data.calculPlagesHorairesHabituellesChirurgiens();
+		
+		
+		
+		int nbTOT = 0, nbChFort=0, nbRaccour =0, nbChPFort=0, nbSpec=0, nbNaze=0, nbNUL = 0;
+		for (int i = 0 ; i <data.listeJournees.size() ; i++){
+			Journee j = data.getJournee(i);
+			j.detectionConflit();
+			j.planningJourneeParChirurgien();
+			for (Conflit conf : j.getConflits()) {
+				if (conf instanceof Ubiquite) {
+					Ubiquite c = (Ubiquite) conf;
+					if (c.essayerChangementEvidentDeChirurgien(data, 0.2)) {
+						System.out.println("Resolv 1 faite -----------------------------------");
+						j.planningJourneeParChirurgien();
+						nbTOT++;
+						nbChFort ++;
+					}
+					else if (c.essayerRaccourcissementEvident(data)) {
+						System.out.println("Resolv 2 faite -----------------------------------");
+						j.planningJourneeParChirurgien();
+						nbTOT++;
+						nbRaccour++;
+					}
+					else if (c.essayerChangementPresqueEvidentDeChirurgien(data)) {
+						System.out.println("Resolv 3 faite -----------------------------------");
+						j.planningJourneeParChirurgien();
+						nbTOT++;
+						nbChPFort++;
+					}
+					else if (c.essayerChangementChirurgienPresentSousContraintes(data)) {
+						System.out.println("Resolv 4 faite -----------------------------------");
+						j.planningJourneeParChirurgien();
+						nbTOT++;
+						nbSpec++;
+					}
+					else if (c.essayerChangementChirurgienAbsentSousContraintes(data)) {
+						System.out.println("Resolv 5 faite -----------------------------------");
+						j.planningJourneeParChirurgien();
+						nbTOT++;
+						nbNaze++;
+					}
+					else if (c.resoEfficaceMaisPeuCoherente(data)) {
+						System.out.println("Resolv 6 faite -----------------------------------");
+						j.planningJourneeParChirurgien();
+						nbTOT++;
+						nbNUL++;
+					}
+				}
+			}
+		}
+			System.out.println("Resolues : " + nbTOT + "\n methode ch fort : "+ nbChFort + "\n methode raccourcir : "+nbRaccour + "\n methode ch presque fort" + nbChPFort + "\n methode ch spécifique : "+nbSpec + "\n nbmerdes : " + nbNaze + "\n les dernieres merdes :"+ nbNUL);
+			
+				
+			
+		
+		
+		/*
+		 * 
+		 * 
 		int chevauchResolus=0;
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
@@ -713,54 +779,7 @@ public class BaseDeDonnees {
 				}
 				nbConflits++;
 			}
-			
-			
-		}
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
-		
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements + "\n \n \n TestHugo");
-		
-		data.calculJoursRecurrentsDeTravailChirurgiens();
-		data.calculTempsMoyensChirurgien();
-		data.calculTempsEntreDeuxChirurgiesMemeBloc();
-		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
-		data.calculTempsDeTravailChirurgiens();
-		data.calculPlagesHorairesHabituellesChirurgiens();
-		data.anomaliesSurchargeChirurgiens();
-		
-		for (Chirurgien c : data.chirurgiensExistants) {
-			System.out.println(c.getName());
-			System.out.println("Jours surcharges" + c.getLesJSurcharges().toString());
-			System.out.println("Temps travail / jour moyen = " + c.getTempsTravailMoyenParJour());
-			System.out.println("Temps travail / jour moyen = (en heure) :  " + c.getTempsTravailMoyenParJour()/60);
-			System.out.println("Proportions jours de taff" + c.getProportions().toString());
-			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
-		}
-		
-		
-//		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements + "\n \n \n TestHugo");
-//		
-//		data.calculJoursRecurrentsDeTravailChirurgiens();
-//		data.calculTempsMoyensChirurgien();
-//		data.calculTempsEntreDeuxChirurgiesMemeBloc();
-//		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
-//		data.calculTempsDeTravailChirurgiens();
-//		data.calculPlagesHorairesHabituellesChirurgiens();
-//		data.anomaliesSurchargeChirurgiens();
-//		
-//		
-//		
-//		for (Chirurgien c : data.chirurgiensExistants) {
-//			System.out.println(c.getName());
-//			System.out.println("Jours surcharges" + c.getLesJSurchages().toString());
-//			System.out.println("Temps travail / jour moyen = " + c.getTempsTravailMoyenParJour());
-//			System.out.println("Temps travail / jour moyen = (en heure) :  " + c.getTempsTravailMoyenParJour()/60);
-//			System.out.println("Proportions jours de taff" + c.getProportions().toString());
-//			System.out.println("Proportions plages horaires" + c.getPlagesHorairesPref().toString() + "\n \n");
-//		}
-		System.out.println("Nombre d'Interferences : "+nbInterferences);
-		System.out.println("Nombre de resolues : "+interferencesResolues);
-		
+
 		
 		
 		
@@ -770,15 +789,15 @@ public class BaseDeDonnees {
 		nbInterferences=0;
 		System.out.println("\n\n\n\n\n\n\n----------------------\n\n\n");
 		
-		for(int i=0;i<data.listeJournees.size();i++) {
+		for(int io=0;io<data.listeJournees.size();io++) {
 			
-			Journee j = data.getJournee(i);
-			j.detectionConflit();
+			Journee jo = data.getJournee(io);
+			jo.detectionConflit();
 			
-			for(Conflit c : j.getConflits()) {
+			for(Conflit c : jo.getConflits()) {
 				if(c instanceof Ubiquite) {
 					Ubiquite ub = (Ubiquite) c;
-					j.planningJourneeParChirurgien();
+					jo.planningJourneeParChirurgien();
 					System.out.println("\n \n \n "+ ub.toString());
 					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
 					System.out.println("Chirurgien fort de "+c.getCh1().getSalle()+" : "+c.getCh1().getSalle().getChirurgienFort(j,2));
@@ -793,79 +812,36 @@ public class BaseDeDonnees {
 					if(cheval.essayerDecalageEvident()) {
 						chevauchResolus++;
 						System.out.println("FAIT ------------------------------------------------------");
-						j.planningJourneeParBloc();
+						jo.planningJourneeParBloc();
 						
 					}
 					else if (ub.essayerChangementChirurgienAbsentSousContraintes(data)) {
 						nbResolv++;
 						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
 						System.out.println("\n Resolv MERDE");
-						j.planningJourneeParChirurgien();
+						jo.planningJourneeParChirurgien();
 						nbMerde++;
 					}
 					else if (ub.resoEfficaceMaisPeuCoherente(data)) {
 						nbResolv++;
 						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
 						System.out.println("\n Resolv MERDE");
-						j.planningJourneeParChirurgien();
+						jo.planningJourneeParChirurgien();
 						nbGROSSEMerde++;
 					}
 					
 				}
 				nbConflits++;
-			}
-
-		}
-		int nBB = 0;
-		System.out.println("Resolues : " + nbResolv + "\n methode ch fort : "+ nbTiag + "\n methode ch spécifique : "+nbContraintes + "\n methode raccourcir : "+nbRaccour + "\n nbmerdes : " + nbMerde + "\n les dernieres merdes :"+ nbGROSSEMerde);
-		for(int io=0;i<data.listeJournees.size();i++) {
-			Journee joo = data.getJournee(i);
-			j.detectionConflit();
-			for (Conflit c : joo.getConflits()) {
-				if (c instanceof Ubiquite) {
-					nBB++;
-					System.out.println(c.toString());
-					System.out.println(c.getDate());
 				}
 			}
 		}
-		System.out.println("\n" + nBB);
 		
-		Journee jo = data.getJournee("28/07/15");
-		j.detectionConflit();
 		
-		for(Conflit c : jo.getConflits()) {
-			if(c instanceof Interference) {
-				Interference interf = (Interference) c;
-				j.planningJourneeParBloc();
-				
-				System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-				System.out.println("Bloc fort j cud : "+c.getCh1().getChirurgien().getBlocFort(j, 2));
-				nbInterferences++;
-				if(interf.essayerChangementDeSalleEvident()) {
-					System.out.println("CHANGEMENT DE BLOC FAIT -----------------------------------");
-					j.planningJourneeParBloc();
-					interferencesResolues++;
-				}
-				if(interf.essayerRaccourcissementEvident(data)) {
-					System.out.println("RACCOURCISSEMENT FAIT -------------------------------------");
-					j.planningJourneeParBloc();
-					interferencesResolues++;
-				}
-				if(interf.essayerDeplacementDeForce(data)) {
-					System.out.println("DEPLACEMENT FORCE -----------------------------------------");
-					j.planningJourneeParBloc();
-					interferencesResolues++;
-				}
-			}
-			nbConflits++;
-		}
 		
 		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
 		System.out.println("Nombre de resolues : "+chevauchResolus);
-		
 		}
-		
+		*/
 	}
 		
 	

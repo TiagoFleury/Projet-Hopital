@@ -68,7 +68,7 @@ public class Bloc implements Comparable{
 		}
 		
 
-		if(max >= seuil) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
+		if(max >= seuil) { //A partir de *seuil* chirurgies, on va dire que c'est son temps fort
 			return cMax;
 		}
 		return null;
