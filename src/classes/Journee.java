@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
+import java.io.BufferedWriter;
 import java.math.*;
 
 public class Journee {
@@ -314,6 +315,104 @@ public class Journee {
     }
     
     
+    public int resoudreConflit(BufferedWriter writer, BaseDeDonnees data) {
+    	detectionConflit();
+    	//D'abord les chevauchements evidents
+    	int evident=0;
+    	int moyen=0;
+    	if(conflitsDuJour.size()==0) {
+    		return 0;
+    	}
+    		
+    	
+    	boolean changementEffectue=false;
+    	
+    	while(changementEffectue) {
+    		//Quand on a fait une resolution compliquee, on reessaie les resolutions simples avec le reste
+    		
+	    	while(changementEffectue) {//Tant que des changements se font, on fait des resolutions simples
+	    		detectionConflit();
+	    		changementEffectue=false;
+		    	for(Conflit c : conflitsDuJour) { //On va faire d'abord tous les chevauchements simples
+		    		if(c instanceof Chevauchement ) {
+		    			Chevauchement chevauchement = (Chevauchement) c;
+		    			
+		    			if(chevauchement.essayerDecalageEvident()) {
+		    				changementEffectue=true;
+		    				evident++;
+		    				
+		    			}
+		    		}
+		    	}
+		    	//Ici on aura fait tous les chevauchements evidents
+		    	
+		    	for(Conflit c : conflitsDuJour) {
+		    		if(c instanceof Interference) {
+		    			Interference interf = (Interference) c;
+		    			if(interf.essayerChangementDeSalleEvident()){
+		    				changementEffectue=true;
+		    				evident++;
+		    			}
+		    			else if(interf.essayerRaccourcissementEvident(data)) {
+		    				changementEffectue=true;
+		    				evident++;
+		    			}
+		    		}
+		    	}
+		    	
+		    	//Ici on aura fait toutes les interferences evidentes
+		    	
+		    	for(Conflit c : conflitsDuJour) {
+		    		if(c instanceof Ubiquite) {
+		    			Ubiquite ubiq = (Ubiquite)c;
+		    			if(ubiq.essayerChangementEvidentDeChirurgien(data, 0.2)) {
+		    				changementEffectue=true;
+		    				evident++;
+		    			}
+		    			else if(ubiq.essayerRaccourcissementEvident(data)) {
+		    				changementEffectue=true;
+		    				evident++;
+		    			}
+		    		}
+		    	}
+	    	}
+	    	
+	    	//Ici il n'y a plus de resolutions simples a faire normalement
+	    	
+	    	for(Conflit c : conflitsDuJour) {
+	    		if(c instanceof Interference) {
+	    			Interference interf = (Interference) c;
+	    			if(interf.essayerDeplacementDeForce(data)){
+	    				changementEffectue=true;
+	    				moyen++;
+	    			}
+	    		}
+	    		
+	    		if(c instanceof Ubiquite) {
+	    			if(c instanceof Ubiquite) {
+		    			Ubiquite ubiq = (Ubiquite)c;
+		    			if(ubiq.essayerChangementEvidentDeChirurgien(data, 0.2)) {
+		    				changementEffectue=true;
+		    				evident++;
+		    			}
+		    			else if(ubiq.essayerRaccourcissementEvident(data)) {
+		    				changementEffectue=true;
+		    				evident++;
+		    			}
+		    		}
+	    		}
+	    	}
+	    	
+	    	
+	    	
+    	}
+    	
+    	return 0;
+    	
+    }
+    
+    
+    
     
     
     // 3. Detection d'anomalies parmis les chirurgies qui sont en conflits
@@ -341,51 +440,6 @@ public class Journee {
     
     
     
-    
-    
-    
-    
-    // RESOLUTION INTERFERENCE
-    ///////////////////////////////////////////
-    
-    public void resoudreInterferenceCout0(BaseDeDonnees database, Interference i){
-    	Bloc sallePb = i.getSallePb();
-    	Bloc uneSalle = null;
-    	LocalTime debLimite = LocalTime.of(8,00);
-    	LocalTime finLimite = LocalTime.of(20,00);
-    	
-    	int compteur = 0, lg = database.getTousBlocs().size();
-    	if (i.getCh1().getDebut().isBefore(debLimite) || (i.getCh1().getFin().isAfter(finLimite))) {
-    		while ((compteur < lg) && (database.getTousBlocs().get(compteur).getID()<4)){ // Ici je veux juste arriver a une salle Urgence, tout en restant dans la liste des blocs
-    				compteur++;
-    			}
-    		if (compteur < lg) {
-    			uneSalle = database.getTousBlocs().get(compteur);
-    			if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
-    				i.getCh1().setSalle(uneSalle);
-    				i.setEtat(true);
-    			}
-    		}
-    	}
-    	
-    	else { // Cas ou les horaires sont normaux on l'envoie dans une salle normale
-    		while ((compteur < lg) && (database.getTousBlocs().get(compteur).getID()>4)) {
-    			compteur++;
-    		}
-    		if (compteur < lg) {
-    			uneSalle = database.getTousBlocs().get(compteur);
-    			if (!this.sallesOccupeesduJour.contains(uneSalle) && !uneSalle.equals(sallePb)) {
-    				i.getCh1().setSalle(uneSalle);
-    				i.setEtat(true);
-    			}
-    		}
-    	}
-    	if (i.getEtat()==false) {
-			System.out.println("Interference non resolue");
-				}
-    	else { System.out.println("Interference resolue");}
-    	
-    }
     
     
     
