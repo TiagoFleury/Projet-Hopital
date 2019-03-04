@@ -270,7 +270,7 @@ public class Chirurgie {
     	ArrayList<Chirurgie> sesChirurgiesAuj = theC.recupChirurgiesDuJour(database.getJournee(date));
     	
     	
-    	if (!sesChirurgiesAuj.contains(this)) {
+    	if (!sesChirurgiesAuj.contains(this)) { // cas où on essaye d'ajouter la chirurgie à la liste des chirurgies d'un chirurgien
     		ArrayList<Chirurgie> copie = new ArrayList<Chirurgie>(sesChirurgiesAuj);
     		copie.add(this);
     		Collections.sort(copie, Chirurgie.CHRONOLOGIQUE);

@@ -498,7 +498,7 @@ public class BaseDeDonnees {
 		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
 		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday], pour les comparer avec les dates
 		
-		ArrayList<Double> listeProportionsJours = null ;
+		ArrayList<Double> listeProportionsJours = new ArrayList<>() ;
 		int compteur1 = 0, compteur2=0, compteur3=0, compteur4=0, compteur5=0, compteur6=0, compteur7=0;
 		String leJour = null ; 
 		for (Bloc salle : blocsExistants) {
@@ -746,7 +746,7 @@ public class BaseDeDonnees {
 		
 		
 		int nbUbi = 0;
-		int nbResolv = 0, nbTiag=0, nbContraintes=0, nbRaccour=0;
+		int nbResolv = 0, nbTiag=0, nbContraintes=0, nbRaccour=0, nbMerde=0, nbGROSSEMerde=0;
 		
 		for(int i=0;i<data.listeJournees.size();i++) {
 			Journee j = data.getJournee(i);
@@ -785,12 +785,40 @@ public class BaseDeDonnees {
 						j.planningJourneeParChirurgien();
 						nbRaccour++;
 					}
+					else if (ub.essayerChangementChirurgienAbsentSousContraintes(data)) {
+						nbResolv++;
+						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
+						System.out.println("\n Resolv MERDE");
+						j.planningJourneeParChirurgien();
+						nbMerde++;
+					}
+					else if (ub.resoEfficaceMaisPeuCoherente(data)) {
+						nbResolv++;
+						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
+						System.out.println("\n Resolv MERDE");
+						j.planningJourneeParChirurgien();
+						nbGROSSEMerde++;
+					}
+					
 				}
 
 				nbConflits++;
 			}
 		}
-		System.out.println("Resolues : " + nbResolv + "\n methode ch fort : "+ nbTiag + "\n methode ch spécifique : "+nbContraintes + "\n methode raccourcir : "+nbRaccour);
+		int nBB = 0;
+		System.out.println("Resolues : " + nbResolv + "\n methode ch fort : "+ nbTiag + "\n methode ch spécifique : "+nbContraintes + "\n methode raccourcir : "+nbRaccour + "\n nbmerdes : " + nbMerde + "\n les dernieres merdes :"+ nbGROSSEMerde);
+		for(int i=0;i<data.listeJournees.size();i++) {
+			Journee j = data.getJournee(i);
+			j.detectionConflit();
+			for (Conflit c : j.getConflits()) {
+				if (c instanceof Ubiquite) {
+					nBB++;
+					System.out.println(c.toString());
+					System.out.println(c.getDate());
+				}
+			}
+		}
+		System.out.println("\n" + nBB);
 	}
 		
 	
