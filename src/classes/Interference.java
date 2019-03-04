@@ -162,9 +162,6 @@ public class Interference extends Conflit {
     	Bloc blocFort2 = chirurgie2.getChirurgien().getBlocFort(jour, 4);
     	
     	
-    	
-    	
-    	
     	if(!(anomalieDuree1 || anomalieDuree2)) { //Si il y a aucune anomalie on traite pas
     		return false;
     	}
@@ -250,7 +247,7 @@ public class Interference extends Conflit {
     	}
     	
     	if(!anomalieDuree1 && anomalieDuree2) {
-    		//Dans ce cas la logiquement elles peuvent pas être superposees
+    		//Dans ce cas la logiquement elles peuvent pas ï¿½tre superposees
 //    		On est dans ce cas :
 //    			#########              
 //    				  ##########################   <- on va racourcir celle la sur sa gauche

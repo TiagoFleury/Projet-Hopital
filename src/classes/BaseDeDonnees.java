@@ -757,8 +757,8 @@ public class BaseDeDonnees {
 					j.planningJourneeParChirurgien();
 					System.out.println("\n \n \n "+ ub.toString());
 					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					System.out.println("Chirurgien fort de "+c.getCh1().getSalle()+" : "+c.getCh1().getSalle().getChirurgienFort(j));
-					System.out.println("Chirurgien fort de "+c.getCh2().getSalle()+" : "+c.getCh2().getSalle().getChirurgienFort(j));
+					System.out.println("Chirurgien fort de "+c.getCh1().getSalle()+" : "+c.getCh1().getSalle().getChirurgienFort(j,2));
+					System.out.println("Chirurgien fort de "+c.getCh2().getSalle()+" : "+c.getCh2().getSalle().getChirurgienFort(j,2));
 					System.out.println("Chirurgiens libres pour ch1"+c.getCh1().getID()+" : "+c.getChirurgiensLibres1());
 					System.out.println("Chirurgiens libres pour ch2"+c.getCh2().getID()+" : "+c.getChirurgiensLibres2());
 					
@@ -778,7 +778,7 @@ public class BaseDeDonnees {
 						nbResolv++;
 						nbContraintes++;
 					}
-					else if (ub.essayerRacourcirPourResoudre()) {
+					else if (ub.essayerRaccourcissementEvident(data)) {
 						nbResolv++;
 						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
 						System.out.println("\n Resolv Raccour");

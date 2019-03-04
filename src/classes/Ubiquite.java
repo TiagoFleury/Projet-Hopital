@@ -167,7 +167,191 @@ public class Ubiquite extends Conflit {
     	return retour;
     }
     
- 
+    
+    
+    
+    public boolean essayerRaccourcissementEvident(BaseDeDonnees data) {
+    	//Conditions pour un raccourcissement evident : 
+    	//1. petit indice de recouvrement   2. pas de superposition  3. Anomalie de longueur sur une des deux chirurgies
+    	
+    	if(resolu)
+    		return false;
+    	
+    	if(getIndiceDeRecouvrement()>0.25) { //En dessous de 0,25 on va dire qu'on traite le cas
+    		return false;
+    	}
+    	
+    	boolean anomalieDuree1=false;
+    	if(chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(1)) {
+    		anomalieDuree1 = true;
+    	}
+    	boolean anomalieDuree2=false;
+    	if(chirurgie2.getDuree()>chirurgie2.getChirurgien().getICtempsMoyen().get(1)) {
+    		anomalieDuree2 = true;
+    	}
+    	
+    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour, 3);
+    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour, 3);
+    	
+    	
+    	if(!(anomalieDuree1 || anomalieDuree2)) { //Si il y a aucune anomalie on traite pas
+    		return false;
+    	}
+    	if(chFort1!=null) {
+    		if(chFort1.nombreDeChirurgiesDe(chirurgie1.getSalle(), jour)>4 && getChirurgiensLibres1().contains(chFort1)) {
+	    		//si le chFort est important et libre, on abandonne
+	    		return false;
+    		}
+    	}
+    	
+    	
+    	if(chFort2!=null) {
+	    	if(chFort2.nombreDeChirurgiesDe(chirurgie1.getSalle(), jour)>4 && getChirurgiensLibres2().contains(chFort2)) {
+	    		//si le chFort est important et libre, on abandonne
+	    		return false;
+	    	}
+    	}
+    	
+    	//Ici on a donc forcement une anomalie de longueur et un "petit recouvrement" sur un des bouts des chirurgies
+    	//On va maintenant tronquer la ou les chirurgies
+    	
+    	
+    	if(anomalieDuree1 && !anomalieDuree2) {
+//    		On est dans ce cas :
+//    			#######################              <- on va racourcir celle la sur sa droite
+//    								###########
+    		
+    		
+    		int cote=1; //de base le cote a couper est le droit
+    		if(Chirurgie.superposition(chirurgie1, chirurgie2)) {
+        		//Dans ce cas il faut decider de quel cote raccourcir
+        		cote = coteAcouper();
+        	}
+    		
+    		if(cote == 1) { //Si c'est le cote droit
+    			LocalTime backupHeureFin = chirurgie1.getFin(); //C'est la fin de la chirurgie qu'on va amputer
+	    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+	    			chirurgie1.raccourcirFin(1);
+	    			if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+	    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+	    				chirurgie1.setFin(backupHeureFin);
+	    				return false;
+	    			}
+	    		}
+    		
+	    		
+	    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+	    		chirurgie1.raccourcirFin(data.getICtempsInteroperatoire().get(0).intValue());
+	    		
+	    		if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+					//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+					chirurgie1.setFin(backupHeureFin);
+					return false;
+				}
+	    		this.resolu=true;
+	    		return true;
+    		}
+    		if(cote == -1) {
+    			LocalTime backupHeureDebut = chirurgie1.getDebut(); //c'est le debut qu'on va amputer
+    			while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+	    			chirurgie1.raccourcirDebut(1);
+	    			if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+	    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+	    				chirurgie1.setDebut(backupHeureDebut);
+	    				return false;
+	    			}
+	    		}
+    		
+	    		
+	    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+	    		chirurgie1.raccourcirDebut(data.getICtempsInteroperatoire().get(0).intValue());
+	    		
+	    		if(chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+					//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+					chirurgie1.setDebut(backupHeureDebut);
+					return false;
+				}
+	    		this.resolu=true;
+	    		return true;
+    		}
+    	}
+    	
+    	if(!anomalieDuree1 && anomalieDuree2) {
+    		//Dans ce cas la logiquement elles peuvent pas �tre superposees
+//    		On est dans ce cas :
+//    			#########              
+//    				  ##########################   <- on va racourcir celle la sur sa gauche
+    		LocalTime backupHeureDebut = chirurgie2.getDebut();
+    		
+    		while(Journee.enMemeTempsOuPas(chirurgie1, chirurgie2)) {//Tant que les deux se touchent on raccourcit
+    			chirurgie2.raccourcirDebut(1);
+    			if(chirurgie2.getDuree()<chirurgie2.getChirurgien().getICtempsMoyen().get(0)) {
+    				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+    				chirurgie2.setDebut(backupHeureDebut);
+    				return false;
+    			}
+    		}
+    		
+    		//Une fois qu'elles ne se touchent plus, il faut voir si on peut laisser le temps minimal de nettoyage de bloc
+    		chirurgie2.raccourcirDebut(data.getICtempsInteroperatoire().get(0).intValue());
+    		
+    		if(chirurgie2.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) {
+				//Si on depasse la borne inferieure de l'intervalle de confiance on arrete et on remet la valeur de base
+				chirurgie2.setDebut(backupHeureDebut);
+				return false;
+			}
+
+    		this.resolu=true;
+    		return true;
+    	}
+    	
+    	
+    	if(anomalieDuree1 && anomalieDuree2 && !Chirurgie.superposition(chirurgie1, chirurgie2)) {
+    		//Si les deux sont en anomalie de temps, on coupe les deux
+    		LocalTime backupHeureDebut = chirurgie2.getDebut();
+    		LocalTime backupHeureFin = chirurgie1.getFin();
+    		
+    		LocalTime debEcart = LocalTime.from(chirurgie1.getFin());
+			LocalTime finEcart = LocalTime.from(chirurgie2.getDebut());
+    		
+    		while (Journee.enMemeTempsOuPas(chirurgie1, chirurgie2) && (chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(0)) &&  (chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(0)) ) {
+    			if (chirurgie1.getDebut().isBefore(chirurgie2.getDebut()) && !chirurgie1.getFin().isAfter(chirurgie2.getFin())) {
+    				chirurgie1.raccourcirFin(1);
+    				chirurgie2.raccourcirDebut(1);
+    			}
+    		}
+    		if ( (chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) || (chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) ) {
+    			chirurgie1.setFin(backupHeureFin);
+    			chirurgie2.setDebut(backupHeureDebut);
+    			return false;
+    		}
+    		else {
+    			debEcart = LocalTime.from(chirurgie1.getFin());
+    			finEcart = LocalTime.from(chirurgie2.getDebut());
+    			while (chirurgie1.getDuree()>chirurgie1.getChirurgien().getICtempsMoyen().get(0) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgie1.getChirurgien().getICtempsInteroperatoire().get(0)) ) {
+    				chirurgie1.raccourcirFin(1);
+    				debEcart = LocalTime.from(chirurgie1.getFin());
+        		}
+    			while ( chirurgie2.getDuree()>chirurgie2.getChirurgien().getICtempsMoyen().get(0) && (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgie2.getChirurgien().getICtempsInteroperatoire().get(0))) {
+    				chirurgie2.raccourcirDebut(1);
+    				finEcart = LocalTime.from(chirurgie2.getDebut());
+    			}
+    		}
+    		
+    		if ( (chirurgie1.getDuree()<chirurgie1.getChirurgien().getICtempsMoyen().get(0)) || (chirurgie2.getDuree()<chirurgie2.getChirurgien().getICtempsMoyen().get(0)) ||  (ChronoUnit.MINUTES.between(debEcart, finEcart)<chirurgie2.getChirurgien().getICtempsInteroperatoire().get(0)) ) {
+    			chirurgie1.setFin(backupHeureFin);
+    			chirurgie2.setDebut(backupHeureDebut);
+    			return false;
+    		}
+
+    		this.resolu=true;
+    		return true;
+    		
+    	}
+    	return false;
+    }
+    
+
     
     
     public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data, double indiceRecouvrementDesire) {
@@ -189,8 +373,8 @@ public class Ubiquite extends Conflit {
     		return false;
     	}
     	
-    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour);
-    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour);
+    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour,2);
+    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour,2);
     	
     	//Si le chirurgien fort d'un des deux blocs est libre, on le bouge sans trop se poser de question
     	
@@ -353,8 +537,8 @@ public class Ubiquite extends Conflit {
     	// alors il serait le résultat évident 
     	// (bien que logiquement, il aurait deja été selectionné lors d'une premiere resolution évidente)
     	
-    	Chirurgien chFort1 = this.chirurgie1.getSalle().getChirurgienFort(jour);
-    	Chirurgien chFort2 = this.chirurgie2.getSalle().getChirurgienFort(jour);
+    	Chirurgien chFort1 = this.chirurgie1.getSalle().getChirurgienFort(jour,2);
+    	Chirurgien chFort2 = this.chirurgie2.getSalle().getChirurgienFort(jour,2);
     	
     	
     	if (chirurgiensCandidatsCh1.size()!=0 && chirurgiensCandidatsCh2.size()==0) {

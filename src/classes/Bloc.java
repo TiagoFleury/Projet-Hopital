@@ -26,7 +26,7 @@ public class Bloc implements Comparable{
     
     
     
-	public Chirurgien getChirurgienFort(Journee jour) { //Si il n'y a pas de chirurgien particulierement fort, retourne null
+	public Chirurgien getChirurgienFort(Journee jour, int seuil) { //Si il n'y a pas de chirurgien particulierement fort, retourne null
 		
 		Chirurgien cMax=null;
 		int max=0;
@@ -36,10 +36,13 @@ public class Bloc implements Comparable{
 		for(Chirurgien albert : jour.getChirurgiensMobilises()) {
 			compte=0;
 			for(Chirurgie c : jour.getChirurgiesJour()) {
-				if(c.getSalle().equals(this) && c.getChirurgien().equals(albert)) {
-					compte++;
-					liste.add(c);
+				if (c.estEnConflit()==false) {
+					if(c.getSalle().equals(this) && c.getChirurgien().equals(albert)) {
+						compte++;
+						liste.add(c);
+					}
 				}
+				
 				
 			}
 			if(compte>max) {
@@ -65,7 +68,7 @@ public class Bloc implements Comparable{
 		}
 		
 
-		if(max >= 2) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
+		if(max >= seuil) { //A partir de 3 chirurgies, on va dire que c'est son temps fort
 			return cMax;
 		}
 		return null;
