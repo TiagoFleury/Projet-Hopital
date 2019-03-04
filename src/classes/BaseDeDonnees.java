@@ -818,10 +818,10 @@ public class BaseDeDonnees {
 		}
 		int nBB = 0;
 		System.out.println("Resolues : " + nbResolv + "\n methode ch fort : "+ nbTiag + "\n methode ch spécifique : "+nbContraintes + "\n methode raccourcir : "+nbRaccour + "\n nbmerdes : " + nbMerde + "\n les dernieres merdes :"+ nbGROSSEMerde);
-		for(int i=0;i<data.listeJournees.size();i++) {
-			Journee j = data.getJournee(i);
+		for(int io=0;i<data.listeJournees.size();i++) {
+			Journee joo = data.getJournee(i);
 			j.detectionConflit();
-			for (Conflit c : j.getConflits()) {
+			for (Conflit c : joo.getConflits()) {
 				if (c instanceof Ubiquite) {
 					nBB++;
 					System.out.println(c.toString());
@@ -831,10 +831,10 @@ public class BaseDeDonnees {
 		}
 		System.out.println("\n" + nBB);
 		
-		Journee j = data.getJournee("28/07/15");
+		Journee jo = data.getJournee("28/07/15");
 		j.detectionConflit();
 		
-		for(Conflit c : j.getConflits()) {
+		for(Conflit c : jo.getConflits()) {
 			if(c instanceof Interference) {
 				Interference interf = (Interference) c;
 				j.planningJourneeParBloc();
@@ -864,7 +864,7 @@ public class BaseDeDonnees {
 		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
 		System.out.println("Nombre de resolues : "+chevauchResolus);
 		
-		
+		}
 		
 	}
 		
