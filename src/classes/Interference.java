@@ -1,6 +1,9 @@
 package classes;
 
 import java.util.ArrayList;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -309,10 +312,8 @@ public class Interference extends Conflit {
     public boolean essayerDeplacementDeForce(BaseDeDonnees data) {
     	//Dans cet essai, on va devenir un peu plus laxe au niveau des conditions et on va essayer de forcer un peu le deplacement. Si ca bloque un peu
     	// et que c'est pertinent de raccourcir on le fait
-    	
-    	if(getIndiceDeRecouvrement()<0.4) {
+    	if(resolu)
     		return false;
-    	}
     	ArrayList<Bloc> blocsLibres2 = getBlocsLibres2();
     	ArrayList<Bloc> blocsLibres1 = getBlocsLibres1();
     	
@@ -321,7 +322,6 @@ public class Interference extends Conflit {
     	
     	if(sallePb.nombreDeChirurgiesDe(chirurgie1.getChirurgien(), jour)>sallePb.nombreDeChirurgiesDe(chirurgie2.getChirurgien(), jour)) {
     		//La on va plutot essayer de bouger chirurgie2 parce que son chirurgien est moins dans cette salle
-    		
     		if(blocsLibres2.contains(blocFort2)) {
         		//Si son bloc fort est libre on la met direct
     			if(!(blocFort2.getID()<=3 && chirurgie2.estLaNuit())) {
@@ -342,13 +342,24 @@ public class Interference extends Conflit {
     			}
         	}
     	}
-    	else {
-    		//si les deux sont egaux, on bouge celui qu'on peut comme on peut
-    		if(blocsLibres1.size() > blocsLibres2.size()) {
-    			
-    		}
-    		
-    	}
+	
+		//si les deux sont egaux, on bouge celui qu'on peut comme on peut
+		if(blocsLibres1.contains(blocFort1)) {
+			if(!(blocFort1.getID()<=3 && chirurgie1.estLaNuit())) {
+    			chirurgie1.setSalle(blocFort1);
+    			resolu = true;
+    			return true;
+			}
+		}
+		if(blocsLibres2.contains(blocFort2)) {
+			if(!(blocFort2.getID()<=3 && chirurgie2.estLaNuit())) {
+    			chirurgie2.setSalle(blocFort2);
+    			resolu = true;
+    			return true;
+			}
+		}
+		
+    	
     	
     	
     	return false;

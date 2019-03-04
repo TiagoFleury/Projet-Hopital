@@ -294,18 +294,22 @@ public class Journee {
                 if ((conflitsDuJour.size()!=0) && conf!=null) {
                 	if (!conflitsDuJour.contains(conf)) {
                 		conflitsDuJour.add(conf);
-                		c2.setEnConflit(true);
-                		c1.setEnConflit(true);
                 	}
                 }
                 else if (conflitsDuJour.size()==0) {
                 	if (conf!=null) {
                 		conflitsDuJour.add(conf);
-                		c1.setEnConflit(true);
-                		c2.setEnConflit(true);
                 	}
                 }
             }
+        }
+        for(Chirurgie c : chirurgiesDuJour) {
+        	c.setEnConflit(false);
+        	for(Conflit conflit : conflitsDuJour) {
+        		if(c.equals(conflit.getCh1()) || c.equals(conflit.getCh2())) {
+        			c.setEnConflit(true);
+        		}
+        	}
         }
     }
     
