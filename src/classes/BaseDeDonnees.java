@@ -98,8 +98,8 @@ public class BaseDeDonnees {
 		
 		
 		try {
-			writer.write("ID CHIRURGIE;DATE CHIRURGIE;HEURE_DEBUT CHIRURGIE;HEURE_FIN CHIRURGIE;SALLE;CHIRURGIEN");
-			writer.newLine();
+			writer.write("ID CHIRURGIE;DATE CHIRURGIE;HEURE_DEBUT CHIRURGIE;HEURE_FIN CHIRURGIE;SALLE;CHIRURGIEN\n\n\n");
+			//writer.newLine();
 			Collections.sort(listeChirurgies,Chirurgie.CHRONOLOGIQUE);
 			for(Chirurgie chir : listeChirurgies) {
 					writer.write(""+chir.getID()+";"+chir.getDate().format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+";"+chir.getDebut()+";"+chir.getFin()+";"+chir.getSalle().getName()+";"+chir.getChirurgien().getName());
@@ -210,7 +210,7 @@ public class BaseDeDonnees {
 			else
 				moyenne=0;
 			c.setTempsMoyenChirurgie(moyenne);
-			System.out.println("TAILLE DU TABLEAU POUR "+c+": "+ donnees.size());
+			//System.out.println("TAILLE DU TABLEAU POUR "+c+": "+ donnees.size());
 			c.setICtempsMoyen(intervalleConfiance95(donnees));
 			somme = 0;
 			compteur = 0;
@@ -494,71 +494,10 @@ public class BaseDeDonnees {
 	
 	
 	
-	
-	public void calculJoursRecurrentsDeTravailBlocs() {
-		DateFormatSymbols dfsEN = new DateFormatSymbols(Locale.ENGLISH);
-		String[] joursSemaine = dfsEN.getWeekdays(); // Je creee un [jour de la semaine 1=Sunday, 7=Saturday], pour les comparer avec les dates
-		
-		ArrayList<Double> listeProportionsJours = new ArrayList<>() ;
-		int compteur1 = 0, compteur2=0, compteur3=0, compteur4=0, compteur5=0, compteur6=0, compteur7=0;
-		String leJour = null ; 
-		for (Bloc salle : blocsExistants) {
-			listeProportionsJours = null;
-			compteur1 = 0 ;  compteur2=0 ; compteur3=0 ; compteur4=0 ; compteur5=0 ; compteur6=0; compteur7 = 0;
-			int compteur=0;
-			for (Chirurgie chi : listeChirurgies) {
-				chi.getSalle().equals(salle);{
-					if (chi.estEnConflit()==false) {
-						leJour = chi.getDate().getDayOfWeek().toString();
-						
-						if (leJour.equals(joursSemaine[1].toString().toUpperCase())) {
-							compteur1+=1; //Dimanche
-						}
-						if (leJour.equals(joursSemaine[2].toString().toUpperCase())) {
-							compteur2+=1; //Lundi
-						}
-						if (leJour.equals(joursSemaine[3].toString().toUpperCase())) {
-							compteur3+=1; //Mardi
-						}
-						if (leJour.equals(joursSemaine[4].toString().toUpperCase())) {
-							compteur4+=1; //Mercredi
-						}
-						if (leJour.equals(joursSemaine[5].toString().toUpperCase())) {
-							compteur5+=1; //Jeudi
-						}
-						if (leJour.equals(joursSemaine[6].toString().toUpperCase())) {
-							compteur6+=1; //Vendredi
-						}
-						if (leJour.equals(joursSemaine[7].toString().toUpperCase())) {
-							compteur7+=1; //Samedi
-						}
-						compteur++;
-					}
-				}
-				
-			}
-			if (compteur>0) {
-				listeProportionsJours.add((double) compteur1/compteur);
-				listeProportionsJours.add((double) compteur2/compteur);
-				listeProportionsJours.add((double) compteur3/compteur);
-				listeProportionsJours.add((double) compteur4/compteur);
-				listeProportionsJours.add((double) compteur5/compteur);
-				listeProportionsJours.add((double) compteur6/compteur);
-				listeProportionsJours.add((double) compteur7/compteur);
-			}
-			else {
-				listeProportionsJours.add((double) 0);
-				listeProportionsJours.add((double) 0);
-				listeProportionsJours.add((double) 0);
-				listeProportionsJours.add((double) 0);
-				listeProportionsJours.add((double) 0);
-				listeProportionsJours.add((double) 0);
-				listeProportionsJours.add((double) 0);
-			}
-			salle.setMoyennesJours(listeProportionsJours);
-		}
-	}
 	////////////////
+	///FIN STATS
+	
+	
 	
 	
 	
@@ -602,7 +541,6 @@ public class BaseDeDonnees {
 	
 	public static double moyenneDeDonnees(ArrayList<Double> lesDonnees) {
 		int somme = 0;
-		double moyenne = 0;
 		for (Double d : lesDonnees) {
 			somme+=d;
 		}
@@ -647,210 +585,6 @@ public class BaseDeDonnees {
 	// cela nous permettra direct d'en deduire si on la corrige ou pas etc
 	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@SuppressWarnings("unused")
-	public static void main(String[] Args) {
-		
-		
-		BaseDeDonnees data = new BaseDeDonnees();
-		data.importBase("Chirurgies_v2.csv");
-		data.organiserJournees();
-		int nbInterferences = 0;
-		int interferencesResolues=0;
-		int nbConflits=0;
-		int nbUbiquites=0;
-		int nbChevauchements=0;
-		
-		data.calculTempsMoyensChirurgien();
-		data.calculTempsDeTravailChirurgiens();
-		data.calculTempsEntreDeuxChirurgiesMemeBloc();
-		data.calculTempsEntreDeuxChirurgiesMemeChirurgien();
-		data.anomaliesSurchargeChirurgiens();
-		data.calculJoursRecurrentsDeTravailChirurgiens();
-		data.calculPlagesHorairesHabituellesChirurgiens();
-		
-		
-		
-		int nbTOT = 0, nbChFort=0, nbRaccour =0, nbChPFort=0, nbSpec=0, nbNaze=0, nbNUL = 0;
-		for (int i = 0 ; i <data.listeJournees.size() ; i++){
-			Journee j = data.getJournee(i);
-			j.detectionConflit();
-			j.planningJourneeParChirurgien();
-			for (Conflit conf : j.getConflits()) {
-				if (conf instanceof Ubiquite) {
-					Ubiquite c = (Ubiquite) conf;
-					if (c.essayerChangementEvidentDeChirurgien(data, 0.2)) {
-						System.out.println("Resolv 1 faite -----------------------------------");
-						j.planningJourneeParChirurgien();
-						nbTOT++;
-						nbChFort ++;
-					}
-					else if (c.essayerRaccourcissementEvident(data)) {
-						System.out.println("Resolv 2 faite -----------------------------------");
-						j.planningJourneeParChirurgien();
-						nbTOT++;
-						nbRaccour++;
-					}
-					else if (c.essayerChangementPresqueEvidentDeChirurgien(data)) {
-						System.out.println("Resolv 3 faite -----------------------------------");
-						j.planningJourneeParChirurgien();
-						nbTOT++;
-						nbChPFort++;
-					}
-					else if (c.essayerChangementChirurgienPresentSousContraintes(data)) {
-						System.out.println("Resolv 4 faite -----------------------------------");
-						j.planningJourneeParChirurgien();
-						nbTOT++;
-						nbSpec++;
-					}
-					else if (c.essayerChangementChirurgienAbsentSousContraintes(data)) {
-						System.out.println("Resolv 5 faite -----------------------------------");
-						j.planningJourneeParChirurgien();
-						nbTOT++;
-						nbNaze++;
-					}
-					else if (c.resoEfficaceMaisPeuCoherente(data)) {
-						System.out.println("Resolv 6 faite -----------------------------------");
-						j.planningJourneeParChirurgien();
-						nbTOT++;
-						nbNUL++;
-					}
-				}
-			}
-		}
-			System.out.println("Resolues : " + nbTOT + "\n methode ch fort : "+ nbChFort + "\n methode raccourcir : "+nbRaccour + "\n methode ch presque fort" + nbChPFort + "\n methode ch spécifique : "+nbSpec + "\n nbmerdes : " + nbNaze + "\n les dernieres merdes :"+ nbNUL);
-			
-				
-			
-		
-		
-		/*
-		 * 
-		 * 
-		int chevauchResolus=0;
-		for(int i=0;i<data.listeJournees.size();i++) {
-			Journee j = data.getJournee(i);
-			
-			for(Conflit c : j.getConflits()) {
-				if(false) {
-					Interference interf = (Interference) c;
-					j.planningJourneeParBloc();
-					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					nbInterferences++;
-					if(interf.essayerChangementDeSalleEvident()) {
-						System.out.println("CHANGEMENT DE BLOC FAIT ---------------------------------");
-						j.planningJourneeParBloc();
-						interferencesResolues++;
-					}
-					if(interf.essayerRaccourcissementEvident(data)) {
-						System.out.println("RACCOURCISSEMENT FAIT -------------------------------------");
-						j.planningJourneeParBloc();
-						interferencesResolues++;
-					}
-					if(interf.essayerDeplacementDeForce(data)) {
-						System.out.println("DEPLACEMENT FORCE ----------------------------------------");
-						j.planningJourneeParBloc();
-						interferencesResolues++;
-					}
-					if(interf.vendreSonAmeAuShetan(data)) {
-						System.out.println("SHETAN ----------------------------------------");
-						j.planningJourneeParBloc();
-						interferencesResolues++;
-					}
-						
-					
-				}
-				if(c instanceof Ubiquite) {
-					nbUbiquites++;
-				}
-				if(c instanceof Chevauchement) {
-					nbChevauchements++;
-
-				}
-				nbConflits++;
-			}
-
-		
-		
-		
-		int nbUbi = 0;
-		int nbResolv = 0, nbTiag=0, nbContraintes=0, nbRaccour=0, nbMerde=0, nbGROSSEMerde=0;
-		nbConflits=0;
-		nbInterferences=0;
-		System.out.println("\n\n\n\n\n\n\n----------------------\n\n\n");
-		
-		for(int io=0;io<data.listeJournees.size();io++) {
-			
-			Journee jo = data.getJournee(io);
-			jo.detectionConflit();
-			
-			for(Conflit c : jo.getConflits()) {
-				if(c instanceof Ubiquite) {
-					Ubiquite ub = (Ubiquite) c;
-					jo.planningJourneeParChirurgien();
-					System.out.println("\n \n \n "+ ub.toString());
-					System.out.println("Indice de recouvrement : "+c.getIndiceDeRecouvrement());
-					System.out.println("Chirurgien fort de "+c.getCh1().getSalle()+" : "+c.getCh1().getSalle().getChirurgienFort(j,2));
-					System.out.println("Chirurgien fort de "+c.getCh2().getSalle()+" : "+c.getCh2().getSalle().getChirurgienFort(j,2));
-					System.out.println("Chirurgiens libres pour ch1"+c.getCh1().getID()+" : "+c.getChirurgiensLibres1());
-					System.out.println("Chirurgiens libres pour ch2"+c.getCh2().getID()+" : "+c.getChirurgiensLibres2());
-
-				if(c instanceof Interference) {
-					Interference interf = (Interference) c;
-					j.planningJourneeParBloc();
-					Chevauchement cheval = (Chevauchement) c;
-					if(cheval.essayerDecalageEvident()) {
-						chevauchResolus++;
-						System.out.println("FAIT ------------------------------------------------------");
-						jo.planningJourneeParBloc();
-						
-					}
-					else if (ub.essayerChangementChirurgienAbsentSousContraintes(data)) {
-						nbResolv++;
-						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
-						System.out.println("\n Resolv MERDE");
-						jo.planningJourneeParChirurgien();
-						nbMerde++;
-					}
-					else if (ub.resoEfficaceMaisPeuCoherente(data)) {
-						nbResolv++;
-						System.out.println("CHANGEMENT DE CHIRURGIEN FAIT ------------------------------------------------------------");
-						System.out.println("\n Resolv MERDE");
-						jo.planningJourneeParChirurgien();
-						nbGROSSEMerde++;
-					}
-					
-				}
-				nbConflits++;
-				}
-			}
-		}
-		
-		
-		
-		System.out.println("Nombre d'interferences : "+nbInterferences+"\nNombre Conflits : "+nbConflits+"\nNombre Ubiquites : "+nbUbiquites+"\nNombre Chevauchements : "+nbChevauchements);
-		System.out.println("Nombre de resolues : "+chevauchResolus);
-		}
-		*/
-	}
-		
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

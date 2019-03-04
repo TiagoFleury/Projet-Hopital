@@ -1,20 +1,12 @@
 package classes;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
-import java.text.DateFormatSymbols;
-import java.time.Duration;
-import java.time.Period;
 
 public class Ubiquite extends Conflit {
     private Chirurgien chirurgienPb;
-    private ArrayList<Bloc> salles;
     
     
     public Ubiquite(Chirurgie ch1, Chirurgie ch2, Journee j){
@@ -23,7 +15,6 @@ public class Ubiquite extends Conflit {
         ArrayList<Bloc> blocs = new ArrayList<Bloc>();
         blocs.add(ch1.getSalle());
         blocs.add(ch2.getSalle());
-        this.salles=blocs;
     }
     
     
@@ -36,7 +27,7 @@ public class Ubiquite extends Conflit {
     //////////////////////////////////////////////////////
     // Resolutions intelligentes et coherentes
     
-    // Methode à tenter en n°1
+    // Methode à tenter en n1
     public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data, double indiceRecouvrementDesire) {
 //    	Conditions :
 //    	1. Gros chevauchement   2. des chirurgiens sont libres a cet horaire    3. un des blocs est dans avec son chirurgien fort
@@ -127,7 +118,7 @@ public class Ubiquite extends Conflit {
     }
     
     
-    // Methode à tenter en n°1 bis
+    // Methode à tenter en n1 bis
     public boolean essayerRaccourcissementEvident(BaseDeDonnees data) {
     	//Conditions pour un raccourcissement evident : 
     	//1. petit indice de recouvrement   2. pas de superposition  3. Anomalie de longueur sur une des deux chirurgies
@@ -312,9 +303,9 @@ public class Ubiquite extends Conflit {
     
     
     //////////////////////////////////////////////////////
-    // Resolutions cohérentes, mais moins évidentes, à ne réaliser que si les 2 premières sont finies
+    // Resolutions coherentes, mais moins evidentes, à ne realiser que si les 2 premieres sont finies
     
-    //Methode à tenter en n°2
+    //Methode a� tenter en n2
     public boolean essayerChangementPresqueEvidentDeChirurgien(BaseDeDonnees data) {
 //    	Conditions :
 //    	1. Gros chevauchement   2. des chirurgiens sont libres a cet horaire    3. un des blocs est dans avec son chirurgien fort
@@ -403,7 +394,7 @@ public class Ubiquite extends Conflit {
     }
     
     
-    // Methode à tenter en n°2 bis
+    // Methode a� tenter en n2 bis
     public boolean essayerChangementChirurgienPresentSousContraintes(BaseDeDonnees database) {
     	if (resolu) {
     		return false;
@@ -417,10 +408,10 @@ public class Ubiquite extends Conflit {
     	ArrayList<Chirurgien> copie2 = new ArrayList<>(chirurgiensCandidatsCh2);
     	
     	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le ChirurgienProbleme de l'ubiquite
-    	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie
+    	// On va proceder par elimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie
     	
     	
-    	// ie on va chercher un chirurgien présent, dont la réalisation de cette chirurgie serait dans ses habitudes de travail.
+    	// ie on va chercher un chirurgien présent, dont la realisation de cette chirurgie serait dans ses habitudes de travail.
     	 
     	for (Chirurgien albert : copie1) {
     		
@@ -436,23 +427,23 @@ public class Ubiquite extends Conflit {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     		
-    		//Puis je procède aux éliminations, j'enleve le chirurgien  : 
-    		// Si le chirurgien est deja surchargé de travail
+    		//Puis je procede aux eliminations, j'enleve le chirurgien  : 
+    		// Si le chirurgien est deja surcharge de travail
     		if (albert.getLesJSurcharges().contains(auj) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     		
-    		// Si la chirurgie ne correspond pas a ses durées habituelles
+    		// Si la chirurgie ne correspond pas a ses durees habituelles
     		if (chTest.anomalieDureeChirurgieOuPas()==true && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     		
-    		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
+    		// Si la chirurgie ne correspond pas a sa plage horaire habituelles
     		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.2) && chirurgiensCandidatsCh1.contains(albert)) {
     			chirurgiensCandidatsCh1.remove(albert);
     		}
     		
-    		// Si, en donnant cette chirurgie au chirurgien, on ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		// Si, en donnant cette chirurgie au chirurgien, on ne verifie pas les contraintes de durees interoperatoires necessaires
     		chTest.setChirurgien(albert);
     		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
     			chirurgiensCandidatsCh1.remove(albert);
@@ -560,13 +551,11 @@ public class Ubiquite extends Conflit {
     
     
     //////////////////////////////////////////////////////
-    // Resolutions peu académiques, tout de même basées sur des statistiques, mais à ne faire que si volonté de Resoudre a tout prix
+    // Resolutions peu academiques, tout de meme basees sur des statistiques, mais a� ne faire que si volonte de resoudre a tout prix
 
     
-    // Methode à tenter en n°5
+    // Methode a� tenter en n�3
     public boolean essayerChangementChirurgienAbsentSousContraintes(BaseDeDonnees database) {
-    	boolean result = false;
-    	LocalDate auj = this.chirurgie1.getDate();
     	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = new ArrayList<>(database.getTousChirurgiens());
     	ArrayList<Chirurgien> copie1 = new ArrayList<>(chirurgiensCandidatsCh1);
     	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = new ArrayList<>(database.getTousChirurgiens());
@@ -772,16 +761,17 @@ public class Ubiquite extends Conflit {
     }
 
     
-    // Methode à tenter en n°6 / Meme déconseillé d'utiliser car manque de cohérence
+    // Methode a� tenter en n�3 / Meme deconseille d'utiliser car manque de coherence
     public boolean resoEfficaceMaisPeuCoherente(BaseDeDonnees database) {
     	
     	boolean result = false;
-    	LocalDate auj = this.chirurgie1.getDate();
     	ArrayList<Chirurgien> chirurgiensCandidats = new ArrayList<>(database.getTousChirurgiens());
     	ArrayList<Chirurgien> copie1 = new ArrayList<>(chirurgiensCandidats);
+    	copie1.remove(chirurgienPb);
+    	chirurgiensCandidats.remove(chirurgienPb);
+    	
     	
     	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour, 1);
-    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour, 1);
     	
     	if (chirurgie1.getChirurgien().equals(chFort1)) {
     		for (Chirurgien albert : copie1) {
@@ -793,6 +783,7 @@ public class Ubiquite extends Conflit {
         	
         	if (chirurgiensCandidats.size()!=0) {
         			chirurgie2.setChirurgien(chirurgiensCandidats.get(0));
+        			System.out.println("ca a pris a"+chirurgie2.getChirurgien());
         			chirurgiensCandidats.get(0).getChirurgies().add(chirurgie2);
         		this.setEtat(true);
     			result = true;
@@ -808,6 +799,8 @@ public class Ubiquite extends Conflit {
         	
         	if (chirurgiensCandidats.size()!=0) {
         			chirurgie1.setChirurgien(chirurgiensCandidats.get(0));
+
+        			System.out.println("ca a pris b"+chirurgie2.getChirurgien());
         			chirurgiensCandidats.get(0).getChirurgies().add(chirurgie1);
         		this.setEtat(true);
     			result = true;

@@ -98,8 +98,8 @@ class BaseDeDonneesTEST {
 		
 		assertEquals(6,data2.listeJournees.size());
 		
-		jour2.planningJourneeParChirurgien();
-		jour2.planningJourneeParBloc();
+		System.out.println(jour2.planningJourneeParChirurgien());
+		System.out.println(jour2.planningJourneeParBloc());
 		
 	}
 

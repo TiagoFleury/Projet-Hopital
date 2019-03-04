@@ -1,15 +1,13 @@
 package classes;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Locale;
 import java.io.BufferedWriter;
-import java.math.*;
+import java.io.IOException;
 
 public class Journee {
     private LocalDate date;
@@ -17,7 +15,6 @@ public class Journee {
     private ArrayList<Chirurgie> chirurgiesDuJour;
     private ArrayList<Chirurgien> chirurgiensMobilises;
     private ArrayList<Bloc> sallesOccupeesduJour;
-    private ArrayList<Anomalie> anomaliesDuJour;
     
     
     //CONSTRUCTEURS 
@@ -28,9 +25,6 @@ public class Journee {
     	chirurgiensMobilises = new ArrayList<Chirurgien>();
     	sallesOccupeesduJour = new ArrayList<Bloc>();
     }
-    
-    
-    
     
     public Journee(Chirurgie c) { //Instancie une journee a partir des parametres de c
     	date = c.getDate();
@@ -75,6 +69,7 @@ public class Journee {
     	String nomDeFamReduit = separation[1].substring(0, 3);
     	return caracteres[0]+"."+nomDeFamReduit; 
     }   
+   
     private int cbdecaracteresNecessaires(Chirurgie c){
         // va prendre la valeur de dizaines de minutes entre le debut et la fin d'une chirurgie
         double i = ChronoUnit.MINUTES.between(c.getDebut(), c.getFin());
@@ -92,90 +87,79 @@ public class Journee {
 
     
     
-    //TRIS
-    
-    public static ArrayList<Chirurgie> triParBlocs(ArrayList<Chirurgie> liste) {
-    	@SuppressWarnings("unchecked") //Warning relou
-		Comparator<Chirurgie> PAR_BLOC = Comparator.comparing(Chirurgie::getSalle);
-    	
-    	Collections.sort(liste, PAR_BLOC);
-    	return liste;
-    }
-    public static ArrayList<Chirurgie> triParChirurgien(ArrayList<Chirurgie> liste){
-    	@SuppressWarnings("unchecked") //Warning relou
-		Comparator<Chirurgie> PAR_CHIRURGIEN = Comparator.comparing(Chirurgie::getChirurgien);
-    	Collections.sort(liste, PAR_CHIRURGIEN);
-    	return liste;
-    }
-    
-    
     
     //AFFICHAGES
     
-    public void planningJourneeParBloc(){
-        System.out.println("\n\n\n");
-        System.out.println("                                                     PLANNING DU "+date+"\n\n");
-        System.out.println("Salle          0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h   8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
+    public String planningJourneeParBloc(){
+    	String str="";
+        str+="\n\n\n\n";
+        str+="                                                     PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n";
+        str+="Salle          0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h   8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h\n";
         //  A gauche du '.' c'est 8h,   A droite du '.' c'est 8h05
-        System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
+        str+="               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .\n";
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = triParBlocs(chirurgiesDuJour);
+        chirurgiesJourTriees = chirurgiesDuJour;
+        Collections.sort(chirurgiesJourTriees, Chirurgie.PAR_BLOC);
         Bloc blocActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
             if(!c.getSalle().equals(blocActuel)) {
-            	System.out.println("\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
-            	System.out.println(c.getSalle().getName()+" :"); //On affiche que s'il y a un changement de bloc
+            	str+="\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .\n";
+            	str+=c.getSalle().getName()+" :\n"; //On affiche que s'il y a un changement de bloc
             }
             
-            System.out.print(c.getID());
+            str+=c.getID();
             for (int compteur=0;compteur<cbAvant;compteur++){
-                System.out.print(" ");
+                str+=" ";
             }
             String nouvNom = reductionNomChirurgienPourAffichage(c.getChirurgien());
-            System.out.print(nouvNom);
+            str+=nouvNom;
             int compteur = nouvNom.length();
             while (compteur<=combien){
-                System.out.print("#");
+                str+="#";
                 compteur++;
             }
-            System.out.println("");
+            str+="\n";
             blocActuel = c.getSalle();
         }
+        return str;
     }
     
-    public void planningJourneeParChirurgien(){
-        System.out.println("\n\n\n");
-        System.out.println("                                                      PLANNING DU "+date+"\n\n");
-        System.out.println("Chirurgien     0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h");
-        //  A� gauche du . c'est 8h, A� droite du . c'est 8h05
-        System.out.println("               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
+    public String planningJourneeParChirurgien(){
+    	String str = "";
+        str+="\n\n\n\n";
+        str+="                                                      PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n\n";
+        str+="Chirurgien     0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h";
+        //  A gauche du . c'est 8h, A droite du . c'est 8h05
+        str+="               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .\n";
         ArrayList<Chirurgie> chirurgiesJourTriees = new ArrayList<Chirurgie>();
-        chirurgiesJourTriees = triParChirurgien(chirurgiesDuJour);
+        chirurgiesJourTriees = chirurgiesDuJour;
+        Collections.sort(chirurgiesJourTriees, Chirurgie.PAR_CHIRURGIEN);
         
         Chirurgien chirurgienActuel = null;
         for(Chirurgie c : chirurgiesJourTriees){
             int cbAvant = cbdecaracteresAvant(c);
             int combien=cbdecaracteresNecessaires(c);
             if(!c.getChirurgien().equals(chirurgienActuel)) {
-            	System.out.println("\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .");
+            	str+="\n\n               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .\n";
             	
-            	System.out.println(c.getChirurgien().getName()+" :"); //On affiche que s'il y a un changement de chirurgien
+            	str+=c.getChirurgien().getName()+" :\n"; //On affiche que s'il y a un changement de chirurgien
             }
-            System.out.print(c.getID());
+            str+=c.getID();
             for (int compteur=0;compteur<cbAvant;compteur++){
-                System.out.print(" ");
+                str+=" ";
             }
-            System.out.print(c.getSalle().getName());
+            str+=c.getSalle().getName();
             int compteur = c.getSalle().getName().length();
             while (compteur<combien){
-                System.out.print("#");
+                str+="#";
                 compteur++;
             }
-            System.out.println("");
+            str+="\n";
             chirurgienActuel = c.getChirurgien();
         }
+        return str;
         
     }
     
@@ -315,153 +299,299 @@ public class Journee {
     }
     
     
-    public int resoudreConflit(BufferedWriter writer, BaseDeDonnees data) {
+    public int[] resoudreConflits(BufferedWriter writer, BaseDeDonnees data, int degre) {
     	detectionConflit();
     	//D'abord les chevauchements evidents
     	int evident=0;
     	int moyen=0;
+    	int shetan=0;
+    	int[] tab = new int[3];
+    	
+    	String planning;
+    	
+    	
     	if(conflitsDuJour.size()==0) {
-    		return 0;
+    		return tab;
     	}
     		
     	
-    	boolean changementEffectue=false;
+    	boolean changementEffectue=true;//Pour entrer dans les boucles
     	
-    	while(changementEffectue) {
-    		//Quand on a fait une resolution compliquee, on reessaie les resolutions simples avec le reste
+    	try {
     		
-	    	while(changementEffectue) {//Tant que des changements se font, on fait des resolutions simples
-	    		detectionConflit();
-	    		changementEffectue=false;
-		    	for(Conflit c : conflitsDuJour) { //On va faire d'abord tous les chevauchements simples
-		    		if(c instanceof Chevauchement ) {
-		    			Chevauchement chevauchement = (Chevauchement) c;
-		    			
-		    			if(chevauchement.essayerDecalageEvident()) {
-		    				changementEffectue=true;
-		    				evident++;
-		    				
-		    			}
-		    		}
-		    	}
-		    	//Ici on aura fait tous les chevauchements evidents
+	    	
+	    	while(changementEffectue) {
 		    	
-		    	for(Conflit c : conflitsDuJour) {
-		    		if(c instanceof Interference) {
-		    			Interference interf = (Interference) c;
-		    			if(interf.essayerChangementDeSalleEvident()){
-		    				changementEffectue=true;
-		    				evident++;
-		    			}
-		    			else if(interf.essayerRaccourcissementEvident(data)) {
-		    				changementEffectue=true;
-		    				evident++;
-		    			}
-		    		}
+		    	
+		    	while(changementEffectue) {
+		    		//Quand on a fait une resolution compliquee, on reessaie les resolutions simples avec le reste
+		    		
+			    	while(changementEffectue) {//Tant que des changements se font, on fait des resolutions simples
+			    		detectionConflit();
+			    		changementEffectue=false;
+				    	for(Conflit c : conflitsDuJour) { //On va faire d'abord tous les chevauchements simples
+				    		if(c instanceof Chevauchement ) {
+				    			Chevauchement chevauchement = (Chevauchement) c;
+				    			planning=planningJourneeParBloc();
+				    			if(chevauchement.essayerDecalageEvident()) {
+				    				changementEffectue=true;
+				    				evident++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.print("------------------------------------------------------------------------------------------\n");
+				    				System.out.println(planning);
+				    				writer.write("\nLe chevauchement "+c+" a ete corrige par un deplacement evident\n");
+				    				writer.newLine();
+				    				System.out.println("\nLe chevauchement "+c+" a ete corrige par un deplacement evident\n");
+				    				System.out.println("Nouveau planning : \n");
+				    				
+				    				System.out.println(planningJourneeParBloc());
+				    				writer.flush();
+				    				
+				    			}
+				    		}
+				    	}
+				    	//Ici on aura fait tous les chevauchements evidents
+				    	
+				    	for(Conflit c : conflitsDuJour) {
+				    		if(c instanceof Interference) {
+				    			Interference interf = (Interference) c;
+				    			planning = planningJourneeParBloc();
+				    			if(interf.essayerChangementDeSalleEvident()){
+				    				changementEffectue=true;
+				    				evident++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.println(planning);
+				    				writer.write("\nL'interference "+c+" a ete corrige par un changement de bloc evident\n");
+				    				writer.newLine();
+
+				    				System.out.println("\nL'interference "+c+" a ete corrige par un changement de bloc evident\n");
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParBloc());
+				    				writer.flush();
+				    				
+				    			}
+				    			else if(interf.essayerRaccourcissementEvident(data)) {
+				    				changementEffectue=true;
+				    				evident++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.println(planning);
+				    				writer.write("\nL'interference "+c+" a ete corrige par un raccourcissement evident\n");
+				    				writer.newLine();
+
+				    				System.out.println("\nL'interference "+c+" a ete corrige par un raccourcissement evident\n");
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParBloc());
+				    				writer.flush();
+				    			}
+				    		}
+				    	}
+				    	
+				    	//Ici on aura fait toutes les interferences evidentes
+				    	
+				    	for(Conflit c : conflitsDuJour) {
+				    		if(c instanceof Ubiquite) {
+				    			Ubiquite ubiq = (Ubiquite)c;
+				    			planning = planningJourneeParChirurgien();
+				    			if(ubiq.essayerChangementEvidentDeChirurgien(data, 0.2)) {
+				    				changementEffectue=true;
+				    				evident++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				System.out.println(planning);
+				    				writer.write("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien evident\n");
+
+				    				System.out.println("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien evident\n");
+				    				writer.newLine();
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParChirurgien());
+				    				writer.flush();
+				    			}
+				    			else if(ubiq.essayerRaccourcissementEvident(data)) {
+				    				changementEffectue=true;
+				    				evident++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				System.out.println(planning);
+				    				writer.write("\nL'ubiquite "+c+" a ete corrigee par un raccourcissement evident\n");
+
+				    				System.out.println("\nL'ubiquite "+c+" a ete corrigee par un raccourcissement evident\n");
+				    				writer.newLine();
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParChirurgien());
+				    				writer.flush();
+				    			}
+				    		}
+				    	}
+			    	} //Fin premier while
+			    	
+			    	//Ici il n'y a plus de resolutions simples a faire normalement
+			    	if(degre>1) {
+				    	for(Conflit c : conflitsDuJour) {
+				    		if(c instanceof Interference) {
+				    			Interference interf = (Interference) c;
+				    			planning = planningJourneeParBloc();
+				    			if(interf.essayerDeplacementDeForce(data)){
+				    				changementEffectue=true;
+				    				moyen++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				System.out.println(planning);
+				    				writer.write("\nL'interference "+c+" a ete corrige par un deplacement de bloc force\n");
+
+				    				System.out.println("\nL'interference "+c+" a ete corrige par un deplacement de bloc force\n");
+				    				writer.newLine();
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParBloc());
+				    				writer.flush();
+				    				break;
+				    			}
+				    		}
+				    		
+				    		
+			    			if(c instanceof Ubiquite) {
+				    			Ubiquite ubiq = (Ubiquite)c;
+				    			planning = planningJourneeParChirurgien();
+				    		
+				    			if(ubiq.essayerChangementPresqueEvidentDeChirurgien(data)) {
+				    				changementEffectue=true;
+				    				moyen++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				System.out.println(planning);
+				    				writer.write("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien force\n");
+
+				    				System.out.println("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien force\n");
+				    				writer.newLine();
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParChirurgien());
+				    				writer.flush();
+				    				break;
+				    			}
+				    			else if(ubiq.essayerChangementChirurgienPresentSousContraintes(data)) {
+				    				changementEffectue=true;
+				    				moyen++;
+				    				writer.write("------------------------------------------------------------------------------------------\n");
+				    				writer.newLine();
+				    				System.out.println("------------------------------------------------------------------------------------------\n");
+				    				System.out.println(planning);
+				    				
+				    				writer.write("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien sous contraintes\n");
+				    				writer.newLine();
+				    				System.out.println("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien sous contraintes\n");
+				    				System.out.println("Nouveau planning : \n");
+				    				System.out.println(planningJourneeParChirurgien());
+				    				writer.flush();
+				    				break;
+				    			}
+				    		}
+			    		
+				    	}
+			    	}
+			    	
+			    	
+		    	}//Fin deuxieme while
+		    	
+		    	//Ici il n'y a eu aucune modifications, ni avec les resolutions evidentes, ni avec les resolutions moyennes
+		    	
+		    	
+		    	if(degre>2) {
+		    		for(Conflit c : conflitsDuJour) {
+			    		if(c instanceof Interference) {
+			    			Interference interf = (Interference) c;
+			    			planning = planningJourneeParBloc();
+			    			if(interf.vendreSonAmeAuShetan(data)){
+			    				changementEffectue=true;
+			    				shetan++;
+			    				writer.write("------------------------------------------------------------------------------------------\n");
+
+			    				System.out.println("------------------------------------------------------------------------------------------\n");
+			    				writer.newLine();
+			    				System.out.println(planning);
+			    				writer.write("\nL'interference "+c+" a ete corrige par un deplacement peu coherent\n");
+
+			    				System.out.println("\nL'interference "+c+" a ete corrige par un deplacement peu coherent\n");
+			    				writer.newLine();
+			    				System.out.println("\nL'interference "+c+" a ete corrigee par un deplacement peu coherent\n");
+			    				System.out.println("Nouveau planning : \n");
+			    				System.out.println(planningJourneeParBloc());
+			    				writer.flush();
+			    				break;
+			    			}
+			    		}
+			    		
+		    			if(c instanceof Ubiquite) {
+			    			Ubiquite ubiq = (Ubiquite)c;
+			    			planning = planningJourneeParChirurgien();
+			    			if(ubiq.essayerChangementChirurgienAbsentSousContraintes(data)) {
+			    				changementEffectue=true;
+			    				shetan++;
+			    				writer.write("------------------------------------------------------------------------------------------\n");
+			    				System.out.println("------------------------------------------------------------------------------------------\n");
+			    				writer.newLine();
+			    				System.out.println(planning);
+			    				writer.write("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien sous contraintes mais absent cette journee\n");
+			    				writer.newLine();
+
+			    				System.out.println("\nL'ubiquite "+c+" a ete corrigee par un changement de chirurgien sous contraintes mais absent cette journee\n");
+			    				System.out.println("Nouveau planning : \n");
+			    				System.out.println(planningJourneeParChirurgien());
+			    				writer.flush();
+			    				break;
+			    			}
+			    			else if(ubiq.resoEfficaceMaisPeuCoherente(data)) {
+			    				changementEffectue=true;
+			    				shetan++;
+			    				writer.write("------------------------------------------------------------------------------------------\n");
+			    				System.out.println("------------------------------------------------------------------------------------------\n");
+			    				writer.newLine();
+			    				System.out.println(planning);
+			    				writer.write("\nL'ubiquite "+c+" a ete corrigee par un resolution peu coherente\n");
+
+			    				System.out.println("\nL'ubiquite "+c+" a ete corrigee par un resolution peu coherente\n");
+			    				writer.newLine();
+			    				System.out.println("Nouveau planning : \n");
+			    				System.out.println(planningJourneeParChirurgien());
+			    				writer.flush();
+			    				break;
+			    			}
+			    		}
+		    		
+			    	}
 		    	}
 		    	
-		    	//Ici on aura fait toutes les interferences evidentes
 		    	
-		    	for(Conflit c : conflitsDuJour) {
-		    		if(c instanceof Ubiquite) {
-		    			Ubiquite ubiq = (Ubiquite)c;
-		    			if(ubiq.essayerChangementEvidentDeChirurgien(data, 0.2)) {
-		    				changementEffectue=true;
-		    				evident++;
-		    			}
-		    			else if(ubiq.essayerRaccourcissementEvident(data)) {
-		    				changementEffectue=true;
-		    				evident++;
-		    			}
-		    		}
-		    	}
-	    	}
-	    	
-	    	//Ici il n'y a plus de resolutions simples a faire normalement
-	    	
-	    	for(Conflit c : conflitsDuJour) {
-	    		if(c instanceof Interference) {
-	    			Interference interf = (Interference) c;
-	    			if(interf.essayerDeplacementDeForce(data)){
-	    				changementEffectue=true;
-	    				moyen++;
-	    			}
-	    		}
-	    		
-	    		if(c instanceof Ubiquite) {
-	    			if(c instanceof Ubiquite) {
-		    			Ubiquite ubiq = (Ubiquite)c;
-		    			if(ubiq.essayerChangementEvidentDeChirurgien(data, 0.2)) {
-		    				changementEffectue=true;
-		    				evident++;
-		    			}
-		    			else if(ubiq.essayerRaccourcissementEvident(data)) {
-		    				changementEffectue=true;
-		    				evident++;
-		    			}
-		    		}
-	    		}
-	    	}
-	    	
-	    	
-	    	
+		    	
+		    	
+	    	} //Fin troisieme while
+    	}
+    	catch(IOException e) {
+    		e.printStackTrace();
     	}
     	
-    	return 0;
+    	tab[0]=evident;
+    	tab[1]=moyen;
+    	tab[2]=shetan;
+    	
+    	return tab;
     	
     }
     
     
-    
-    
-    
-    // 3. Detection d'anomalies parmis les chirurgies qui sont en conflits
-    
-    // On définit ici des méthodes qui s'applique à toute chirurgie, mais on ne regardera QUE pour des chirurgies en conflit
-    
-    
-  
-    
-    
-    
-
-    
-    
-    
-    // 4. Methodes de base de resolution de conflits
-    
-    // Ici resolution facile, trouver une salle disponible totalement disponible sur le creneau : ie ne genere aucun conflit / cout = 0
-    // Dans ce cas (de maniere innocente) on va choisir la premiere dispo qui ne genere aucun conflit
-    // Voir la 1ere qui n'est pas occupee de la Journee entiere
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-    
-    // Resolution de conflit
-    /////////////////////////////////////////////////////////
-    
-    public void resolutionConflit(BaseDeDonnees database, Conflit c) {
-    	// 1ere etape, penser a checker que si, pr les 2 chirurgies en conflits, leur durees n'est pas du tout coherente
-    	// ie intervalle de confiance 95%  && qu'en plus, cela résoud le conflit  -- alors on la raccourcie direct
-    	
-    	// puis resoudre conflit
-    }
     
     
    
-    
-    
-    
-    
     
     
     ////////////////////////////////////////////////////////

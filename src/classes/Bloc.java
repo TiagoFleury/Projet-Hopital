@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Bloc implements Comparable{
     private String nom;
     private int id;
-    private ArrayList<Double> moyennesJours;
     public static double tempsMoyenEntreDeuxChirurgies;
 
     public Bloc(String leNom) {
@@ -114,12 +113,7 @@ public class Bloc implements Comparable{
 	}
 	
 	
-	
-	// Mutateurs //
-	public void setMoyennesJours(ArrayList<Double> listemoyennes) {
-		moyennesJours=listemoyennes;
-	}
-
+	//MUTATEURS
 
 
 	public ArrayList<Chirurgie> recupererChirurgies(Journee jour) { //retourne une liste vide si il y a 0 chirurgies dans ce bloc dans cette journee
