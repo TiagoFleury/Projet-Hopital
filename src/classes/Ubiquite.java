@@ -30,7 +30,7 @@ public class Ubiquite extends Conflit {
     
     
     
-    // Resolution ///////////////////////////////
+    // Resolution ////////////////////////////////////////
     
     public void resolutionUbiquite() {
     	// appeler resolution evidente = essayerChangementTrèsEvidentChirurgien()
@@ -52,14 +52,7 @@ public class Ubiquite extends Conflit {
     	
     }
     
-    
-    // Cette resolution va s'occuper d'un cas specifique a : 
-    //    une des deux chirurgies est anormalement longue, et dans ce cas on peut envisager de la/les raccourcir
-    //    le cas où une chirurgie est apres le début ET avant la fin n'est pas pris en compte, et sera résolue d'une autre manière
-    
-    // integrer un temps inter operatoire
-    
-    public boolean essayerRacourcirPourResoudre() {
+    public boolean NOPE_HUGOessayerRacourcirPourResoudre() {
     	boolean retour = false;
     	boolean b1=false;
     	boolean b2=false;
@@ -170,6 +163,101 @@ public class Ubiquite extends Conflit {
     
     
     
+    
+    //////////////////////////////////////////////////////
+    // Resolutions intelligentes et coherentes
+    
+    // Methode à tenter en n°1
+    public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data, double indiceRecouvrementDesire) {
+//    	Conditions :
+//    	1. Gros chevauchement   2. des chirurgiens sont libres a cet horaire    3. un des blocs est dans avec son chirurgien fort
+//		4. Les chirurgiens ne peuvent pas etre choisis en dehors de la journee
+    	
+    	//On fait toutes les conditions qui font qu'on laisse la main a une autre resolution plus laxe ou plus appropriee
+    	
+    	if(resolu)
+    		return false;
+    	
+    	if(getIndiceDeRecouvrement()<indiceRecouvrementDesire) {
+    		return false;
+    	}
+    	ArrayList<Chirurgien> chirurgiensLibres2 = getChirurgiensLibres2();
+    	ArrayList<Chirurgien> chirurgiensLibres1 = getChirurgiensLibres1();
+    	if(chirurgiensLibres1.size()==0 && chirurgiensLibres2.size()==0) { 
+    		return false;
+    	}
+    	
+    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour,2);
+    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour,2);
+    	
+    	//Si le chirurgien fort d'un des deux blocs est libre, on le bouge sans trop se poser de question
+    	
+    	
+    	if(chirurgiensLibres1.contains(chFort1) && !chirurgiensLibres2.contains(chFort2)) {
+    		chirurgie1.setChirurgien(chFort1);
+    		resolu = true;
+    		
+    	}
+    	if(!chirurgiensLibres1.contains(chFort1) && chirurgiensLibres2.contains(chFort2)) {
+    		chirurgie2.setChirurgien(chFort2);
+    		resolu = true;
+    	}
+    	
+    	
+    	if(!(chirurgienPb.equals(chFort1) || chirurgienPb.equals(chFort2))) { //Si aucun de blocs  n'est avec son bloc fort
+    		return false;
+    	}
+    	//Ici il y a donc forcement un des deux blocs qui est dans avec Ch fort et il faudra bouger l'autre
+    	
+    	
+    	if(chirurgienPb.equals(chFort1) && !chirurgienPb.equals(chFort2)) {//Si c'est le 1, on essaie de bouger la 2
+    		
+    		if(chirurgiensLibres2.size()==0) {
+    			return false; //Si pas de blocs libres, on laisse la main
+    		}
+    		else {
+    			//Sinon, il va falloir choisir un chirurgien parmis tous les blocs libres
+    			// => on va arbitrairement prendre celui ou il y a le plus de chirurgie du mec
+    			int max=0;
+    			Chirurgien cMax=chirurgiensLibres2.get(0);
+    			for(Chirurgien chAevaluer : chirurgiensLibres2) {
+    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie2.getSalle(),jour)>max) {
+    					 cMax=chAevaluer;
+    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie2.getSalle(), jour);
+    				}
+    			}
+    			chirurgie2.setChirurgien(cMax);
+    			resolu = true;
+    			return true;
+    		}
+    	}
+    	
+    	if(chirurgienPb.equals(chFort2) && !chirurgienPb.equals(chFort1)) {//Si c'est le 2, on essaie de bouger la 1
+    		
+    		if(chirurgiensLibres1.size()==0) {
+    			return false; //Si pas de blocs libres, on laisse la main
+    		}
+    		else {
+    			//Sinon, il va falloir choisir un bloc parmis tous les blocs libres
+    			// => on va arbitrairement prendre celui ou il y a le plus de chirurgie du mec
+    			int max=0;
+    			Chirurgien cMax=chirurgiensLibres1.get(0);
+    			for(Chirurgien chAevaluer : chirurgiensLibres1) {
+    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie1.getSalle(),jour)>max) {
+    					 cMax=chAevaluer;
+    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie1.getSalle(), jour);
+    				}
+    			}
+    			chirurgie1.setChirurgien(cMax);
+    			resolu = true;
+    			return true;
+    		}
+    	}
+    	//Si les deux sont dans leur bloc fort on laisse la main
+    	return false;
+    }
+    
+    // Methode à tenter en n°2
     public boolean essayerRaccourcissementEvident(BaseDeDonnees data) {
     	//Conditions pour un raccourcissement evident : 
     	//1. petit indice de recouvrement   2. pas de superposition  3. Anomalie de longueur sur une des deux chirurgies
@@ -351,102 +439,8 @@ public class Ubiquite extends Conflit {
     	return false;
     }
     
-
     
-    
-    public boolean essayerChangementEvidentDeChirurgien(BaseDeDonnees data, double indiceRecouvrementDesire) {
-//    	Conditions :
-//    	1. Gros chevauchement   2. des chirurgiens sont libres a cet horaire    3. un des blocs est dans avec son chirurgien fort
-//		4. Les chirurgiens ne peuvent pas etre choisis en dehors de la journee
-    	
-    	//On fait toutes les conditions qui font qu'on laisse la main a une autre resolution plus laxe ou plus appropriee
-    	
-    	if(resolu)
-    		return false;
-    	
-    	if(getIndiceDeRecouvrement()<indiceRecouvrementDesire) {
-    		return false;
-    	}
-    	ArrayList<Chirurgien> chirurgiensLibres2 = getChirurgiensLibres2();
-    	ArrayList<Chirurgien> chirurgiensLibres1 = getChirurgiensLibres1();
-    	if(chirurgiensLibres1.size()==0 && chirurgiensLibres2.size()==0) { 
-    		return false;
-    	}
-    	
-    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour,2);
-    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour,2);
-    	
-    	//Si le chirurgien fort d'un des deux blocs est libre, on le bouge sans trop se poser de question
-    	
-    	
-    	if(chirurgiensLibres1.contains(chFort1) && !chirurgiensLibres2.contains(chFort2)) {
-    		chirurgie1.setChirurgien(chFort1);
-    		resolu = true;
-    		
-    	}
-    	if(!chirurgiensLibres1.contains(chFort1) && chirurgiensLibres2.contains(chFort2)) {
-    		chirurgie2.setChirurgien(chFort2);
-    		resolu = true;
-    	}
-    	
-    	
-    	if(!(chirurgienPb.equals(chFort1) || chirurgienPb.equals(chFort2))) { //Si aucun de blocs  n'est avec son bloc fort
-    		return false;
-    	}
-    	//Ici il y a donc forcement un des deux blocs qui est dans avec Ch fort et il faudra bouger l'autre
-    	
-    	
-    	if(chirurgienPb.equals(chFort1) && !chirurgienPb.equals(chFort2)) {//Si c'est le 1, on essaie de bouger la 2
-    		
-    		if(chirurgiensLibres2.size()==0) {
-    			return false; //Si pas de blocs libres, on laisse la main
-    		}
-    		else {
-    			//Sinon, il va falloir choisir un chirurgien parmis tous les blocs libres
-    			// => on va arbitrairement prendre celui ou il y a le plus de chirurgie du mec
-    			int max=0;
-    			Chirurgien cMax=chirurgiensLibres2.get(0);
-    			for(Chirurgien chAevaluer : chirurgiensLibres2) {
-    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie2.getSalle(),jour)>max) {
-    					 cMax=chAevaluer;
-    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie2.getSalle(), jour);
-    				}
-    			}
-    			chirurgie2.setChirurgien(cMax);
-    			resolu = true;
-    			return true;
-    		}
-    	}
-    	
-    	if(chirurgienPb.equals(chFort2) && !chirurgienPb.equals(chFort1)) {//Si c'est le 2, on essaie de bouger la 1
-    		
-    		if(chirurgiensLibres1.size()==0) {
-    			return false; //Si pas de blocs libres, on laisse la main
-    		}
-    		else {
-    			//Sinon, il va falloir choisir un bloc parmis tous les blocs libres
-    			// => on va arbitrairement prendre celui ou il y a le plus de chirurgie du mec
-    			int max=0;
-    			Chirurgien cMax=chirurgiensLibres1.get(0);
-    			for(Chirurgien chAevaluer : chirurgiensLibres1) {
-    				if(chAevaluer.nombreDeChirurgiesDe(chirurgie1.getSalle(),jour)>max) {
-    					 cMax=chAevaluer;
-    					 max=chAevaluer.nombreDeChirurgiesDe(chirurgie1.getSalle(), jour);
-    				}
-    			}
-    			chirurgie1.setChirurgien(cMax);
-    			resolu = true;
-    			return true;
-    		}
-    	}
-    	//Si les deux sont dans leur bloc fort on laisse la main
-    	return false;
-    }
-    
-    
-    
-    
-    
+    // Methode à tenter en n°3
     public boolean essayerChangementChirurgienPresentSousContraintes(BaseDeDonnees database) {
     	boolean result = false;
     	LocalDate auj = this.chirurgie1.getDate();
@@ -551,8 +545,6 @@ public class Ubiquite extends Conflit {
     			chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
     		}
     		this.setEtat(true);
-			this.chirurgie1.setEnConflit(false);
-			this.chirurgie2.setEnConflit(false);
 			result = true;
     	}
     	
@@ -566,8 +558,6 @@ public class Ubiquite extends Conflit {
     			chirurgiensCandidatsCh2.get(0).getChirurgies().add(chirurgie2);
     		}
     		this.setEtat(true);
-			this.chirurgie1.setEnConflit(false);
-			this.chirurgie2.setEnConflit(false);
 			result = true;
     	}
     	
@@ -593,19 +583,23 @@ public class Ubiquite extends Conflit {
     		}
     	
     		this.setEtat(true);
-			this.chirurgie1.setEnConflit(false);
-			this.chirurgie2.setEnConflit(false);
 			result = true;
     	}
     	return result;
     	
     }
     
+    //////////////////////////////////////////////////////
     
     
     
     
-    public void essayerChangementChirurgienPresentPeuPrecis(BaseDeDonnees database) {
+    
+    
+    //////////////////////////////////////////////////////
+    // Resolutions peu académiques, tout de même basées sur des statistiques, mais à ne faire que si volonté de Resoudre a tout prix
+    
+    public void NOPE_HUGO_essayerChangementChirurgienPresentSecondCouteau(BaseDeDonnees database) {
     	Chirurgien chirurgienP = chirurgienPb;
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -658,13 +652,7 @@ public class Ubiquite extends Conflit {
     }
     
     
-    
-    
-    
-    // Si celle au dessus n'a pas marché, alors aller chercher parmis ceux qui bossent pas de la journée (ex : ceux qui bossent pas le mardi15)
-    // lesquels ont la plus grosse probas de bosser un mardi
-    
-    public void essayerChangementChirurgienAbsentSousContraintes(BaseDeDonnees database, Ubiquite u) {
+    public void NOPE_HUGO_00essayerChangementChirurgienAbsentSousContraintes(BaseDeDonnees database) {
     	Chirurgien chirurgienPb = u.getChirurgienPb();
     	Chirurgien unChirurgien = null;
     	Chirurgie chirurgieTest = null;
@@ -724,9 +712,169 @@ public class Ubiquite extends Conflit {
     	}
 		
     }
+
     
     
-    /////////////////////////////////////
+    
+    // Methode à tenter en n°4
+    public boolean essayerChangementChirurgienAbsentSousContraintes(BaseDeDonnees database) {
+    	boolean result = false;
+    	LocalDate auj = this.chirurgie1.getDate();
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh1 = new ArrayList<>(database.getTousChirurgiens());
+    	ArrayList<Chirurgien> copie1 = new ArrayList<>(chirurgiensCandidatsCh1);
+    	ArrayList<Chirurgien> chirurgiensCandidatsCh2 = new ArrayList<>(database.getTousChirurgiens());
+    	ArrayList<Chirurgien> copie2 = new ArrayList<>(chirurgiensCandidatsCh2);
+    	
+    	// J'ai donc ici une liste de chirurgiens candidats, pour remplacer le ChirurgienProbleme de l'ubiquite
+    	// On va procéder par élimination pour trouver qui serait le plus suceptible d'avoir cette chirurgie
+    	
+    	
+    	// ie on va chercher un chirurgien absent, dont la réalisation de cette chirurgie serait dans ses habitudes de travail.
+    	 
+    	for (Chirurgien albert : copie1) {
+    		Chirurgie chTest = new Chirurgie(chirurgie1);
+    		
+    		//j'enleve le chirurgien  : 
+    		
+    		// si le chirurgien est présent ce jour là 
+    		// Car s'il avait été là, alors il a déjà été candidat dans une précédente méthode, et il n'a pas été retenu pour de bonnes raisons
+    		if (jour.getChirurgiensMobilises().contains(albert)) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    		
+    		// S'il n'est pas censé travailler le jour qu'on lui propose 
+    		int k = jour.getDate().getDayOfWeek().getValue()-1;
+    		if (albert.getProportions().get(k)<0.15) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    		
+    		
+    		// Si la chirurgie ne correspond pas a ses durées habituelles
+    		if (chTest.anomalieDureeChirurgieOuPas()==true && chirurgiensCandidatsCh1.contains(albert)) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    		
+    		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
+    		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.15) && chirurgiensCandidatsCh1.contains(albert)) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    		
+    		// Si, en donnant cette chirurgie au chirurgien, on ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		chTest.setChirurgien(albert);
+    		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
+    			chirurgiensCandidatsCh1.remove(albert);
+    		}
+    	}
+    	
+    	for (Chirurgien albert : copie2) {
+    		Chirurgie chTest = new Chirurgie(chirurgie2);
+    		
+    		//j'enleve le chirurgien  : 
+    		
+    		// si le chirurgien est présent ce jour là 
+    		// Car s'il avait été là, alors il a déjà été candidat dans une précédente méthode, et il n'a pas été retenu pour de bonnes raisons
+    		if (jour.getChirurgiensMobilises().contains(albert)) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// S'il n'est pas censé travailler le jour qu'on lui propose 
+    		int k = jour.getDate().getDayOfWeek().getValue()-1;
+    		if (albert.getProportions().get(k)<0.15) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// Si la chirurgie ne correspond pas a ses durées habituelles
+    		if (chTest.anomalieDureeChirurgieOuPas()==true && chirurgiensCandidatsCh2.contains(albert)) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// Si la chirurgie ne correspond pas à sa plage horaire habituelles
+    		if ((albert.getPlagesHorairesPref().get(chTest.indicePlageHoraire()) < 0.15) && chirurgiensCandidatsCh1.contains(albert)) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    		
+    		// Si, en donnant cette chirurgie au chirurgien, on ne vérifie pas les contraintes de durées interopératoires nécessaires
+    		chTest.setChirurgien(albert);
+    		if (chTest.anomalieDureeInterOpeBlocOuPasChirurgien(database)!=0) {
+    			chirurgiensCandidatsCh2.remove(albert);
+    		}
+    	}
+    	
+    	
+    	// Alors on prend un chirurgien qui a des stats respectables de la liste ch1 et il remplacera le chirurgien sur la ch1
+    	if (chirurgiensCandidatsCh1.size()!=0) {
+    			chirurgie1.setChirurgien(chirurgiensCandidatsCh1.get(0));
+    			chirurgiensCandidatsCh1.get(0).getChirurgies().add(chirurgie1);
+    		this.setEtat(true);
+			result = true;
+    	}
+    	
+    	
+    	// Alors on prend un chirurgien qui a des stats respectables de la liste ch2 et il remplacera le chirurgien sur la ch2
+    	else if (chirurgiensCandidatsCh2.size()!=0) {
+    		chirurgie2.setChirurgien(chirurgiensCandidatsCh2.get(0));
+    		chirurgiensCandidatsCh2.get(0).getChirurgies().add(chirurgie2);
+    		this.setEtat(true);
+			this.chirurgie1.setEnConflit(false);
+			this.chirurgie2.setEnConflit(false);
+			result = true;
+    	}
+    
+    	return result;
+    	
+    }
+
+    
+    // Methode à tenter en n°5 / Meme déconseillé d'utiliser car manque de cohérence
+    public boolean resoEfficaceMaisPeuCoherente(BaseDeDonnees database) {
+    	
+    	boolean result = false;
+    	LocalDate auj = this.chirurgie1.getDate();
+    	ArrayList<Chirurgien> chirurgiensCandidats = new ArrayList<>(database.getTousChirurgiens());
+    	ArrayList<Chirurgien> copie1 = new ArrayList<>(chirurgiensCandidats);
+    	
+    	Chirurgien chFort1 = chirurgie1.getSalle().getChirurgienFort(jour, 2);
+    	Chirurgien chFort2 = chirurgie2.getSalle().getChirurgienFort(jour, 2);
+    	
+    	if (chirurgie1.getChirurgien().equals(chFort1)) {
+    		for (Chirurgien albert : copie1) {
+        		
+        		if (jour.getChirurgiensMobilises().contains(albert)) {
+        			chirurgiensCandidats.remove(albert);
+        		}
+    		}
+        	
+        	if (chirurgiensCandidats.size()!=0) {
+        			chirurgie2.setChirurgien(chirurgiensCandidats.get(0));
+        			chirurgiensCandidats.get(0).getChirurgies().add(chirurgie2);
+        		this.setEtat(true);
+    			result = true;
+        	}
+    	}
+    	
+    	
+    	else {
+    		for (Chirurgien albert : copie1) {
+        		
+        		if (jour.getChirurgiensMobilises().contains(albert)) {
+        			chirurgiensCandidats.remove(albert);
+        		}
+    		}
+        	
+        	if (chirurgiensCandidats.size()!=0) {
+        			chirurgie1.setChirurgien(chirurgiensCandidats.get(0));
+        			chirurgiensCandidats.get(0).getChirurgies().add(chirurgie1);
+        		this.setEtat(true);
+    			result = true;
+        	}
+    	}
+    
+    	return result;
+    	
+    }
+    
+    //////////////////////////////////////////////////////
+    
     
     
     
