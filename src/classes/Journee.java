@@ -93,7 +93,7 @@ public class Journee {
     public String planningJourneeParBloc(){
     	String str="";
         str+="\n\n\n\n";
-        str+="                                                     PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n";
+        str+="                                                     PLANNING DU "+date+"\n\n";
         str+="Salle          0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h   8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h\n";
         //  A gauche du '.' c'est 8h,   A droite du '.' c'est 8h05
         str+="               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .\n";
@@ -129,7 +129,7 @@ public class Journee {
     public String planningJourneeParChirurgien(){
     	String str = "";
         str+="\n\n\n\n";
-        str+="                                                      PLANNING DU "+date.format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+"\n\n\n";
+        str+="                                                      PLANNING DU "+date+"\n\n\n";
         str+="Chirurgien     0h   0h30  1h    1h30  2h   2h30   3h    3h30  4h   4h30   5h   5h30   6h   6h30   7h   7h30   8h  8h30    9h   9h30  10h  10h30  11h  11h30  12h  12h30  13h  13h30  14h  14h30  15h  15h30  16h  16h30  17h  17h30  18h  18h30  19h  19h30  20h  20h30  21h  21h30  22h  22h30  23h  23h30  00h";
         //  A gauche du . c'est 8h, A droite du . c'est 8h05
         str+="               .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .     .    .\n";

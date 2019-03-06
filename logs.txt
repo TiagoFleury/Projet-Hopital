@@ -36,11 +36,6 @@ L'interference (c2395,c3052) a ete corrige par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c841,c537) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c5335,c4685) a ete corrige par un deplacement evident
 
 ------------------------------------------------------------------------------------------
@@ -71,27 +66,12 @@ L'ubiquite (c6323,c5219) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'interference (c6384,c427) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c4040,c757) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c5609,c5618) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c2194,c2833) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c2380,c2841) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -121,22 +101,12 @@ Le chevauchement (c898,c6717) a ete corrige par un deplacement evident
 ------------------------------------------------------------------------------------------
 
 
-L'interference (c6731,c6446) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c5796,c5786) a ete corrige par un deplacement evident
 
 ------------------------------------------------------------------------------------------
 
 
 Le chevauchement (c4616,c5330) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c232,c3834) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -166,32 +136,12 @@ L'ubiquite (c5830,c5904) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c4140,c5082) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c4512,c2894) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c2607,c1647) a ete corrigee par un raccourcissement evident
 
 ------------------------------------------------------------------------------------------
 
 
 Le chevauchement (c5468,c1977) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c5439,c3793) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c3793,c4338) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -216,16 +166,6 @@ L'ubiquite (c4420,c2589) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c6564,c1399) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'interference (c7066,c4859) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c5712,c5763) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
@@ -241,22 +181,12 @@ L'ubiquite (c7389,c5229) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'interference (c7389,c6552) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c4703,c6955) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
 
 
 L'ubiquite (c4915,c5207) a ete corrigee par un changement de chirurgien evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c7643,c7647) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -272,16 +202,6 @@ Le chevauchement (c7709,c7608) a ete corrige par un deplacement evident
 
 
 L'ubiquite (c1378,c4431) a ete corrigee par un changement de chirurgien evident
-
-------------------------------------------------------------------------------------------
-
-
-L'interference (c6009,c4431) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c6285,c5110) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -331,16 +251,6 @@ Le chevauchement (c664,c475) a ete corrige par un deplacement evident
 ------------------------------------------------------------------------------------------
 
 
-L'interference (c475,c3829) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c2015,c119) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c6345,c3244) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
@@ -386,11 +296,6 @@ L'ubiquite (c2066,c5700) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c2949,c5044) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c4550,c8158) a ete corrigee par un raccourcissement evident
 
 ------------------------------------------------------------------------------------------
@@ -411,17 +316,7 @@ L'ubiquite (c6532,c7808) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c7808,c7759) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c8186,c8000) a ete corrigee par un raccourcissement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c4759,c8189) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -521,11 +416,6 @@ L'ubiquite (c4301,c8417) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c7959,c761) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c4775,c6800) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
@@ -546,11 +436,6 @@ Le chevauchement (c8947,c8950) a ete corrige par un deplacement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c4973,c8380) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c5203,c8758) a ete corrige par un deplacement evident
 
 ------------------------------------------------------------------------------------------
@@ -562,11 +447,6 @@ Le chevauchement (c9062,c9055) a ete corrige par un deplacement evident
 
 
 L'ubiquite (c9147,c9145) a ete corrigee par un raccourcissement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'interference (c3334,c7145) a ete corrige par un deplacement de bloc force
 
 ------------------------------------------------------------------------------------------
 
@@ -611,16 +491,6 @@ L'ubiquite (c9225,c8892) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c8521,c8623) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c4461,c9479) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c3880,c8733) a ete corrigee par un raccourcissement evident
 
 ------------------------------------------------------------------------------------------
@@ -632,21 +502,6 @@ L'ubiquite (c7776,c9458) a ete corrigee par un raccourcissement evident
 
 
 L'ubiquite (c6851,c6224) a ete corrigee par un raccourcissement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c6224,c4556) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'interference (c8425,c6224) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c1132,c4090) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -677,16 +532,6 @@ Le chevauchement (c9731,c1499) a ete corrige par un deplacement evident
 
 
 L'ubiquite (c5412,c9661) a ete corrigee par un changement de chirurgien evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c5176,c4091) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c2687,c3416) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -746,11 +591,6 @@ L'ubiquite (c10154,c9799) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c9488,c9161) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c5324,c2434) a ete corrige par un deplacement evident
 
 ------------------------------------------------------------------------------------------
@@ -777,11 +617,6 @@ L'ubiquite (c10270,c7982) a ete corrigee par un raccourcissement evident
 
 
 L'interference (c580,c10083) a ete corrige par un changement de bloc evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c10132,c5125) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -826,22 +661,7 @@ L'ubiquite (c4503,c10666) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c10666,c2391) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c1896,c10539) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c9970,c7275) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c1944,c5490) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -861,22 +681,7 @@ L'ubiquite (c10197,c10676) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c10815,c2880) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c9535,c273) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c5566,c10826) a ete corrigee par un changement de chirurgien sous contraintes
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c8357,c9084) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -916,11 +721,6 @@ L'ubiquite (c8065,c4900) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c10538,c3081) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c10950,c10936) a ete corrigee par un raccourcissement evident
 
 ------------------------------------------------------------------------------------------
@@ -956,16 +756,6 @@ L'ubiquite (c1692,c11047) a ete corrigee par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c11076,c11088) a ete corrigee par un changement de chirurgien sous contraintes
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c9748,c3708) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 Le chevauchement (c10940,c10932) a ete corrige par un deplacement evident
 
 ------------------------------------------------------------------------------------------
@@ -981,17 +771,7 @@ L'ubiquite (c11181,c860) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c11186,c10853) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c7587,c11188) a ete corrigee par un changement de chirurgien evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c10663,c8660) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -1021,22 +801,12 @@ L'ubiquite (c124,c11300) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c11324,c11274) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c11352,c11347) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
 
 
 Le chevauchement (c11353,c11356) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c10827,c11328) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -1061,11 +831,6 @@ L'ubiquite (c11072,c11415) a ete corrigee par un changement de chirurgien eviden
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c11343,c8771) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c4385,c11441) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
@@ -1076,22 +841,12 @@ L'ubiquite (c591,c8676) a ete corrigee par un changement de chirurgien evident
 ------------------------------------------------------------------------------------------
 
 
-L'ubiquite (c5357,c11453) a ete corrigee par un changement de chirurgien force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c1669,c11110) a ete corrigee par un raccourcissement evident
 
 ------------------------------------------------------------------------------------------
 
 
 Le chevauchement (c10700,c9235) a ete corrige par un deplacement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c10490,c11502) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -1136,11 +891,6 @@ L'interference (c11569,c11571) a ete corrige par un raccourcissement evident
 ------------------------------------------------------------------------------------------
 
 
-L'interference (c11571,c11573) a ete corrige par un deplacement de bloc force
-
-------------------------------------------------------------------------------------------
-
-
 L'ubiquite (c11601,c11436) a ete corrigee par un changement de chirurgien evident
 
 ------------------------------------------------------------------------------------------
@@ -1152,11 +902,6 @@ L'ubiquite (c11928,c11858) a ete corrigee par un raccourcissement evident
 
 
 L'ubiquite (c12053,c11695) a ete corrigee par un raccourcissement evident
-
-------------------------------------------------------------------------------------------
-
-
-L'ubiquite (c11853,c12053) a ete corrigee par un changement de chirurgien force
 
 ------------------------------------------------------------------------------------------
 
@@ -1186,5 +931,5 @@ L'ubiquite (c11772,c12106) a ete corrigee par un changement de chirurgien eviden
 
 
 
-Resolutions faites :   186 evidentes    51 moyennes    0 peu coherentes
-Il reste 8/25 interferences, 34/247 ubiquites 14/72 chevauchements   =>  288/344 conflits resolus
+Resolutions faites :   186 evidentes    0 moyennes    0 peu coherentes
+Il reste 18/25 interferences, 87/247 ubiquites 14/72 chevauchements   =>  225/344 conflits resolus

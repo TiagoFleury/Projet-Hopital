@@ -16,6 +16,8 @@ public class Interference extends Conflit {
         chirurgiensPb.add(ch2.getChirurgien());
     }
     
+    
+    
     public Bloc getSallePb() {
     	return this.sallePb;
     }

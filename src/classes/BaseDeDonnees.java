@@ -98,11 +98,11 @@ public class BaseDeDonnees {
 		
 		
 		try {
-			writer.write("ID CHIRURGIE;DATE CHIRURGIE;HEURE_DEBUT CHIRURGIE;HEURE_FIN CHIRURGIE;SALLE;CHIRURGIEN\n\n\n");
-			//writer.newLine();
+			writer.write("ID CHIRURGIE;DATE CHIRURGIE;HEURE_DEBUT CHIRURGIE;HEURE_FIN CHIRURGIE;SALLE;CHIRURGIEN");
+			writer.newLine();
 			Collections.sort(listeChirurgies,Chirurgie.CHRONOLOGIQUE);
 			for(Chirurgie chir : listeChirurgies) {
-					writer.write(""+chir.getID()+";"+chir.getDate().format(DateTimeFormatter.ofPattern("DD/MM/YYYY"))+";"+chir.getDebut()+";"+chir.getFin()+";"+chir.getSalle().getName()+";"+chir.getChirurgien().getName());
+					writer.write(""+chir.getID()+";"+chir.getDate()+";"+chir.getDebut()+";"+chir.getFin()+";"+chir.getSalle().getName()+";"+chir.getChirurgien().getName());
 					writer.newLine();
 					writer.flush();
 			}
